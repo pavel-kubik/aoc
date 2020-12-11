@@ -23,9 +23,6 @@ public abstract class DataCollector<TYPE> {
 
     protected abstract TYPE processLine(String line);
 
-    /**
-     * Parse group delimited by new line.
-     */
     public List<TYPE> process() {
         for (int i=0;i<data.size();i++) {
             result.add(processLine(data.get(i)));

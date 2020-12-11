@@ -1,17 +1,23 @@
 package cz.pk.adventofcode.y2020.day11;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.MatrixUtil;
+import cz.pk.adventofcode.util.PuzzleSolver2D;
 import lombok.Data;
+
+import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day11 {
-    // . empty
-    // L seat
-    // # occupied seat
-
     private final boolean debug;
+
+    MatrixUtil<Place> matrixUtil = new MatrixUtil<>(Place.class);
 
     enum Place {
         EMPTY("."),
@@ -20,12 +26,23 @@ public class Day11 {
 
         private String place;
 
+        private static Map<String, Place> values;
+
+        static {
+            values = new HashMap<>();
+            Arrays.stream(values()).forEach(p -> values.put(p.place, p));
+        }
+
         Place(String place) {
             this.place = place;
         }
 
         public String toString() {
             return place;
+        }
+
+        public static Place get(String value) {
+            return values.get(value);
         }
     }
 
@@ -40,6 +57,7 @@ public class Day11 {
         protected Place[] processLine(String line) {
             Place[] newLine = new Place[line.length()];
             for (int i=0;i<line.length();i++) {
+                //TODO automatically convert value to ENUM and move it to library
                 switch (line.charAt(i)) {
                     case '.':
                         newLine[i] = Place.EMPTY;
@@ -239,8 +257,52 @@ public class Day11 {
         return count(newPlaces, Place.OCCUPIED_SEAT);
     }
 
+    private static Place switchPlace(Place place) {
+        switch (place) {
+            case OCCUPIED_SEAT:
+                return Place.FREE_SEAT;
+            case FREE_SEAT:
+                return Place.OCCUPIED_SEAT;
+            default:
+                return place;
+        }
+    }
+
+    public int solve() {
+        Place[] type = new Place[1];
+        return new PuzzleSolver2D<Place>(Place.class, "2020/day11_test.txt")
+                .load(type.getClass(), line -> {
+                    // TODO mapper from String (line) to Enum[] to speed it up
+                    return line.chars()
+                            .mapToObj(c -> (char) c)
+                            .map(c -> Place.get(c.toString()))
+                            .collect(toList()).toArray(new Place[1]);
+                })
+                .iterate(data -> {
+                    Integer[][] seatsAround = matrixUtil.convolution(
+                            data,
+                            new Integer[][] {
+                                    {1, 1, 1},
+                                    {1, 0, 1},
+                                    {1, 1, 1}},
+                            (value, c) -> c.equals(1) && value == Place.OCCUPIED_SEAT ? 1 : 0,
+                            0, (a, b) -> a + b);
+                    matrixUtil.applyAB2Matrix(data, seatsAround, (d, s) -> {
+                        if (s >= 4) {
+                            return switchPlace(d);
+                        } else {
+                            return Place.FREE_SEAT;
+                        }
+                    });
+                    return data;
+                }, matrixUtil::same)
+                .aggregate(v -> v.equals(Place.OCCUPIED_SEAT) ? 1 : 0);
+    }
 
     public static void main(String[] args) throws IOException {
+        int result = new Day11(true).solve();
+        System.out.println("Result " + result);
+
         int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
         System.out.println("Result: " + count);
         assert count == 37;
