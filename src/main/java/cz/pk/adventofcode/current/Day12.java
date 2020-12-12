@@ -15,6 +15,8 @@ public class Day12 {
 
     private int x = 0;
     private int y = 0;
+    private int dx = 10;
+    private int dy = -1;
     private MoveType direction = MoveType.EAST;
 
     enum MoveType {
@@ -150,17 +152,75 @@ public class Day12 {
         return Math.abs(x) + Math.abs(y);
     }
 
-    public static void main(String[] args) {
-//        int count = new Day12(true).solve("day12_test.txt");
-//        System.out.println("Result: " + count);
-//        assert count == 25;
-
-        int count = new Day12(true).solve("day12.txt");
-        System.out.println("Result: " + count);
-        assert count == 845;
-        // not 1697
-        // 6:22
-
+    public void turnWaypointLeft() {
+        int newDx = dy;
+        int newDy = -dx;
+        dx = newDx;
+        dy = newDy;
     }
 
+    public void turnWaypointRight() {
+        int newDx = -dy;
+        int newDy = dx;
+        dx = newDx;
+        dy = newDy;
+    }
+
+    public int solve2(String file) {
+        Move[] moves = new TypeCollector(file).process().toArray(new Move[1]);
+        System.out.println(moves);
+        for(Move move : moves) {
+            int times;
+            switch (move.getMoveType()) {
+                case NORTH:
+                    dy -= move.getSize();
+                    break;
+                case SOUTH:
+                    dy += move.getSize();
+                    break;
+                case EAST:
+                    dx += move.getSize();
+                    break;
+                case WEST:
+                    dx -= move.getSize();
+                    break;
+                case LEFT:
+                    times = move.getSize() / 90;
+                    for (int i=0;i<times;i++) {
+                        turnWaypointLeft();
+                    }
+                    break;
+                case RIGHT:
+                    times = move.getSize() / 90;
+                    for (int i=0;i<times;i++) {
+                        turnWaypointRight();
+                    }
+                    break;
+                case FORWARD:
+                    x += move.getSize()*dx;
+                    y += move.getSize()*dy;
+                    break;
+            }
+        }
+        return Math.abs(x) + Math.abs(y);
+    }
+
+    public static void main(String[] args) {
+        int count;
+        count = new Day12(true).solve("day12_test.txt");
+        System.out.println("Result: " + count);
+        assert count == 25;
+
+        count = new Day12(true).solve("day12.txt");
+        System.out.println("Result: " + count);
+        assert count == 845;
+        // not 1697 - bug turn n-times
+        // 6:22
+
+        count = new Day12(true).solve2("day12.txt");
+        System.out.println("Result: " + count);
+        assert count == 27016;
+        // bug turn waypoint in other direction
+        // 6:36
+    }
 }
