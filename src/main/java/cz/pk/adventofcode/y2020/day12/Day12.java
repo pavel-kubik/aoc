@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2020.day12;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,17 +21,17 @@ public class Day12 {
 
     public static void main(String[] args) {
         int count;
-        count = new Day12(true).solve("day12_test.txt");
+        count = new Day12(true).solve("2020/day12_test.txt");
         System.out.println("Result: " + count);
         assert count == 25;
 
-        count = new Day12(true).solve("day12.txt");
+        count = new Day12(true).solve("2020/day12.txt");
         System.out.println("Result: " + count);
         assert count == 845;
         // not 1697 - bug turn n-times
         // 6:22
 
-        count = new Day12(true).solve2("day12.txt");
+        count = new Day12(true).solve2("2020/day12.txt");
         System.out.println("Result: " + count);
         assert count == 27016;
         // bug turn waypoint in other direction
