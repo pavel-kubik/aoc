@@ -4,79 +4,55 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.MatrixUtil;
-import cz.pk.adventofcode.util.PuzzleSolver2D;
 import lombok.Data;
-
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day11 {
     private final boolean debug;
 
     MatrixUtil<Place> matrixUtil = new MatrixUtil<>(Place.class);
+    private Place[][] places;
 
-    enum Place {
-        EMPTY("."),
-        FREE_SEAT("L"),
-        OCCUPIED_SEAT("#");
-
-        private String place;
-
-        private static Map<String, Place> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.place, p));
-        }
-
-        Place(String place) {
-            this.place = place;
-        }
-
-        public String toString() {
-            return place;
-        }
-
-        public static Place get(String value) {
-            return values.get(value);
+    private static Place switchPlace(Place place) {
+        switch (place) {
+            case OCCUPIED_SEAT:
+                return Place.FREE_SEAT;
+            case FREE_SEAT:
+                return Place.OCCUPIED_SEAT;
+            default:
+                return place;
         }
     }
 
-    private Place[][] places;
+    public static void main(String[] args) throws IOException {
+        //        int result = new Day11(true).solve();
+        //        System.out.println("Result " + result);
 
-    class PlaceCollector extends DataCollector<Place[]> {
-        public PlaceCollector(String file) {
-            super(file);
-        }
+        int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
+        System.out.println("Result: " + count);
+        assert count == 37;
 
-        @Override
-        protected Place[] processLine(String line) {
-            Place[] newLine = new Place[line.length()];
-            for (int i=0;i<line.length();i++) {
-                //TODO automatically convert value to ENUM and move it to library
-                switch (line.charAt(i)) {
-                    case '.':
-                        newLine[i] = Place.EMPTY;
-                        break;
-                    case 'L':
-                        newLine[i] = Place.FREE_SEAT;
-                        break;
-                    case '#':
-                        newLine[i] = Place.OCCUPIED_SEAT;
-                        break;
-                }
-            }
-            return newLine;
-        }
+        count = new Day11(false).countFreePlaces("2020/day11.txt");
+        System.out.println("Result: " + count);
+        assert count == 2296;
+        // not 2662
+        // not 2163
+
+        count = new Day11(true).countFreePlacesLongDistance("2020/day11_test.txt");
+        System.out.println("Result: " + count);
+        assert count == 26;
+
+        count = new Day11(false).countFreePlacesLongDistance("2020/day11.txt");
+        System.out.println("Result: " + count);
+        assert count == 2089;
     }
 
     private Place[][] step(Place[][] places) {
         Place[][] out = new Place[places.length][];
-        for (int i=0;i<places.length;i++) {
+        for (int i = 0; i < places.length; i++) {
             out[i] = new Place[places[i].length];
             for (int j = 0; j < places[i].length; j++) {
                 switch (places[i][j]) {
@@ -107,19 +83,19 @@ public class Day11 {
 
     private int occupiedArround(int x, int y, Place[][] places) {
         int out = 0;
-        out += isOccupied(x-1, y-1, places) ? 1 : 0;
-        out += isOccupied(x,   y-1, places) ? 1 : 0;
-        out += isOccupied(x+1, y-1, places) ? 1 : 0;
-        out += isOccupied(x+1, y+1, places) ? 1 : 0;
-        out += isOccupied(x,   y+1, places) ? 1 : 0;
-        out += isOccupied(x-1, y+1, places) ? 1 : 0;
-        out += isOccupied(x-1, y, places) ? 1 : 0;
-        out += isOccupied(x+1, y, places) ? 1 : 0;
+        out += isOccupied(x - 1, y - 1, places) ? 1 : 0;
+        out += isOccupied(x, y - 1, places) ? 1 : 0;
+        out += isOccupied(x + 1, y - 1, places) ? 1 : 0;
+        out += isOccupied(x + 1, y + 1, places) ? 1 : 0;
+        out += isOccupied(x, y + 1, places) ? 1 : 0;
+        out += isOccupied(x - 1, y + 1, places) ? 1 : 0;
+        out += isOccupied(x - 1, y, places) ? 1 : 0;
+        out += isOccupied(x + 1, y, places) ? 1 : 0;
         return out;
     }
 
     private boolean isOccupied(int x, int y, Place[][] places) {
-        if (x >= 0 && y>= 0 && x < places.length && y < places[0].length) {
+        if (x >= 0 && y >= 0 && x < places.length && y < places[0].length) {
             return places[x][y] == Place.OCCUPIED_SEAT;
         } else {
             return false;
@@ -148,8 +124,8 @@ public class Day11 {
 
     private String printPlaces(Place[][] places) {
         StringBuilder sb = new StringBuilder();
-        for (int i=0;i<places.length;i++) {
-            for (int j=0;j<places[i].length;j++) {
+        for (int i = 0; i < places.length; i++) {
+            for (int j = 0; j < places[i].length; j++) {
                 sb.append(places[i][j]);
             }
             sb.append("\n");
@@ -158,7 +134,7 @@ public class Day11 {
     }
 
     private boolean isEquals(Place[][] places1, Place[][] places2) {
-        for (int i=0;i<places1.length;i++) {
+        for (int i = 0; i < places1.length; i++) {
             for (int j = 0; j < places1[i].length; j++) {
                 if (places1[i][j] != places2[i][j]) {
                     return false;
@@ -170,7 +146,7 @@ public class Day11 {
 
     private int count(Place[][] place1, Place place) {
         int out = 0;
-        for (int i=0;i<place1.length;i++) {
+        for (int i = 0; i < place1.length; i++) {
             for (int j = 0; j < place1[i].length; j++) {
                 if (place1[i][j] == place) {
                     out++;
@@ -180,7 +156,7 @@ public class Day11 {
         return out;
     }
 
-    private boolean isOccupiedLongDistance(int x, int y, int dx, int dy,  Place[][] places) {
+    private boolean isOccupiedLongDistance(int x, int y, int dx, int dy, Place[][] places) {
         if (x + dx >= 0 && y + dy >= 0 && x + dx < places.length && y + dy < places[0].length) {
             if (places[x + dx][y + dy] == Place.EMPTY) {
                 // see more far
@@ -196,19 +172,19 @@ public class Day11 {
     private int occupiedLongDistance(int x, int y, Place[][] places) {
         int out = 0;
         out += isOccupiedLongDistance(x, y, -1, -1, places) ? 1 : 0;
-        out += isOccupiedLongDistance(x, y,  0, -1, places) ? 1 : 0;
+        out += isOccupiedLongDistance(x, y, 0, -1, places) ? 1 : 0;
         out += isOccupiedLongDistance(x, y, +1, -1, places) ? 1 : 0;
         out += isOccupiedLongDistance(x, y, +1, +1, places) ? 1 : 0;
-        out += isOccupiedLongDistance(x, y,  0, +1, places) ? 1 : 0;
+        out += isOccupiedLongDistance(x, y, 0, +1, places) ? 1 : 0;
         out += isOccupiedLongDistance(x, y, -1, +1, places) ? 1 : 0;
-        out += isOccupiedLongDistance(x, y, -1,  0, places) ? 1 : 0;
-        out += isOccupiedLongDistance(x, y, +1,  0, places) ? 1 : 0;
+        out += isOccupiedLongDistance(x, y, -1, 0, places) ? 1 : 0;
+        out += isOccupiedLongDistance(x, y, +1, 0, places) ? 1 : 0;
         return out;
     }
 
     private Place[][] stepLongDistance(Place[][] places) {
         Place[][] out = new Place[places.length][];
-        for (int i=0;i<places.length;i++) {
+        for (int i = 0; i < places.length; i++) {
             out[i] = new Place[places[i].length];
             for (int j = 0; j < places[i].length; j++) {
                 switch (places[i][j]) {
@@ -257,14 +233,30 @@ public class Day11 {
         return count(newPlaces, Place.OCCUPIED_SEAT);
     }
 
-    private static Place switchPlace(Place place) {
-        switch (place) {
-            case OCCUPIED_SEAT:
-                return Place.FREE_SEAT;
-            case FREE_SEAT:
-                return Place.OCCUPIED_SEAT;
-            default:
-                return place;
+    enum Place {
+        EMPTY("."),
+        FREE_SEAT("L"),
+        OCCUPIED_SEAT("#");
+
+        private static final Map<String, Place> values;
+
+        static {
+            values = new HashMap<>();
+            Arrays.stream(values()).forEach(p -> values.put(p.place, p));
+        }
+
+        private final String place;
+
+        Place(String place) {
+            this.place = place;
+        }
+
+        public static Place get(String value) {
+            return values.get(value);
+        }
+
+        public String toString() {
+            return place;
         }
     }
 
@@ -301,26 +293,29 @@ public class Day11 {
     }
     //*/
 
-    public static void main(String[] args) throws IOException {
-//        int result = new Day11(true).solve();
-//        System.out.println("Result " + result);
+    class PlaceCollector extends DataCollector<Place[]> {
+        public PlaceCollector(String file) {
+            super(file);
+        }
 
-        int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
-        System.out.println("Result: " + count);
-        assert count == 37;
-
-        count = new Day11(false).countFreePlaces("2020/day11.txt");
-        System.out.println("Result: " + count);
-        assert count == 2296;
-        // not 2662
-        // not 2163
-
-        count = new Day11(true).countFreePlacesLongDistance("2020/day11_test.txt");
-        System.out.println("Result: " + count);
-        assert count == 26;
-
-        count = new Day11(false).countFreePlacesLongDistance("2020/day11.txt");
-        System.out.println("Result: " + count);
-        assert count == 2089;
+        @Override
+        protected Place[] processLine(String line) {
+            Place[] newLine = new Place[line.length()];
+            for (int i = 0; i < line.length(); i++) {
+                //TODO automatically convert value to ENUM and move it to library
+                switch (line.charAt(i)) {
+                    case '.':
+                        newLine[i] = Place.EMPTY;
+                        break;
+                    case 'L':
+                        newLine[i] = Place.FREE_SEAT;
+                        break;
+                    case '#':
+                        newLine[i] = Place.OCCUPIED_SEAT;
+                        break;
+                }
+            }
+            return newLine;
+        }
     }
 }

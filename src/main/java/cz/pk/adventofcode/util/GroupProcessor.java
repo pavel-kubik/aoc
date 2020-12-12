@@ -24,7 +24,7 @@ public abstract class GroupProcessor {
     public int processGroups() {
         int result = 0;
         List<String> lines = new ArrayList<>();
-        for (int i=0;i<data.size();i++) {
+        for (int i = 0; i < data.size(); i++) {
             String line = data.get(i);
             if (line.length() == 0) {
                 result += processGroup(lines);

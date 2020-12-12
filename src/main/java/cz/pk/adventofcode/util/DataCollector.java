@@ -24,7 +24,7 @@ public abstract class DataCollector<TYPE> {
     protected abstract TYPE processLine(String line);
 
     public List<TYPE> process() {
-        for (int i=0;i<data.size();i++) {
+        for (int i = 0; i < data.size(); i++) {
             result.add(processLine(data.get(i)));
         }
         return result;

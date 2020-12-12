@@ -10,15 +10,6 @@ public class Day1 {
         return mass / 3 - 2;
     }
 
-    public long countAllMass(String file) {
-        List<Long> masses = new LongCollector(file).process();
-        long out = 0;
-        for (Long mass : masses) {
-            out += countFuel(mass);
-        }
-        return out;
-    }
-
     public static long countFuelWithFuelWeight(long mass) {
         long out = 0;
         long lastFuel = mass;
@@ -29,15 +20,6 @@ public class Day1 {
             }
             out += lastFuel;
         } while (true);
-        return out;
-    }
-
-    public long countAllMassWithFuelWeight(String file) {
-        List<Long> masses = new LongCollector(file).process();
-        long out = 0;
-        for (Long mass : masses) {
-            out += countFuelWithFuelWeight(mass);
-        }
         return out;
     }
 
@@ -61,5 +43,23 @@ public class Day1 {
         // not
         // 4943559
         // 4943538
+    }
+
+    public long countAllMass(String file) {
+        List<Long> masses = new LongCollector(file).process();
+        long out = 0;
+        for (Long mass : masses) {
+            out += countFuel(mass);
+        }
+        return out;
+    }
+
+    public long countAllMassWithFuelWeight(String file) {
+        List<Long> masses = new LongCollector(file).process();
+        long out = 0;
+        for (Long mass : masses) {
+            out += countFuelWithFuelWeight(mass);
+        }
+        return out;
     }
 }

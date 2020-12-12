@@ -8,9 +8,14 @@ import cz.pk.adventofcode.util.LongCollector;
 
 public class Day9 {
 
+    public static void main(String[] args) throws IOException {
+        //System.out.println(new Day9().findWeeknes(25)); //70639851
+        System.out.println(new Day9().findSum(70639851));
+    }
+
     public long findWeeknes(int preamble) throws IOException {
-        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> (Long)i).collect(Collectors.toList());
-        for (int i=preamble;i<numbers.size();i++) {
+        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> i).collect(Collectors.toList());
+        for (int i = preamble; i < numbers.size(); i++) {
             long currentNumber = numbers.get(i);
             if (!isValid(i, preamble, numbers)) {
                 return currentNumber;
@@ -21,9 +26,9 @@ public class Day9 {
 
     boolean isValid(int i, int preamble, List<Long> numbers) {
         long currentNumber = numbers.get(i);
-        for(int j=i-preamble;j<i;j++) {
+        for (int j = i - preamble; j < i; j++) {
             long a = numbers.get(j);
-            for(int k=j+1;k<i;k++) {
+            for (int k = j + 1; k < i; k++) {
                 long b = numbers.get(k);
                 if (currentNumber == a + b) {
                     return true;
@@ -34,9 +39,9 @@ public class Day9 {
     }
 
     public long findSum(long sum) throws IOException {
-        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> (Long)i).collect(Collectors.toList());
-        for (int i=0;i<numbers.size();i++) {
-            for (int j=i+1;j<numbers.size();j++) {
+        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> i).collect(Collectors.toList());
+        for (int i = 0; i < numbers.size(); i++) {
+            for (int j = i + 1; j < numbers.size(); j++) {
                 if (sum(i, j, numbers) == sum) {
                     long min = min(i, j, numbers);
                     long max = max(i, j, numbers);
@@ -49,7 +54,7 @@ public class Day9 {
 
     long sum(int start, int end, List<Long> numbers) {
         long sum = 0;
-        for (int i=start;i<end;i++) {
+        for (int i = start; i < end; i++) {
             sum += numbers.get(i);
         }
         return sum;
@@ -75,10 +80,5 @@ public class Day9 {
         }
         assert max != Long.MIN_VALUE;
         return max;
-    }
-
-    public static void main(String[] args) throws IOException {
-        //System.out.println(new Day9().findWeeknes(25)); //70639851
-        System.out.println(new Day9().findSum(70639851));
     }
 }

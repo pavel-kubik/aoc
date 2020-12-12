@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import cz.pk.adventofcode.y2020.day11.Day11;
 import cz.pk.adventofcode.y2020.day1.Day1;
 import cz.pk.adventofcode.y2020.day10.Day10;
+import cz.pk.adventofcode.y2020.day11.Day11;
 import cz.pk.adventofcode.y2020.day2.Day2;
 import cz.pk.adventofcode.y2020.day3.Day3;
 import cz.pk.adventofcode.y2020.day4.Day4;
@@ -21,13 +21,13 @@ import cz.pk.adventofcode.y2020.day9.Day9;
 @SpringBootApplication
 public class AdventOfCodeApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AdventOfCodeApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AdventOfCodeApplication.class, args);
+    }
 
-	@Bean
+    @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-	    return args -> {
+        return args -> {
             Day1.main(args);
             Day2.main(args);
             Day3.main(args);

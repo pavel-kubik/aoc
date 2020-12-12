@@ -19,56 +19,23 @@ public class Day12 {
     private int dy = -1;
     private MoveType direction = MoveType.EAST;
 
-    enum MoveType {
-        NORTH("N"),
-        SOUTH("S"),
-        EAST("E"),
-        WEST("W"),
-        LEFT("L"),
-        RIGHT("R"),
-        FORWARD("F");
+    public static void main(String[] args) {
+        int count;
+        count = new Day12(true).solve("day12_test.txt");
+        System.out.println("Result: " + count);
+        assert count == 25;
 
-        private String value;
+        count = new Day12(true).solve("day12.txt");
+        System.out.println("Result: " + count);
+        assert count == 845;
+        // not 1697 - bug turn n-times
+        // 6:22
 
-        private static Map<String, MoveType> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        MoveType(String place) {
-            this.value = place;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-        public static MoveType get(String value) {
-            return values.get(value);
-        }
-    }
-
-    @Data
-    @AllArgsConstructor
-    class Move {
-        MoveType moveType;
-        int size;
-    }
-
-    class TypeCollector extends DataCollector<Move> {
-
-        public TypeCollector(String file) {
-            super(file);
-        }
-
-        @Override
-        protected Move processLine(String line) {
-            MoveType moveType = MoveType.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Move(moveType, size);
-        }
+        count = new Day12(true).solve2("day12.txt");
+        System.out.println("Result: " + count);
+        assert count == 27016;
+        // bug turn waypoint in other direction
+        // 6:36
     }
 
     public MoveType turnLeft(MoveType direction) {
@@ -104,7 +71,7 @@ public class Day12 {
     public int solve(String file) {
         Move[] moves = new TypeCollector(file).process().toArray(new Move[1]);
         System.out.println(moves);
-        for(Move move : moves) {
+        for (Move move : moves) {
             int times;
             switch (move.getMoveType()) {
                 case NORTH:
@@ -121,13 +88,13 @@ public class Day12 {
                     break;
                 case LEFT:
                     times = move.getSize() / 90;
-                    for (int i=0;i<times;i++) {
+                    for (int i = 0; i < times; i++) {
                         direction = turnLeft(direction);
                     }
                     break;
                 case RIGHT:
                     times = move.getSize() / 90;
-                    for (int i=0;i<times;i++) {
+                    for (int i = 0; i < times; i++) {
                         direction = turnRight(direction);
                     }
                     break;
@@ -169,7 +136,7 @@ public class Day12 {
     public int solve2(String file) {
         Move[] moves = new TypeCollector(file).process().toArray(new Move[1]);
         System.out.println(moves);
-        for(Move move : moves) {
+        for (Move move : moves) {
             int times;
             switch (move.getMoveType()) {
                 case NORTH:
@@ -186,41 +153,74 @@ public class Day12 {
                     break;
                 case LEFT:
                     times = move.getSize() / 90;
-                    for (int i=0;i<times;i++) {
+                    for (int i = 0; i < times; i++) {
                         turnWaypointLeft();
                     }
                     break;
                 case RIGHT:
                     times = move.getSize() / 90;
-                    for (int i=0;i<times;i++) {
+                    for (int i = 0; i < times; i++) {
                         turnWaypointRight();
                     }
                     break;
                 case FORWARD:
-                    x += move.getSize()*dx;
-                    y += move.getSize()*dy;
+                    x += move.getSize() * dx;
+                    y += move.getSize() * dy;
                     break;
             }
         }
         return Math.abs(x) + Math.abs(y);
     }
 
-    public static void main(String[] args) {
-        int count;
-        count = new Day12(true).solve("day12_test.txt");
-        System.out.println("Result: " + count);
-        assert count == 25;
+    enum MoveType {
+        NORTH("N"),
+        SOUTH("S"),
+        EAST("E"),
+        WEST("W"),
+        LEFT("L"),
+        RIGHT("R"),
+        FORWARD("F");
 
-        count = new Day12(true).solve("day12.txt");
-        System.out.println("Result: " + count);
-        assert count == 845;
-        // not 1697 - bug turn n-times
-        // 6:22
+        private static final Map<String, MoveType> values;
 
-        count = new Day12(true).solve2("day12.txt");
-        System.out.println("Result: " + count);
-        assert count == 27016;
-        // bug turn waypoint in other direction
-        // 6:36
+        static {
+            values = new HashMap<>();
+            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
+        }
+
+        private final String value;
+
+        MoveType(String place) {
+            this.value = place;
+        }
+
+        public static MoveType get(String value) {
+            return values.get(value);
+        }
+
+        public String toString() {
+            return value;
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class Move {
+        MoveType moveType;
+        int size;
+    }
+
+    class TypeCollector extends DataCollector<Move> {
+
+        public TypeCollector(String file) {
+            super(file);
+        }
+
+        @Override
+        protected Move processLine(String line) {
+            MoveType moveType = MoveType.get(String.valueOf(line.charAt(0)));
+            Integer size = Integer.valueOf(line.substring(1));
+            return new Move(moveType, size);
+        }
     }
 }

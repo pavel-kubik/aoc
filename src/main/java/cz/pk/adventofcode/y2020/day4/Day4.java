@@ -10,7 +10,11 @@ import java.util.List;
 
 public class Day4 {
 
-    String [] mandatoryFiedls = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
+    String[] mandatoryFiedls = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
+
+    public static void main(String[] args) throws IOException {
+        System.out.println("Valid: " + new Day4().countValid());
+    }
 
     boolean checkMandatoryFields(HashMap<String, String> fields) {
         return Arrays.stream(mandatoryFiedls)
@@ -38,7 +42,7 @@ public class Day4 {
             return false;
         }
         boolean number = true;
-        for (int i=0;i<passportID.length();i++) {
+        for (int i = 0; i < passportID.length(); i++) {
             char value = passportID.charAt(i);
             number = number && (value >= '0' && value <= '9');
         }
@@ -57,7 +61,7 @@ public class Day4 {
             return false;
         }
         boolean hexNumber = true;
-        for (int i=1;i<hairColor.length();i++) {
+        for (int i = 1; i < hairColor.length(); i++) {
             char value = hairColor.charAt(i);
             hexNumber = hexNumber && (value >= 'a' && value <= 'f' ||
                     value >= '0' && value <= '9');
@@ -90,9 +94,9 @@ public class Day4 {
     }
 
     boolean checkNumber(String number, int min, int max) {
-//        if (number.length() != 4) {
-//            return false;
-//        }
+        //        if (number.length() != 4) {
+        //            return false;
+        //        }
         try {
             int value = Integer.parseInt(number);
             return value >= min && value <= max;
@@ -107,7 +111,7 @@ public class Day4 {
 
         int valid = 0;
         HashMap<String, String> fields = new HashMap<>();
-        for (int i=0;i<data.size();i++) {
+        for (int i = 0; i < data.size(); i++) {
             String line = data.get(i);
             if (line.length() == 0) {
                 if (checkPassport(fields)) {
@@ -116,7 +120,7 @@ public class Day4 {
                 fields.clear();
             } else {
                 String[] pairs = line.split(" ");
-                for (int j=0;j<pairs.length;j++) {
+                for (int j = 0; j < pairs.length; j++) {
                     String[] pair = pairs[j].split(":");
                     assert pair.length == 2;
                     fields.put(pair[0], pair[1]);
@@ -127,9 +131,5 @@ public class Day4 {
             valid++;
         }
         return valid;
-    }
-
-    public static void main(String[] args) throws IOException {
-        System.out.println("Valid: " + new Day4().countValid());
     }
 }
