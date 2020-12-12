@@ -6,8 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.MatrixUtil;
+import cz.pk.adventofcode.util.PuzzleSolver2D;
 import lombok.Data;
+
+import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day11 {
@@ -28,8 +32,8 @@ public class Day11 {
     }
 
     public static void main(String[] args) throws IOException {
-        //        int result = new Day11(true).solve();
-        //        System.out.println("Result " + result);
+        int result = new Day11(true).solve();
+        System.out.println("Result " + result);
 
         int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
         System.out.println("Result: " + count);
@@ -260,26 +264,37 @@ public class Day11 {
         }
     }
 
-    /*
+    //*
     public int solve() {
         Place[] type = new Place[1];
-        return new PuzzleSolver2D<Place>(Place.class, "2020/day11_test.txt")
-                .load(type.getClass(), line -> {
+        Matrix<Place> places = new PuzzleSolver2D<Place>(Place.class, "2020/day11_test.txt")
+                .load(line -> {
                     // TODO mapper from String (line) to Enum[] to speed it up
                     return line.chars()
                             .mapToObj(c -> (char) c)
                             .map(c -> Place.get(c.toString()))
-                            .collect(toList()).toArray(new Place[1]);
-                })
-                .iterate(data -> {
-                    Integer[][] seatsAround = matrixUtil.convolution(
-                            data,
-                            new Integer[][] {
-                                    {1, 1, 1},
-                                    {1, 0, 1},
-                                    {1, 1, 1}},
-                            (value, c) -> c.equals(1) && value == Place.OCCUPIED_SEAT ? 1 : 0,
-                            0, (a, b) -> a + b);
+                            .collect(toList());
+                });
+        Matrix<Place> newPlaces = places;
+        do {
+            places = newPlaces;
+            Matrix<Integer> surround = places.convolution(
+                    Matrix.instance(new Integer[][]{
+                            {1, 1, 1},
+                            {1, 0, 1},
+                            {1, 1, 1}}),
+                    (p, c) -> c.equals(1) && p == Place.OCCUPIED_SEAT ? 1 : 0,
+                    0, (a, b) -> a + b);
+            newPlaces = places.applyMatrix(
+                    surround,
+                    (p, s) -> {
+                        if (s >= 4) {
+                            return switchPlace(p);
+                        } else {
+                            return Place.FREE_SEAT;
+                        }});
+        } while (places != newPlaces);
+    /*
                     matrixUtil.applyAB2Matrix(data, seatsAround, (d, s) -> {
                         if (s >= 4) {
                             return switchPlace(d);
@@ -290,8 +305,8 @@ public class Day11 {
                     return data;
                 }, matrixUtil::same)
                 .aggregate(v -> v.equals(Place.OCCUPIED_SEAT) ? 1 : 0);
-    }
     //*/
+    }
 
     class PlaceCollector extends DataCollector<Place[]> {
         public PlaceCollector(String file) {

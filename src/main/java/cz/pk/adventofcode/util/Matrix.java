@@ -2,38 +2,56 @@ package cz.pk.adventofcode.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
-@Data
 public class Matrix<TYPE> {
-    private final List<List<TYPE>> data;
+    private List<List<TYPE>> rows;
     private int width;
     private int height;
 
+    public Matrix<TYPE> setRows(List<List<TYPE>> rows) {
+        this.rows = rows;
+        return this;
+    }
+
     private Matrix() {
-        data = new ArrayList<>();
+        rows = new ArrayList<>();
     }
 
     public static <T> Matrix<T> instance(Class<T> clazz) {
         return new Matrix<T>();
     }
 
+    public static <T> Matrix<T> instance(T[][] data) {
+        List<List<T>> rows = new ArrayList<>();
+        for (int i = 0; i < data.length; i++) {
+            rows.add(Arrays.asList(data[i]));
+        }
+        return new Matrix<T>();
+    }
+
+    public static <T> Matrix<T> instance(List<List<T>> rows) {
+        return new Matrix<T>().setRows(rows);
+    }
+
     public TYPE get(int row, int col) {
-        return data.get(row).get(col);
+        return rows.get(row).get(col);
     }
 
     public void set(int row, int col, TYPE value) {
-        data.get(row).set(col, value);
+        rows.get(row).set(col, value);
     }
 
     public <T> boolean equals(Matrix<TYPE> matrix) {
-        for (int i = 0; i < data.size(); i++) {
-            List<TYPE> row = data.get(i);
+        for (int i = 0; i < rows.size(); i++) {
+            List<TYPE> row = rows.get(i);
             for (int j = 0; j < row.size(); j++) {
                 if (!row.get(j).equals(matrix.get(i, j))) {
                     return false;
@@ -44,10 +62,13 @@ public class Matrix<TYPE> {
     }
 
     public <TYPE_CM, TYPE_O>
-    Matrix<TYPE_O> convolution(Matrix<TYPE_CM> convolutionMatrix, BiFunction<TYPE, TYPE_CM, TYPE_O> op, TYPE_O initialValue, BinaryOperator<TYPE_O> collector) {
+    Matrix<TYPE_O> convolution(Matrix<TYPE_CM> convolutionMatrix,
+                               BiFunction<TYPE, TYPE_CM, TYPE_O> op,
+                               TYPE_O initialValue,
+                               BinaryOperator<TYPE_O> collector) {
         Matrix<TYPE_O> out = new Matrix<>();
-        for (int i = 0; i < data.size(); i++) {
-            List<TYPE> row = data.get(i);
+        for (int i = 0; i < rows.size(); i++) {
+            List<TYPE> row = rows.get(i);
             for (int j = 0; j < row.size(); j++) {
                 out.set(i, j, convolutionFrame(i, j, convolutionMatrix, op, initialValue, collector));
             }
@@ -57,18 +78,18 @@ public class Matrix<TYPE> {
 
     private <TYPE_CM, TYPE_O>
     TYPE_O convolutionFrame(int x, int y, Matrix<TYPE_CM> convolutionMatrix, BiFunction<TYPE, TYPE_CM, TYPE_O> op, TYPE_O initialValue, BinaryOperator<TYPE_O> collector) {
-        int cmRows = convolutionMatrix.data.size();
+        int cmRows = convolutionMatrix.rows.size();
         TYPE_O out = initialValue;
         for (int i = 0; i < cmRows; i++) {
-            int cmCols = convolutionMatrix.data.get(i).size();
+            int cmCols = convolutionMatrix.rows.get(i).size();
             for (int j = 0; j < cmCols; j++) {
                 int dx = x - cmRows / 2 + i;
                 int dy = y - cmCols / 2 + i;
                 if (x + dx >= 0 &&
-                        x + dx < data.size() &&
+                        x + dx < rows.size() &&
                         y + dy >= 0 &&
-                        y + dy < data.get(x + dx).size()) {
-                    out = collector.apply(out, op.apply(data.get(x + dx).get(y + dy), convolutionMatrix.get(i, j)));
+                        y + dy < rows.get(x + dx).size()) {
+                    out = collector.apply(out, op.apply(rows.get(x + dx).get(y + dy), convolutionMatrix.get(i, j)));
                 }
             }
         }
@@ -93,17 +114,18 @@ public class Matrix<TYPE> {
     /**
      * [A] op [B] -> [a_i_j op b_i_j]
      */
-    public <TYPE_A, TYPE_B, TYPE_O> TYPE_O[][] applyAB2Matrix(TYPE_A[][] a,
-                                                              TYPE_B[][] b,
-                                                              BiFunction<TYPE_A, TYPE_B, TYPE_O> op) {
-        TYPE_O[][] out = (TYPE_O[][]) Array.newInstance(a.getClass().getComponentType(), a.length);
-        for (int i = 0; i < a.length; i++) {
-            out[i] = (TYPE_O[]) Array.newInstance(a[i].getClass().getComponentType(), a[i].length);
-            for (int j = 0; j < a[i].length; j++) {
-                out[i][j] = op.apply(a[i][j], b[i][j]);
+    public <TYPE_B, TYPE_O> Matrix<TYPE_O>
+    applyMatrix(Matrix<TYPE_B> b,
+                BiFunction<TYPE, TYPE_B, TYPE_O> op) {
+        List<List<TYPE_O>> outRows = new ArrayList<>();
+        for (int i = 0; i < rows.size(); i++) {
+            List<TYPE_O> outRow = new ArrayList<>();
+            for (int j = 0; j < rows.get(i).size(); j++) {
+                outRow.add(op.apply(this.get(i, j), b.get(i, j)));
             }
+            outRows.add(outRow);
         }
-        return out;
+        return (Matrix<TYPE_O>)Matrix.instance(outRows.get(0).get(0).getClass());
     }
 
     public Integer apply(Object[][] a, Function<Object, Integer> op) {
