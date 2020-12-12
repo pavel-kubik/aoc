@@ -32,8 +32,9 @@ public class Day11 {
     }
 
     public static void main(String[] args) throws IOException {
-        int result = new Day11(true).solve();
+        int result = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
         System.out.println("Result " + result);
+        assert result == 37;
 
         int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
         System.out.println("Result: " + count);
@@ -265,9 +266,9 @@ public class Day11 {
     }
 
     //*
-    public int solve() {
+    public int solvePart1WithMatrix(String file) {
         Place[] type = new Place[1];
-        Matrix<Place> places = new PuzzleSolver2D<Place>(Place.class, "2020/day11_test.txt")
+        Matrix<Place> places = new PuzzleSolver2D<Place>(Place.class, file)
                 .load(line -> {
                     // TODO mapper from String (line) to Enum[] to speed it up
                     return line.chars()
@@ -293,19 +294,8 @@ public class Day11 {
                         } else {
                             return Place.FREE_SEAT;
                         }});
-        } while (places != newPlaces);
-    /*
-                    matrixUtil.applyAB2Matrix(data, seatsAround, (d, s) -> {
-                        if (s >= 4) {
-                            return switchPlace(d);
-                        } else {
-                            return Place.FREE_SEAT;
-                        }
-                    });
-                    return data;
-                }, matrixUtil::same)
-                .aggregate(v -> v.equals(Place.OCCUPIED_SEAT) ? 1 : 0);
-    //*/
+        } while (!places.equals(newPlaces));
+        return places.apply(v -> v.equals(Place.OCCUPIED_SEAT) ? 1 : 0);
     }
 
     class PlaceCollector extends DataCollector<Place[]> {
