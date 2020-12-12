@@ -14,8 +14,8 @@ public class Day1 {
     public int findSubAndMultiple(int[] data, int sum) {
         Integer numberA = null;
         Integer numberB = null;
-        for(int i=0;i<data.length;i++) {
-            for(int j=i;j<data.length;j++) {
+        for (int i = 0; i < data.length; i++) {
+            for (int j = i; j < data.length; j++) {
                 if (data[i] + data[j] == sum) {
                     numberA = i;
                     numberB = j;
@@ -26,16 +26,16 @@ public class Day1 {
         if (numberA == null || numberB == null) {
             throw new RuntimeException(format("Two numbers giving %s not found in array", sum));
         }
-        return data[numberA]*data[numberB];
+        return data[numberA] * data[numberB];
     }
 
     public int findSubThreeAndMultiple(int[] data, int sum) {
         Integer numberA = null;
         Integer numberB = null;
         Integer numberC = null;
-        for(int i=0;i<data.length;i++) {
-            for(int j=i;j<data.length;j++) {
-                for(int k=j;k<data.length;k++) {
+        for (int i = 0; i < data.length; i++) {
+            for (int j = i; j < data.length; j++) {
+                for (int k = j; k < data.length; k++) {
                     if (data[i] + data[j] + data[k] == sum) {
                         numberA = i;
                         numberB = j;
@@ -48,7 +48,7 @@ public class Day1 {
         if (numberA == null || numberB == null) {
             throw new RuntimeException(format("Three numbers giving %s not found in array", sum));
         }
-        return data[numberA]*data[numberB]*data[numberC];
+        return data[numberA] * data[numberB] * data[numberC];
     }
 
 }

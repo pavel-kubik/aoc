@@ -10,9 +10,13 @@ import static java.lang.String.format;
 
 public class Day2 {
 
+    public static void main(String[] args) throws IOException {
+        new Day2().checkPasswords();
+    }
+
     private boolean isValid(int min, int max, char sign, String password) {
         int numOfChar = 0;
-        for (int i=0;i<password.length();i++) {
+        for (int i = 0; i < password.length(); i++) {
             if (password.charAt(i) == sign) {
                 numOfChar++;
             }
@@ -22,8 +26,8 @@ public class Day2 {
 
     private boolean isValid2(int min, int max, char sign, String password) {
         int numOfChar = 0;
-        char signA = password.charAt(min-1);
-        char signB = password.charAt(max-1);
+        char signA = password.charAt(min - 1);
+        char signB = password.charAt(max - 1);
         return signA == sign && signB != sign || signA != sign && signB == sign;
     }
 
@@ -46,9 +50,9 @@ public class Day2 {
             String password = parts[2];
 
             System.out.println(format("%d-%d %c: %s", min, max, sign, password));
-            
+
             int numOfChar = 0;
-            for (int i=0;i<password.length();i++) {
+            for (int i = 0; i < password.length(); i++) {
                 if (password.charAt(i) == sign) {
                     numOfChar++;
                 }
@@ -62,9 +66,5 @@ public class Day2 {
             }
         }
         System.out.println("Valid passwords: " + valid);
-    }
-
-    public static void main(String[] args) throws IOException {
-        new Day2().checkPasswords();
     }
 }
