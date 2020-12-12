@@ -268,6 +268,7 @@ public class Day11 {
         }
     }
 
+    /*
     public int solve() {
         Place[] type = new Place[1];
         return new PuzzleSolver2D<Place>(Place.class, "2020/day11_test.txt")
@@ -298,10 +299,11 @@ public class Day11 {
                 }, matrixUtil::same)
                 .aggregate(v -> v.equals(Place.OCCUPIED_SEAT) ? 1 : 0);
     }
+    //*/
 
     public static void main(String[] args) throws IOException {
-        int result = new Day11(true).solve();
-        System.out.println("Result " + result);
+//        int result = new Day11(true).solve();
+//        System.out.println("Result " + result);
 
         int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
         System.out.println("Result: " + count);
