@@ -8,9 +8,6 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 public class Matrix<TYPE> {
     private List<List<TYPE>> rows;
     private int width;
@@ -66,14 +63,15 @@ public class Matrix<TYPE> {
                                BiFunction<TYPE, TYPE_CM, TYPE_O> op,
                                TYPE_O initialValue,
                                BinaryOperator<TYPE_O> collector) {
-        Matrix<TYPE_O> out = new Matrix<>();
+        List<List<TYPE_O>> out = new ArrayList<>();
         for (int i = 0; i < rows.size(); i++) {
-            List<TYPE> row = rows.get(i);
-            for (int j = 0; j < row.size(); j++) {
-                out.set(i, j, convolutionFrame(i, j, convolutionMatrix, op, initialValue, collector));
+            List<TYPE_O> row = new ArrayList<>();
+            for (int j = 0; j < rows.get(i).size(); j++) {
+                row.add(convolutionFrame(i, j, convolutionMatrix, op, initialValue, collector));
             }
+            out.add(row);
         }
-        return out;
+        return Matrix.instance(out);
     }
 
     private <TYPE_CM, TYPE_O>
@@ -125,14 +123,14 @@ public class Matrix<TYPE> {
             }
             outRows.add(outRow);
         }
-        return (Matrix<TYPE_O>)Matrix.instance(outRows.get(0).get(0).getClass());
+        return Matrix.instance(outRows);
     }
 
-    public Integer apply(Object[][] a, Function<Object, Integer> op) {
+    public Integer apply(Function<Object, Integer> op) {
         Integer out = 0;
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[i].length; j++) {
-                out += op.apply(a[i][j]);
+        for (int i = 0; i < rows.size(); i++) {
+            for (int j = 0; j < rows.get(i).size(); j++) {
+                out += op.apply(this.get(i, j));
             }
         }
         return out;
@@ -153,4 +151,17 @@ public class Matrix<TYPE> {
     Matrix<TYPE_O> convolutionWalker() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.rows.size(); i++) {
+            for (int j = 0; j < this.rows.get(i).size(); j++) {
+                sb.append(this.get(i, j));
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
 }
