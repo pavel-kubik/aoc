@@ -1,24 +1,20 @@
 package cz.pk.adventofcode.util;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class PuzzleSolver2D<TYPE> {
-    private final Class<? extends TYPE> clazz;
     private final List<String> lines;
-    private TYPE[][] data;
-    private TYPE[][] newData;
-    private final MatrixUtil<TYPE> matrixUtil;
+    private Class<TYPE> clazz;
 
-    public PuzzleSolver2D(Class<? extends TYPE> clazz, String file) {
+    public PuzzleSolver2D(Class<TYPE> clazz, String file) {
         this.clazz = clazz;
-        matrixUtil = new MatrixUtil<>(clazz);
         try {
             URL resource = getClass().getClassLoader().getResource(file);
             lines = Files.readAllLines(Path.of(resource.getPath()));
@@ -33,12 +29,12 @@ public class PuzzleSolver2D<TYPE> {
      * <p>
      * Read line by line.
      */
-    public PuzzleSolver2D<TYPE> load(Class<? extends TYPE[]> clazz, Function<String, TYPE[]> mapper) {
-        data = (TYPE[][]) Array.newInstance(clazz, lines.size());
-        for (int i = 0; i < data.length; i++) {
-            data[i] = mapper.apply(lines.get(i));
+    public Matrix<TYPE> load(Function<String, List<TYPE>> mapper) {
+        List<List<TYPE>> rows = new ArrayList<>();
+        for (int i = 0; i < lines.size(); i++) {
+            rows.add(mapper.apply(lines.get(i)));
         }
-        return this;
+        return Matrix.instance(clazz).setRows(rows);
     }
 
     /**
@@ -63,7 +59,7 @@ public class PuzzleSolver2D<TYPE> {
      * return this;
      * }
      */
-
+/*
     public PuzzleSolver2D<TYPE> iterate(Function<TYPE[][], TYPE[][]> op, Predicate<Pair<TYPE[][]>> condition) {
         newData = data;
         do {
@@ -77,4 +73,6 @@ public class PuzzleSolver2D<TYPE> {
     public Integer aggregate(Function<Object, Integer> op) {
         return matrixUtil.apply(data, op);
     }
+
+ */
 }
