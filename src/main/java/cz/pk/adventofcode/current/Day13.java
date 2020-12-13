@@ -131,7 +131,7 @@ public class Day13 {
 
                 // match new bus
                 long y = (t - buses.get(0).offset) / bus.busNumber; // <= bus.offset + y*bus.busNumber = t
-                if ((y + 1) * bus.busNumber == t + bus.offset) {
+                if ((0 == (t + bus.offset) % bus.busNumber)) {
                     matchTimestamp = t;
                     break;
                 }
@@ -163,13 +163,13 @@ public class Day13 {
 
         /*/
 
-        count = new Day13(true).solve2("3,5", 0, 0);
-        System.out.println("Result: " + count);
-        assert count == 9;
-
-        count = new Day13(true).solve2("x,3,5", 0, 0);
-        System.out.println("Result: " + count);
-        assert count == 8;
+//        count = new Day13(true).solve2("3,5", 0, 0);
+//        System.out.println("Result: " + count);
+//        assert count == 9;
+//
+//        count = new Day13(true).solve2("x,3,5", 0, 0);
+//        System.out.println("Result: " + count);
+//        assert count == 8;
 
         count = new Day13(true).solve2("x,x,x,x,x,x,3,5", 0, 0);
         System.out.println("Result: " + count);
@@ -206,8 +206,8 @@ public class Day13 {
         System.out.println("Result: " + count);
         assert count == 1202161486;
 
-//        count = new Day13(true).solve2("19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,443,x,x,x,x,x,37,x,x,x,x,x,x,13", 0, 111);
-//        System.out.println("FINAL Result: " + count);
+        count = new Day13(true).solve2("19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,443,x,x,x,x,x,37,x,x,x,x,x,x,13", 0, 111);
+        System.out.println("FINAL Result: " + count);
         //        assert count == 1202161486;
 
         //        count = new Day13(true).solve2("2020/day12.txt");
