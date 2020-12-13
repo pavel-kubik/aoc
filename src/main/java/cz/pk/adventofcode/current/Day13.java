@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.DataCollector;
@@ -25,7 +27,7 @@ public class Day13 {
         List<Boolean> buses;
     }
 
-    List <Integer> busesHeader = new ArrayList<>();
+    List<Integer> busesHeader = new ArrayList<>();
 
     class TypeCollector extends DataCollector<BusSheet> {
 
@@ -55,38 +57,82 @@ public class Day13 {
         }
     }
 
-    public int solve(String file) throws IOException {
+    public long solve(String file) throws IOException {
         BusSheet[] busSheets = new TypeCollector("day13_sheet.txt").process().toArray(new BusSheet[1]);
 
         URL resource = getClass().getClassLoader().getResource(file);
         List<String> lines = Files.readAllLines(Path.of(resource.getPath()));
-        int timestamp = Integer.valueOf(lines.get(0));
+        long timestamp = Integer.valueOf(lines.get(0));
         List<Integer> validBusses = Arrays.asList(lines.get(1).split(",")).stream()
                 .filter(b -> !b.equals("x"))
                 .map(b -> Integer.valueOf(b))
                 .collect(Collectors.toList());
 
-        int minTimestamp = Integer.MAX_VALUE;
+        long minTimestamp = Long.MAX_VALUE;
         int minBus = -1;
         for (Integer bus : validBusses) {
-            int busIterations = timestamp / bus + 1;
-            int busTimestamp = busIterations*bus;
+            long busIterations = timestamp / bus + 1;
+            long busTimestamp = busIterations * bus;
             if (busTimestamp < minTimestamp) {
                 minTimestamp = busTimestamp;
                 minBus = bus;
             }
         }
-        return (minTimestamp - timestamp)*minBus;
+        return (minTimestamp - timestamp) * minBus;
     }
 
-    public int solve2(String file) {
-        BusSheet[] data = new TypeCollector(file).process().toArray(new BusSheet[1]);
-        System.out.println(data);
-        return 0;
+    public long solve2(String busSequence, long halt, long initialStep) throws IOException {
+        long step = initialStep;
+        List<Integer> validBusses = Arrays.asList(busSequence.split(",")).stream()
+                .map(b -> !b.equals("x") ? Integer.valueOf(b) : 0)
+                .collect(Collectors.toList());
+
+        long minTimestamp = Long.MAX_VALUE;
+        int minBus = -1;
+        int maxBus = validBusses.stream()
+                .mapToInt(v -> v)
+                .max()
+                .orElseThrow(NoSuchElementException::new);
+        int maxIdx = validBusses.indexOf(maxBus);
+        //long dreamTimestamp = maxBus;
+        //long dreamTimestamp = halt > 0 ? ((halt - 1)/ maxBus) * maxBus : maxBus;
+        long dreamTimestamp = step > 0 ? step * maxBus : maxBus;
+        long it = 0;
+        int logger = 0;
+        while (true) {
+            //            if (halt > 0 && dreamTimestamp > halt + 2*maxBus) {
+            //                assert false;
+            //            }
+            it++;
+            logger = logTimestamp(logger, dreamTimestamp);
+            dreamTimestamp += step > 0 ? step : maxBus;
+            long iterationStart = dreamTimestamp - maxIdx + validBusses.size() - 1;
+            boolean allMatch = true;
+            for (int i = validBusses.size() - 1; i >= 0; i--) {
+                //System.out.println(dreamTimestamp);
+                Integer bus = validBusses.get(i);
+                int diff = validBusses.size() - i - 1;
+                boolean busMatch = (iterationStart - diff) % bus == 0;
+                if (busMatch) {
+                    // TODO determine match period and increase step
+                    step =
+                }
+                if (bus > 0 && !busMatch) {
+                    allMatch = false;
+                    break;
+                }
+            }
+            if (allMatch) {
+                dreamTimestamp = iterationStart;
+                break;
+            }
+        }
+        System.out.println("Iter: " + it);
+        return dreamTimestamp - validBusses.size() + 1;
     }
 
     public static void main(String[] args) throws IOException {
-        int count;
+        long count;
         /*
         count = new Day13(true).solve("day13_test.txt");
         System.out.println("Result: " + count);
@@ -99,18 +145,71 @@ public class Day13 {
 
         /*/
 
-        count = new Day13(true).solve2("2020/day12_test.txt");
+        count = new Day13(true).solve2("17,x,13,19", 0, 0);
         System.out.println("Result: " + count);
-        assert count == 25;
+        assert count == 3417;
 
-        count = new Day13(true).solve2("2020/day12.txt");
+        count = new Day13(true).solve2("x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,443,x,x,x,x,x,x,x,x,x,x,x,x,x", 0, 0);
         System.out.println("Result: " + count);
+
+        count = new Day13(true).solve2("67,7,59,61", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 754018;
+
+        count = new Day13(true).solve2("67,x,7,59,61", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 779210;
+
+        count = new Day13(true).solve2("67,7,x,59,61", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 1261476;
+
+        count = new Day13(true).solve2("1789,37,47,1889", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 1202161486;
+
+        count = new Day13(true).solve2("19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,443,x,x,x,x,x,37,x,x,x,x,x,x,13", 0, 111);
+        System.out.println("FINAL Result: " + count);
+        //        assert count == 1202161486;
+
+        //        count = new Day13(true).solve2("2020/day12.txt");
+        //        System.out.println("Result: " + count);
         //assert count == 27016;
 
-         */
         //*/
     }
-}
+
+    public int logTimestamp(int logger, long dreamTimestamp) {
+        if (logger == 0 && dreamTimestamp > 10000000000l) {
+            System.out.println("iter -4 @" + LocalDateTime.now());
+            logger++;
+        }
+        if (logger == 1 && dreamTimestamp > 100000000000l) {
+            System.out.println("iter -3 @" + LocalDateTime.now());
+            logger++;
+        }
+        if (logger == 2 && dreamTimestamp > 1000000000000l) {
+            System.out.println("iter -2 @" + LocalDateTime.now());
+            logger++;
+        }
+        if (logger == 3 && dreamTimestamp > 10000000000000l) {
+            System.out.println("iter -1 @" + LocalDateTime.now());
+            logger++;
+        }
+        if (logger == 4 && dreamTimestamp > 100000000000000l) {
+            System.out.println("iter 0 @" + LocalDateTime.now());
+            logger++;
+        }
+        if (logger == 5 && dreamTimestamp > 1000000000000000l) {
+            System.out.println("iter 1 @" + LocalDateTime.now());
+            logger++;
+        }
+        if (logger == 6 && dreamTimestamp > 10000000000000000l) {
+            System.out.println("iter 2 @" + LocalDateTime.now());
+            logger++;
+        }
+        return logger;
+    }
 
 /*
         for (BusSheet busTime : busSheets) {
@@ -133,3 +232,4 @@ public class Day13 {
             }
         }
  */
+}
