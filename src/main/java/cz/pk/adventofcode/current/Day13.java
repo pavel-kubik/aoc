@@ -87,8 +87,9 @@ public class Day13 {
     private static class Bus {
         int busNumber;
         int offset;
+
         public long at(int period) {
-            return period * busNumber;
+            return period * busNumber - offset;
         }
     }
 
@@ -111,33 +112,39 @@ public class Day13 {
         long dreamTimestamp = buses.get(0).at(1);
         long commonPeriod = buses.get(0).busNumber;
         int logger = 0;
+        int it = 0;
         for (int i = 1; i < buses.size(); i++) {
             Bus bus = buses.get(i);
             // find match: dreamTimestamp + x*commonPeriod == bus.offset + y*bus.busNumber
-            long matchStep = -1;
-            for (int s = 0; s < commonPeriod * commonPeriod; s++) {
+            long matchTimestamp = -1;
+            for (long s = 0; s < Long.MAX_VALUE; s++) {
+                it++;
 
                 long t = dreamTimestamp + s * commonPeriod; // all previous busses match
+
+                if (t < 0) {
+                    continue;
+                }
 
                 logger = logTimestamp(logger, t);
                 //System.out.println(t);
 
                 // match new bus
-                long y = (t - bus.offset) / bus.busNumber; // <= bus.offset + y*bus.busNumber = t
-//                if (y * bus.busNumber == t + bus.offset) {
-//                    matchStep = s;
-//                    break;
-//                }
-                if ((y+1) * bus.busNumber == t + bus.offset) {
-                    matchStep = s;
+                long y = (t - buses.get(0).offset) / bus.busNumber; // <= bus.offset + y*bus.busNumber = t
+                if ((y + 1) * bus.busNumber == t + bus.offset) {
+                    matchTimestamp = t;
                     break;
                 }
 
             }
-            assert matchStep != -1;
-            dreamTimestamp = dreamTimestamp + matchStep * commonPeriod;
+            if (matchTimestamp == -1) {
+                assert matchTimestamp != -1;
+            }
+            dreamTimestamp = matchTimestamp;
             commonPeriod *= bus.busNumber;
+            System.out.println("Bus " + i + "/" + buses.size() + " t=" + dreamTimestamp + " T=" + commonPeriod + " it=" + it);
         }
+        System.out.println(it);
 
         return dreamTimestamp;
     }
@@ -159,6 +166,18 @@ public class Day13 {
         count = new Day13(true).solve2("3,5", 0, 0);
         System.out.println("Result: " + count);
         assert count == 9;
+
+        count = new Day13(true).solve2("x,3,5", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 8;
+
+        count = new Day13(true).solve2("x,x,x,x,x,x,3,5", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 3;
+
+        count = new Day13(true).solve2("5,3", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 5;
 
         count = new Day13(true).solve2("3,5,7", 0, 0);
         System.out.println("Result: " + count);
@@ -187,8 +206,8 @@ public class Day13 {
         System.out.println("Result: " + count);
         assert count == 1202161486;
 
-        count = new Day13(true).solve2("19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,443,x,x,x,x,x,37,x,x,x,x,x,x,13", 0, 111);
-        System.out.println("FINAL Result: " + count);
+//        count = new Day13(true).solve2("19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,443,x,x,x,x,x,37,x,x,x,x,x,x,13", 0, 111);
+//        System.out.println("FINAL Result: " + count);
         //        assert count == 1202161486;
 
         //        count = new Day13(true).solve2("2020/day12.txt");
