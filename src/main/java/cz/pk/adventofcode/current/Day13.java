@@ -15,6 +15,8 @@ import cz.pk.adventofcode.util.DataCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import static java.lang.Math.*;
+
 @Data
 public class Day13 {
 
@@ -81,54 +83,63 @@ public class Day13 {
         return (minTimestamp - timestamp) * minBus;
     }
 
+    @AllArgsConstructor
+    private static class Bus {
+        int busNumber;
+        int offset;
+        public long at(int period) {
+            return period * busNumber;
+        }
+    }
+
     public long solve2(String busSequence, long halt, long initialStep) throws IOException {
         long step = initialStep;
         List<Integer> validBusses = Arrays.asList(busSequence.split(",")).stream()
                 .map(b -> !b.equals("x") ? Integer.valueOf(b) : 0)
                 .collect(Collectors.toList());
 
-        long minTimestamp = Long.MAX_VALUE;
-        int minBus = -1;
-        int maxBus = validBusses.stream()
-                .mapToInt(v -> v)
-                .max()
-                .orElseThrow(NoSuchElementException::new);
-        int maxIdx = validBusses.indexOf(maxBus);
-        //long dreamTimestamp = maxBus;
-        //long dreamTimestamp = halt > 0 ? ((halt - 1)/ maxBus) * maxBus : maxBus;
-        long dreamTimestamp = step > 0 ? step * maxBus : maxBus;
-        long it = 0;
-        int logger = 0;
-        while (true) {
-            //            if (halt > 0 && dreamTimestamp > halt + 2*maxBus) {
-            //                assert false;
-            //            }
-            it++;
-            logger = logTimestamp(logger, dreamTimestamp);
-            dreamTimestamp += step > 0 ? step : maxBus;
-            long iterationStart = dreamTimestamp - maxIdx + validBusses.size() - 1;
-            boolean allMatch = true;
-            for (int i = validBusses.size() - 1; i >= 0; i--) {
-                //System.out.println(dreamTimestamp);
-                Integer bus = validBusses.get(i);
-                int diff = validBusses.size() - i - 1;
-                boolean busMatch = (iterationStart - diff) % bus == 0;
-                if (busMatch) {
-                    // TODO determine match period and increase step
-                    step =
-                }
-                if (bus > 0 && !busMatch) {
-                    allMatch = false;
-                    break;
-                }
-            }
-            if (allMatch) {
-                dreamTimestamp = iterationStart;
-                break;
+        List<Bus> buses = new ArrayList<>();
+        for (int i = 0; i < validBusses.size(); i++) {
+            if (validBusses.get(i) != 0) {
+                buses.add(new Bus(validBusses.get(i), i));
             }
         }
-        System.out.println("Iter: " + it);
-        return dreamTimestamp - validBusses.size() + 1;
+
+        //TODO order
+        //buses.sort((bus1, bus2) -> Integer.compare(bus1.busNumber, bus2.busNumber));
+
+        long dreamTimestamp = buses.get(0).at(1);
+        long commonPeriod = buses.get(0).busNumber;
+        int logger = 0;
+        for (int i = 1; i < buses.size(); i++) {
+            Bus bus = buses.get(i);
+            // find match: dreamTimestamp + x*commonPeriod == bus.offset + y*bus.busNumber
+            long matchStep = -1;
+            for (int s = 0; s < commonPeriod * commonPeriod; s++) {
+
+                long t = dreamTimestamp + s * commonPeriod; // all previous busses match
+
+                logger = logTimestamp(logger, t);
+                //System.out.println(t);
+
+                // match new bus
+                long y = (t - bus.offset) / bus.busNumber; // <= bus.offset + y*bus.busNumber = t
+//                if (y * bus.busNumber == t + bus.offset) {
+//                    matchStep = s;
+//                    break;
+//                }
+                if ((y+1) * bus.busNumber == t + bus.offset) {
+                    matchStep = s;
+                    break;
+                }
+
+            }
+            assert matchStep != -1;
+            dreamTimestamp = dreamTimestamp + matchStep * commonPeriod;
+            commonPeriod *= bus.busNumber;
+        }
+
+        return dreamTimestamp;
     }
 
     public static void main(String[] args) throws IOException {
@@ -145,12 +156,20 @@ public class Day13 {
 
         /*/
 
+        count = new Day13(true).solve2("3,5", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 9;
+
+        count = new Day13(true).solve2("3,5,7", 0, 0);
+        System.out.println("Result: " + count);
+        assert count == 54;
+
         count = new Day13(true).solve2("17,x,13,19", 0, 0);
         System.out.println("Result: " + count);
-        assert count == 3417;
+        assert count == 3417;   //2771
 
-        count = new Day13(true).solve2("x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,443,x,x,x,x,x,x,x,x,x,x,x,x,x", 0, 0);
-        System.out.println("Result: " + count);
+        //count = new Day13(true).solve2("x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,443,x,x,x,x,x,x,x,x,x,x,x,x,x", 0, 0);
+        //System.out.println("Result: " + count);
 
         count = new Day13(true).solve2("67,7,59,61", 0, 0);
         System.out.println("Result: " + count);
@@ -180,31 +199,36 @@ public class Day13 {
     }
 
     public int logTimestamp(int logger, long dreamTimestamp) {
-        if (logger == 0 && dreamTimestamp > 10000000000l) {
+        if (logger == 0 && dreamTimestamp > 1234567890l) {
+            System.out.println("iter -5 @" + LocalDateTime.now());
+            logger++;
+        }
+        if (logger == 1 && dreamTimestamp > 12345678901l) {
             System.out.println("iter -4 @" + LocalDateTime.now());
             logger++;
         }
-        if (logger == 1 && dreamTimestamp > 100000000000l) {
+        if (logger == 2 && dreamTimestamp > 123456789012l) {
             System.out.println("iter -3 @" + LocalDateTime.now());
             logger++;
         }
-        if (logger == 2 && dreamTimestamp > 1000000000000l) {
+        if (logger == 3 && dreamTimestamp > 1234567890123l) {
             System.out.println("iter -2 @" + LocalDateTime.now());
             logger++;
         }
-        if (logger == 3 && dreamTimestamp > 10000000000000l) {
+        if (logger == 4 && dreamTimestamp > 12345678901234l) {
             System.out.println("iter -1 @" + LocalDateTime.now());
             logger++;
         }
-        if (logger == 4 && dreamTimestamp > 100000000000000l) {
+        //                                  100000000000000
+        if (logger == 5 && dreamTimestamp > 123456789012345l) {
             System.out.println("iter 0 @" + LocalDateTime.now());
             logger++;
         }
-        if (logger == 5 && dreamTimestamp > 1000000000000000l) {
+        if (logger == 6 && dreamTimestamp > 1234567890123456l) {
             System.out.println("iter 1 @" + LocalDateTime.now());
             logger++;
         }
-        if (logger == 6 && dreamTimestamp > 10000000000000000l) {
+        if (logger == 6 && dreamTimestamp > 12345678901234567l) {
             System.out.println("iter 2 @" + LocalDateTime.now());
             logger++;
         }
