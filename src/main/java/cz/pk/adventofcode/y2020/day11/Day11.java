@@ -33,9 +33,9 @@ public class Day11 {
 
     public static void main(String[] args) throws IOException {
         //TODO fix matrixes
-//        int result = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
-//        System.out.println("Result " + result);
-//        assert result == 37;
+        int result = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
+        System.out.println("Result " + result);
+        assert result == 37;
 
         int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
         System.out.println("Result: " + count);
@@ -290,7 +290,9 @@ public class Day11 {
             newPlaces = places.applyMatrix(
                     surround,
                     (p, s) -> {
-                        if (s >= 4) {
+                        if (p.equals(Place.OCCUPIED_SEAT) && s >= 4) {
+                            return switchPlace(p);
+                        } else if(p.equals(Place.FREE_SEAT) && s == 0) {
                             return switchPlace(p);
                         } else {
                             return Place.FREE_SEAT;

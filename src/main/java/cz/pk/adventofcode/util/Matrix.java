@@ -157,7 +157,7 @@ public class Matrix<TYPE> {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < this.rows.size(); i++) {
             for (int j = 0; j < this.rows.get(i).size(); j++) {
-                sb.append(this.get(i, j));
+                sb.append(this.get(i, j)).append(" ");
             }
             sb.append("\n");
         }

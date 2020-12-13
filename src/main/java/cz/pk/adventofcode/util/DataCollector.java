@@ -11,6 +11,7 @@ public abstract class DataCollector<TYPE> {
 
     List<TYPE> result = new ArrayList<>();
     List<String> data;
+    protected int lineNumber;
 
     public DataCollector(String file) {
         try {
@@ -25,7 +26,11 @@ public abstract class DataCollector<TYPE> {
 
     public List<TYPE> process() {
         for (int i = 0; i < data.size(); i++) {
-            result.add(processLine(data.get(i)));
+            lineNumber = i;
+            TYPE item = processLine(data.get(i));
+            if (item != null) {
+                result.add(item);
+            }
         }
         return result;
     }
