@@ -1,28 +1,49 @@
 package cz.pk.adventofcode.current;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import cz.pk.adventofcode.util.DataCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 public class Day14 {
 
     private final boolean debug;
 
+    private Map<Integer, List<Integer>> memory;
+
     @Data
     @AllArgsConstructor
-    class Subject {
+    @NoArgsConstructor
+    @ToString
+    class Instruction {
         Type type;
-        int size;
+        int addr;
+        long number;
+        List<Integer> mask;
+
+        public Instruction(Type type, List<Integer> mask) {
+            this.type = type;
+            this.mask = mask;
+        }
+
+        public Instruction(Type type, int addr, long number) {
+            this.type = type;
+            this.addr = addr;
+            this.number = number;
+        }
     }
 
     enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
+        MASK("mask"),
+        MEM("mem"),
         ;
 
         private static final Map<String, Type> values;
@@ -47,42 +68,132 @@ public class Day14 {
         }
     }
 
-    class TypeCollector extends DataCollector<Subject> {
+    class TypeCollector extends DataCollector<Instruction> {
 
         public TypeCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+        protected Instruction processLine(String line) {
+            if (line.startsWith("mask")) {
+                String[] parts = line.split(" ");
+                assert parts.length == 3;
+                List<Integer> mask = parts[2].chars()
+                        .mapToObj(c -> (char) c)
+                        .map(c -> c == 'X' ? -1 : Integer.valueOf(c.toString()))
+                        .collect(Collectors.toList());
+                return new Instruction(Type.MASK, mask);
+            } else if (line.startsWith("mem")) {
+                String[] parts = line.split(" ");
+                assert parts.length == 3;
+                return new Instruction(
+                        Type.MEM,
+                        Integer.valueOf(parts[0].substring(4, parts[0].length() - 1)),
+                        Integer.valueOf(parts[2]));
+            } else {
+                throw new RuntimeException("Unknown instruction");
+            }
         }
     }
 
-    public int solve(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+    private void addNumberToMemory(int mem, List<Integer> value) {
+        assert value.size() == 36;
+        memory.put(mem, value);
+    }
+
+    private long bin2Dec(List<Integer> bits) {
+        assert bits.size() == 36;
+        long number = 0;
+        long base = 1;
+        for (int i = bits.size() - 1; i >= 0; i--) {
+            number += base * bits.get(i);
+            base *= 2;
+        }
+        assert dec2Bin(number).equals(bits);
+        return number;
+    }
+
+    private List<Integer> dec2Bin(long number) {
+        List<Integer> bin;
+        bin = Long.toBinaryString(number).chars()
+                .mapToObj(c -> (char) c)
+                .map(c -> c == '1' ? 1 : 0)
+                .collect(Collectors.toList());
+        // add leading zeros
+        for (int i = bin.size(); i < 36; i++) {
+            bin.add(0, 0);
+        }
+        //Collections.reverse(bin);
+        //assert bin2Dec(bin) == number;
+        if (bin.size() != 36) {
+            assert bin.size() == 36;
+        }
+        return bin;
+    }
+
+    private List<Integer> applyMask(List<Integer> value, List<Integer> mask) {
+        assert value.size() == 36;
+        assert mask.size() == 36;
+        Integer[] init = new Integer[36];
+        Arrays.fill(init, 0);
+        List<Integer> out = Arrays.asList(init);
+        for (int i = 0; i < value.size(); i++) {
+            if (mask.get(i) == -1) {
+                out.set(i, value.get(i));
+            } else {
+                out.set(i, mask.get(i));
+            }
+        }
+        return out;
+    }
+
+    public long solve(String file) {
+        Instruction[] instructions = new TypeCollector(file).process().toArray(new Instruction[1]);
+        memory = new HashMap<>();
+        List<Integer> mask = null;
+        for (int i = 0; i < instructions.length; i++) {
+            if (instructions[i].type == Type.MASK) {
+                mask = instructions[i].mask;
+            } else {
+                List<Integer> number = dec2Bin(instructions[i].number);
+                addNumberToMemory(instructions[i].addr, applyMask(number, mask));
+            }
+        }
+        long sum = 0;
+        for (Integer mem : memory.keySet()) {
+            sum += bin2Dec(memory.get(mem));
+        }
+        System.out.println(Arrays.asList(instructions));
+        return sum;
+    }
+
+    public long solve2(String file) {
+        Instruction[] data = new TypeCollector(file).process().toArray(new Instruction[1]);
         System.out.println(data);
         return 0;
     }
 
-    public int solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
-        return 0;
+    public void test() {
+        Integer[] init = new Integer[36];
+        Arrays.fill(init, 1);
+        long num = bin2Dec(Arrays.asList(init));
+        List<Integer> out = dec2Bin(num);
     }
 
     public static void main(String[] args) {
-        int count;
+        new Day14(true).test();
+
+        long count;
         //*
         count = new Day14(true).solve("day14_test.txt");
         System.out.println("Result: " + count);
-        assert count == 1;
+        assert count == 165;
 
         count = new Day14(true).solve("day14.txt");
         System.out.println("Result: " + count);
         //assert count == 845;
+        // not 41154481747
 
         /*/
 
