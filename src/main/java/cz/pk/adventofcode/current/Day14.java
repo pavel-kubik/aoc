@@ -1,5 +1,6 @@
 package cz.pk.adventofcode.current;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Day14 {
 
     private final boolean debug;
 
-    private Map<Integer, List<Integer>> memory;
+    private Map<Long, List<Integer>> memory;
 
     @Data
     @AllArgsConstructor
@@ -25,7 +26,7 @@ public class Day14 {
     @ToString
     class Instruction {
         Type type;
-        int addr;
+        long addr;
         long number;
         List<Integer> mask;
 
@@ -97,7 +98,7 @@ public class Day14 {
         }
     }
 
-    private void addNumberToMemory(int mem, List<Integer> value) {
+    private void addNumberToMemory(long mem, List<Integer> value) {
         assert value.size() == 36;
         memory.put(mem, value);
     }
@@ -148,6 +149,34 @@ public class Day14 {
         return out;
     }
 
+    private int firstFluid(List<Integer> ints) {
+        for (int i = 0; i< ints.size();i++) {
+            if (ints.get(i) == -1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private List<Long> applyMaskToMemory(long addr, List<Integer> mask) {
+        int fluidIdx = firstFluid(mask);
+        if (fluidIdx == -1) {
+            return Arrays.asList(bin2Dec(applyMask(dec2Bin(addr), mask)));
+        } else {
+            List<Long> out = new ArrayList<>();
+
+            List<Integer> mask0 = new ArrayList<>(mask);
+            mask0.set(fluidIdx, 0);
+
+            List<Integer> mask1 = new ArrayList<>(mask);
+            mask1.set(fluidIdx, 1);
+
+            out.addAll(applyMaskToMemory(addr, mask0));
+            out.addAll(applyMaskToMemory(addr, mask1));
+            return out;
+        }
+    }
+
     public long solve(String file) {
         Instruction[] instructions = new TypeCollector(file).process().toArray(new Instruction[1]);
         memory = new HashMap<>();
@@ -161,7 +190,7 @@ public class Day14 {
             }
         }
         long sum = 0;
-        for (Integer mem : memory.keySet()) {
+        for (Long mem : memory.keySet()) {
             sum += bin2Dec(memory.get(mem));
         }
         System.out.println(Arrays.asList(instructions));
@@ -169,9 +198,26 @@ public class Day14 {
     }
 
     public long solve2(String file) {
-        Instruction[] data = new TypeCollector(file).process().toArray(new Instruction[1]);
-        System.out.println(data);
-        return 0;
+        Instruction[] instructions = new TypeCollector(file).process().toArray(new Instruction[1]);
+        memory = new HashMap<>();
+        List<Integer> mask = null;
+        for (int i = 0; i < instructions.length; i++) {
+            if (instructions[i].type == Type.MASK) {
+                mask = instructions[i].mask;
+            } else {
+                List<Integer> number = dec2Bin(instructions[i].number);
+                List<Long> addresses = applyMaskToMemory(instructions[i].addr, mask);
+                for (Long addr : addresses) {
+                    addNumberToMemory(addr, applyMask(number, mask));
+                }
+            }
+        }
+        long sum = 0;
+        for (Long mem : memory.keySet()) {
+            sum += bin2Dec(memory.get(mem));
+        }
+        System.out.println(Arrays.asList(instructions));
+        return sum;
     }
 
     public void test() {
@@ -185,27 +231,27 @@ public class Day14 {
         new Day14(true).test();
 
         long count;
-        //*
-        count = new Day14(true).solve("day14_test.txt");
+        /*
+        count = new Day14(true).solve("day14_test.txt");    //TOOD fix reading at windows
         System.out.println("Result: " + count);
         assert count == 165;
 
         count = new Day14(true).solve("day14.txt");
         System.out.println("Result: " + count);
-        //assert count == 845;
+        assert count == 4297467072083l;
         // not 41154481747
 
         /*/
 
-        count = new Day13(true).solve2("day14_test.txt");
+        count = new Day14(true).solve2("day14_test2.txt");
         System.out.println("Result: " + count);
-        assert count == 25;
+        assert count == 208;
 
-        count = new Day13(true).solve2("day14.txt");
+        count = new Day14(true).solve2("day14.txt");
         System.out.println("Result: " + count);
         //assert count == 27016;
+        // not 187230630710742 (should be lower)
 
-         */
         //*/
     }
 }
