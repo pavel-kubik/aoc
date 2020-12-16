@@ -271,11 +271,11 @@ public class Day14 {
 
         /*/
 
-        count = new Day14(true).solve2("day14_test2.txt");
+        count = new Day14(true).solve2("2020/day14_test2.txt");
         System.out.println("Result: " + count);
         assert count == 208;
 
-        count = new Day14(true).solve2("day14.txt");
+        count = new Day14(true).solve2("2020/day14.txt");
         System.out.println("Result: " + count);
         //assert count == 27016;
         // not 187230630710742 (should be lower)
