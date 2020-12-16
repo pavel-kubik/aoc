@@ -2,16 +2,14 @@ package cz.pk.adventofcode.current;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.DataCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class Day15 {
+public class Day16 {
 
     private final boolean debug;
 
@@ -63,29 +61,10 @@ public class Day15 {
         }
     }
 
-    public int solve(String file, int ith) {
-        List<Integer> start = Arrays.stream(file.split(","))
-                .map(n -> Integer.valueOf(n))
-                .collect(Collectors.toList());
-
-        Map<Integer, Integer> lastIndex = new HashMap<>();
-        for (int i = 0; i < start.size() - 1; i++) {
-            lastIndex.put(start.get(i), i);
-        }
-        int lastNumber = start.get(start.size() - 1);
-        for (int i = start.size(); i < ith; i++) {
-            int previousLastNumber = lastNumber;
-            //int lastIdx = start.subList(0, i-1).lastIndexOf(lastNumber);
-            if (!lastIndex.containsKey(lastNumber)) {
-                lastNumber = 0;
-            } else {
-                lastNumber = i - lastIndex.get(lastNumber) - 1;
-            }
-            start.add(lastNumber);
-            lastIndex.put(previousLastNumber, i-1);
-        }
-        System.out.println(start);
-        return lastNumber;
+    public int solve(String file) {
+        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        System.out.println(data);
+        return 0;
     }
 
     public int solve2(String file) {
@@ -97,22 +76,25 @@ public class Day15 {
     public static void main(String[] args) {
         int count;
         //*
-        count = new Day15(true).solve("0,3,6", 2020);
+        count = new Day16(true).solve("2020/day12_test.txt");
         System.out.println("Result: " + count);
-        assert count == 436;
+        assert count == 1;
 
-        count = new Day15(true).solve("2,1,3", 2020);
+        count = new Day16(true).solve("2020/day12.txt");
         System.out.println("Result: " + count);
-        assert count == 10;
+        //assert count == 845;
 
-        count = new Day15(true).solve("15,5,1,4,7,0", 2020);
+        /*/
+
+        count = new Day13(true).solve2("2020/day12_test.txt");
         System.out.println("Result: " + count);
-        assert count == 1259;
+        assert count == 25;
 
-        count = new Day15(true).solve("15,5,1,4,7,0", 30000000);
+        count = new Day13(true).solve2("2020/day12.txt");
         System.out.println("Result: " + count);
         //assert count == 27016;
 
+         */
         //*/
     }
 }
