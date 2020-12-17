@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class Template {
+public class Day17 {
 
     private final boolean debug;
 
@@ -76,11 +76,11 @@ public class Template {
     public static void main(String[] args) {
         int count;
         //*
-        count = new Template(true).solve("day12_test.txt");
+        count = new Day17(true).solve("day12_test.txt");
         System.out.println("Result: " + count);
         assert count == 1;
 
-        count = new Template(true).solve("day12.txt");
+        count = new Day17(true).solve("day12.txt");
         System.out.println("Result: " + count);
         //assert count == 845;
 

@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2020.day16;
 
 import java.io.IOException;
 import java.net.URL;
@@ -204,19 +204,19 @@ public class Day16 {
     public static void main(String[] args) throws IOException {
         long count;
         //*
-        count = new Day16().solve("day16_test.txt", 1);
+        count = new Day16().solve("2020/day16_test.txt", 1);
         System.out.println("Result: " + count);
         assert count == 71;
 
-        count = new Day16().solve("day16.txt", 1);
+        count = new Day16().solve("2020/day16.txt", 1);
         System.out.println("Result: " + count);
         assert count == 26026;
 
-        count = new Day16().solve("day16_test2.txt", 2);
+        count = new Day16().solve("2020/day16_test2.txt", 2);
         System.out.println("Result: " + count);
         assert count == 1;
 
-        count = new Day16().solve("day16.txt", 2);
+        count = new Day16().solve("2020/day16.txt", 2);
         System.out.println("Result: " + count);
         assert count == 1305243193339l;
         // wrong 291840
