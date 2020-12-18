@@ -61,20 +61,20 @@ public class Template {
         }
     }
 
-    public int solve(String file) {
+    public long solve(String file) {
         Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
         System.out.println(data);
         return 0;
     }
 
-    public int solve2(String file) {
+    public long solve2(String file) {
         Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
         System.out.println(data);
         return 0;
     }
 
     public static void main(String[] args) {
-        int count;
+        long count;
         //*
         count = new Template(true).solve("day12_test.txt");
         System.out.println("Result: " + count);
