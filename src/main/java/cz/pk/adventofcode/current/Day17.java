@@ -1,11 +1,9 @@
 package cz.pk.adventofcode.current;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.DataCollector;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -13,76 +11,142 @@ public class Day17 {
 
     private final boolean debug;
 
-    @Data
-    @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
-    }
+    public static final int SIZE = 20;
 
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
+    int[][][] cube = new int[SIZE][SIZE][SIZE];
 
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
-        public String toString() {
-            return value;
-        }
-    }
-
-    class TypeCollector extends DataCollector<Subject> {
+    class TypeCollector extends DataCollector<List<Integer>> {
 
         public TypeCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+        protected List<Integer> processLine(String line) {
+            return line.chars()
+                    .mapToObj(i -> (char) i)
+                    .map(c -> c == '#' ? 1 : 0)
+                    .collect(Collectors.toList());
         }
     }
 
-    public int solve(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
+    private int[][][] copyOf(int[][][] source) {
+        int[][][] out = new int[SIZE][SIZE][SIZE];
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                for (int z = 0; z < SIZE; z++) {
+                    out[x][y][z] = source[x][y][z];
+                }
+            }
+        }
+        return out;
+    }
+
+    private int sumNeighbours(int x, int y, int z, int[][][] data) {
+        int sum = 0;
+        for (int dx = -1; dx < 2; dx++) {
+            for (int dy = -1; dy < 2; dy++) {
+                for (int dz = -1; dz < 2; dz++) {
+                    if (dx == 0 && dy == 0 && dz == 0) {
+                        continue;
+                    }
+                    sum += get(x + dx, y + dy, z + dz, data);
+                }
+            }
+        }
+        return sum;
+    }
+
+    private int get(int x, int y, int z, int[][][] data) {
+        if (x >= 0 && x < data.length) {
+            if (y >= 0 && y < data[x].length) {
+                if (z >= 0 && z < data[x][y].length) {
+                    return data[x][y][z];
+                }
+            }
+        }
         return 0;
     }
 
-    public int solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
+    private void printCube(int [][][] data) {
+        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < SIZE; x++) {
+            sb.append("X=").append(x).append("\n");
+            for (int y = 0; y < SIZE; y++) {
+                for (int z = 0; z < SIZE; z++) {
+                    sb.append(data[x][y][z] == 1 ? '#' : '.');
+                }
+                sb.append("\n");
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
+    }
+
+    public long solve(String file) {
+        List<List<Integer>> initialPlane = new TypeCollector(file).process();
+        System.out.println(initialPlane);
+
+        // put initial 2D plane into 3D cube
+        int offsetX = SIZE / 2 - initialPlane.size() / 2;
+        int offsetY = SIZE / 2 - initialPlane.get(0).size() / 2;
+        for (int x = 0; x < initialPlane.size(); x++) {
+            for (int y = 0; y < initialPlane.get(x).size(); y++) {
+                cube[SIZE / 2][offsetX + x][offsetY + y] = initialPlane.get(x).get(y);
+            }
+        }
+
+        // iterate 6 generations
+        int[][][] currentGen = cube;
+        //printCube(currentGen);
+        for (int i = 0; i < 6; i++) {
+            int[][][] nextGen = copyOf(currentGen);
+            for (int x = 0; x < SIZE; x++) {
+                for (int y = 0; y < SIZE; y++) {
+                    for (int z = 0; z < SIZE; z++) {
+                        int sum = sumNeighbours(x, y, z, currentGen);
+                        if (currentGen[x][y][z] == 1) {
+                            nextGen[x][y][z] = sum == 2 || sum == 3 ? 1 : 0;
+                        } else {
+                            nextGen[x][y][z] = sum == 3 ? 1 : 0;
+                        }
+                    }
+                }
+            }
+            currentGen = nextGen;
+            //printCube(currentGen);
+        }
+
+        // sum active fields
+        long sum = 0;
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                for (int z = 0; z < SIZE; z++) {
+                    sum += currentGen[x][y][z];
+                }
+            }
+        }
+
+        return sum;
+    }
+
+    public long solve2(String file) {
+        List<List<Integer>> initialPlane = new TypeCollector(file).process();
+        System.out.println(initialPlane);
         return 0;
     }
 
     public static void main(String[] args) {
-        int count;
+        long count;
         //*
-        count = new Day17(true).solve("day12_test.txt");
+        count = new Day17(true).solve("day17_test.txt");
         System.out.println("Result: " + count);
-        assert count == 1;
+        assert count == 102;
 
-        count = new Day17(true).solve("day12.txt");
+        count = new Day17(true).solve("day17.txt");
         System.out.println("Result: " + count);
-        //assert count == 845;
+        assert count == 209;
+        // 206 low
 
         /*/
 
