@@ -15,6 +15,11 @@ public class Day19 {
 
     Map<Integer, Rule> rules;
     Map<Integer, Set<String>> ruleCache = new HashMap<>();
+    long it = 0;
+
+    List<String> puzzleInput;
+
+    private static final int ITER = 3;
 
     static class Rule {
         int id;
@@ -78,10 +83,42 @@ public class Day19 {
     }
 
     private Set<String> expandRule(Rule rule) {
+        // max input is 100 - don't eval - max 13x
+        it++;
         if (rule.finalText != null) {
             return Set.of(rule.finalText);
         } else if (ruleCache.containsKey(rule.id)) {
             return ruleCache.get(rule.id);
+        } else if (rule.id == 8) {
+            System.out.println("Expanding rule 8...");
+            Set<String> words = expandRule(rules.get(42));
+            for (int i = 0; i < ITER; i++) {
+                Set<String> out = kartezian(words, words);
+                Set<String> filtered = filterWords(out);
+                if (filtered.isEmpty()) {
+                    break;
+                }
+                words.addAll(filtered);
+            }
+            System.out.println("... rule 8 DONE");
+            ruleCache.put(rule.id, words);
+            return words;
+        } else if (rule.id == 11) {
+            System.out.println("Expanding rule 11...");
+            Set<String> expand42 = expandRule(rules.get(42));
+            Set<String> expand31 = expandRule(rules.get(31));
+            Set<String> words = filterWords(kartezian(expand42, expand31));
+            for (int i = 0; i < ITER; i++) {
+                Set<String> part1 = filterWords(kartezian(expand42, words));
+                Set<String> part2 = filterWords(kartezian(part1, expand31));
+                if (part2.isEmpty()) {
+                    break;
+                }
+                words.addAll(part2);
+            }
+            System.out.println("... rule 11 DONE");
+            ruleCache.put(rule.id, words);
+            return words;
         } else {
             Set<String> words = new HashSet<>();
             for (List<Integer> cond : rule.rules) {
@@ -104,9 +141,37 @@ public class Day19 {
 
                 words.addAll(items);
             }
-            //ruleCache.put(rule.id, words);
+            ruleCache.put(rule.id, words);
             return words;
         }
+    }
+
+    Set<String> filterWords(Set<String> in) {
+        Set<String> out = new HashSet<>();
+        for (String i : in) {
+            boolean used = false;
+            for (String p : puzzleInput) {
+                if (p.contains(i)) {
+                    used = true;
+                    break;
+                }
+            }
+            if (used) {
+                out.add(i);
+            }
+        }
+        System.out.println("Filtered from " + in.size() + " to " + out.size());
+        return out;
+    }
+
+    Set<String> kartezian(Set<String> a, Set<String> b) {
+        Set<String> out = new HashSet<>();
+        for (String prefix : a) {
+            for (String suffix : b) {
+                out.add(prefix + suffix);
+            }
+        }
+        return out;
     }
 
     public long count(String grammar, String file) throws IOException {
@@ -114,18 +179,21 @@ public class Day19 {
         for (int i = 0; i < rules.size(); i++) {
             System.out.println(i + ": " + rules.get(i));
         }
+        puzzleInput = loadFile(file);
 
         // generate all words from grammar
         Set<String> words = expandRule(rules.get(0));
 
         // check matching words
-        List<String> puzzleInput = loadFile(file);
         int sum = 0;
         for (String input : puzzleInput) {
             if (words.contains(input)) {
                 sum++;
             }
         }
+        System.out.println("Iterations " + it); // 1480 --cache--> 506;
+        System.out.println("42: " + ruleCache.get(42));
+        System.out.println("31: " + ruleCache.get(31));
 
         return sum;
     }
@@ -133,12 +201,13 @@ public class Day19 {
     public static void main(String[] args) throws IOException {
         long count;
 
-        count = new Day19().count("grammar_test.txt", "day19_test.txt");
-        System.out.println("Result: " + count);
-        assert count == 2;
+        //        count = new Day19().count("grammar_test.txt", "day19_test.txt");
+        //        System.out.println("Result: " + count);
+        //        assert count == 2;
 
         count = new Day19().count("grammar.txt", "day19.txt");
         System.out.println("Result: " + count);
-        //assert count == 2;
+        assert count == 332;    // ITER = 3
+        // 330 too low [ITER = 2]
     }
 }
