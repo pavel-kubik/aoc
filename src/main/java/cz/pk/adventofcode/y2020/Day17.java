@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2020;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -151,11 +151,11 @@ public class Day17 {
     public static void main(String[] args) {
         long count;
         //*
-        count = new Day17(true).solve("day17_test.txt");
+        count = new Day17(true).solve("2020/day17_test.txt");
         System.out.println("Result: " + count);
         assert count == 848;
 
-        count = new Day17(true).solve("day17.txt");
+        count = new Day17(true).solve("2020/day17.txt");
         System.out.println("Result: " + count);
         //assert count == 209;
         // 206 low
