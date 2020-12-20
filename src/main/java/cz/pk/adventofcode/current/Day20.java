@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.sun.jdi.InternalException;
 import cz.pk.adventofcode.util.GroupCollector;
+import cz.pk.adventofcode.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,6 +20,7 @@ import lombok.Data;
 public class Day20 {
 
     private final boolean debug;
+    private Map<Integer, Image> imagesById;
     private Map<Integer, List<Integer>> matches;
     private static final String monster =
             "                  # \n" +
@@ -41,13 +44,88 @@ public class Day20 {
                     .append(toPic(pic));
             return out.toString();
         }
+
+        public Image rotate() {
+            System.out.println("Rotate");
+            int size = pic.length;
+            Integer[][] out = new Integer[size][size];
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    out[j][size - i - 1] = pic[i][j];
+                }
+            }
+            pic = out;
+            return this;
+        }
+
+        /**
+         * Flip by vertical axis
+         */
+        public Image flipVertical() {
+            System.out.println("Flip by vertical axis");
+            int size = pic.length;
+            Integer[][] out = new Integer[size][size];
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    out[i][j] = pic[i][size - j - 1];
+                }
+            }
+            pic = out;
+            return this;
+        }
+
+        /**
+         * Flip by horizontal axis
+         */
+        public Image flipHorizontal() {
+            System.out.println("Flip by horizontal axis");
+            int size = pic.length;
+            Integer[][] out = new Integer[size][size];
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    out[i][j] = pic[size - i - 1][j];
+                }
+            }
+            pic = out;
+            return this;
+        }
+
+        public Image flipAndRotate(int to, int move) {
+            if (move >= 2 && move < 6) {
+                //flip(move);
+            }
+            if (move >= 4) {
+                move -= 4;
+            }
+            if (move < 4) {
+                // just rotate until it is right
+                while (move % 4 != to) {
+                    this.rotate();
+                    move++;
+                }
+            }
+            return this;
+        }
+
+        public Image flip(Integer move) {
+            if (move % 2 == 0) {
+                this.flipVertical();
+            } else {
+                this.flipHorizontal();
+            }
+            return this;
+        }
     }
 
     private String toPic(Integer[][] pic) {
         StringBuilder out = new StringBuilder();
         for (int i = 0; i < pic.length; i++) {
             for (int j = 0; j < pic[i].length; j++) {
-                out.append(Integer.valueOf(1).equals(pic[i][j]) ? "#" : ".");
+                if (pic[i][j] == null) {
+                    out.append(" ");
+                } else {
+                    out.append(Integer.valueOf(1).equals(pic[i][j]) ? "#" : ".");
+                }
             }
             out.append("\n");
         }
@@ -103,17 +181,21 @@ public class Day20 {
                         .collect(Collectors.toList())
                         .toArray(new Integer[1]);
             }
-            Set<Long> borders = new HashSet<>();
-            borders.add(extractRow(0, false, pic));
-            borders.add(extractRow(0, true, pic));
-            borders.add(extractRow(9, false, pic));
-            borders.add(extractRow(9, true, pic));
-            borders.add(extractCol(0, false, pic));
-            borders.add(extractCol(0, true, pic));
-            borders.add(extractCol(9, false, pic));
-            borders.add(extractCol(9, true, pic));
-            return new Image(id, pic, borders);
+            return new Image(id, pic, new HashSet<>(enumerateBorder(pic)));
         }
+    }
+
+    private List<Long> enumerateBorder(Integer[][] pic) {
+        List<Long> borders = new ArrayList<>();
+        borders.add(extractRow(0, false, pic)); // TOP
+        borders.add(extractCol(9, false, pic)); // RIGHT
+        borders.add(extractRow(9, true, pic));  // BOTTOM rev
+        borders.add(extractCol(0, true, pic));  // LEFT rev
+        borders.add(extractRow(0, true, pic));  // TOP rev
+        borders.add(extractCol(9, true, pic));  // RIGHT rev
+        borders.add(extractRow(9, false, pic)); // BOTTOM
+        borders.add(extractCol(0, false, pic)); // LEFT
+        return borders;
     }
 
     private void addMatch(int id, int id2) {
@@ -139,6 +221,10 @@ public class Day20 {
 
     public long solve(String file, int part) throws IOException {
         List<Image> images = new ImageCollector(file).processGroups();
+        imagesById = new HashMap<>();
+        images.stream()
+                .forEach(i -> imagesById.put(i.id, i));
+
         System.out.println(images);
 
         matches = new HashMap<>();
@@ -179,7 +265,7 @@ public class Day20 {
             // part 2 - fuck, do match
             int size = (int) Math.round(Math.sqrt(images.size()));
             int[][] order = new int[size][size];
-            order[0][0] = corners.get(0);
+            order[0][0] = corners.get(3);
 
             Set<Integer> sideMatches = new HashSet<>();
             sideMatches.addAll(corners);
@@ -208,8 +294,62 @@ public class Day20 {
                     unMatch(match);
                 }
             }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < order.length; i++) {
+                for (int j = 0; j < order[i].length; j++) {
+                    sb.append(order[i][j]).append(" ");
+                }
+                sb.append("\n");
+            }
+            System.out.println(sb.toString());
 
-            Integer[][] finalImage = new Integer[8 * size][8 * size];
+
+
+            //*
+            // rotation [0,0]
+            Image base = imagesById.get(order[0][0]);
+            Image right = imagesById.get(order[0][1]);
+
+            List<Long> baseBorders = enumerateBorder(base.pic);
+            List<Long> rightBorders = enumerateBorder(right.pic);
+
+            Pair<Integer> rightIdxs = matchIndexes(baseBorders, rightBorders);
+
+            System.out.println("Move: " + rightIdxs);
+            base.flipAndRotate(1, rightIdxs.a).flipHorizontal();
+
+            // rotate rest of first row
+            for (int y = 1; y < order.length; y++) {
+                Image imageA = imagesById.get(order[0][y - 1]);
+                Image imageB = imagesById.get(order[0][y]);
+                Pair<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
+                System.out.println("Move: " + move);
+                imagesById.get(order[0][y]).flipAndRotate(3, move.b);
+//                if (move.b >= 2 && move.b < 6) {
+//                    imagesById.get(order[0][y]).flip(move.b);
+//                }
+                if (reverse(move.a, move.b)) {
+                    imagesById.get(order[0][y]).flipHorizontal();
+                }
+            }
+            // rotate others row
+            for (int x = 1; x < order.length; x++) {
+                for (int y = 0; y < order.length; y++) {
+                    Image imageA = imagesById.get(order[x - 1][y]);
+                    Image imageB = imagesById.get(order[x][y]);
+                    Pair<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
+                    System.out.println("Move: " + move);
+                    imagesById.get(order[x][y]).flipAndRotate(0, move.b);
+                    if (move.b < 4) {
+                        imagesById.get(order[x][y]).flipVertical();
+                    }
+                }
+            }
+            //*/
+
+            // reconstruct image
+            int BOX_SIZE = 11;
+            Integer[][] finalImage = new Integer[BOX_SIZE * size][BOX_SIZE * size];
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
                     final int imgId = order[i][j];
@@ -219,9 +359,7 @@ public class Day20 {
                             .get()
                             .pic;
 
-                    //TODO orientation - flip/rotate...
-
-                    placeImage(finalImage, img, i * 8, j * 8);
+                    placeImage(finalImage, img, i * BOX_SIZE, j * BOX_SIZE, 0, 10);
                 }
             }
 
@@ -234,10 +372,29 @@ public class Day20 {
         }
     }
 
-    private void placeImage(Integer[][] out, Integer[][] pic, int x, int y) {
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                out[x + i - 1][y + j - 1] = pic[i][j];
+    private boolean isReverse(int a) {
+        return a >= 2 && a < 6;
+    }
+
+    private boolean reverse(int a, int b) {
+        return isReverse(a) && !isReverse(b) || !isReverse(a) && isReverse(b);
+    }
+
+    private Pair<Integer> matchIndexes(List<Long> ac, List<Long> bc) {
+        for (int i = 0; i < ac.size(); i++) {
+            for (int j = 0; j < bc.size(); j++) {
+                if (ac.get(i).equals(bc.get(j))) {
+                    return new Pair(i, j);
+                }
+            }
+        }
+        throw new InternalException("Not match");
+    }
+
+    private void placeImage(Integer[][] out, Integer[][] pic, int x, int y, int from, int to) {
+        for (int i = from; i < to; i++) {
+            for (int j = from; j < to; j++) {
+                out[x + i - from][y + j - from] = pic[i][j];
             }
         }
     }
