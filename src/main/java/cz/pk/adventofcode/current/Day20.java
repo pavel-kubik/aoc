@@ -126,6 +126,8 @@ public class Day20 {
             for (int j = 0; j < pic[i].length; j++) {
                 if (pic[i][j] == null) {
                     out.append(" ");
+                } else if (Integer.valueOf(2).equals(pic[i][j])) {
+                    out.append("O");
                 } else {
                     out.append(Integer.valueOf(1).equals(pic[i][j]) ? "#" : ".");
                 }
@@ -371,7 +373,6 @@ public class Day20 {
 
             System.out.println(toPic(finalImage));
 
-            int waves = 0;
             String[] monsterLines = monsterPattern.split("\n");
             Integer[][] monsterPic = new Integer[monsterLines.length][];
             for (int i = 0; i < monsterLines.length; i++) {
@@ -381,30 +382,42 @@ public class Day20 {
 
             Image monsterImage = new Image(0, monsterPic, null);
 
+            Integer[][] finalImageWithoutMonsters = new Integer[BOX_SIZE * size][BOX_SIZE * size];
+            for (int i = 0; i < finalImage.length; i++) {
+                for (int j = 0; j < finalImage[i].length; j++) {
+                    finalImageWithoutMonsters[i][j] = finalImage[i][j];
+                }
+            }
+
             for (int r = 0; r < 8; r++) {
                 // remove monster
 
                 Integer[][] monster = monsterImage.pic;
-                System.out.println("Monster " + r);
-                System.out.println(monsterImage);
+                //                System.out.println("Monster " + r);
+                //                System.out.println(monsterImage);
 
-                for (int i = 0; i < finalImage.length - monster.length; i++) {
-                    for (int j = 0; j < finalImage[i].length - monster[0].length; j++) {
+                for (int i = 0; i < finalImage.length - monster.length + 1; i++) {
+                    for (int j = 0; j < finalImage[i].length - monster[0].length + 1; j++) {
                         if (match(finalImage, monster, i, j)) {
                             System.out.println("Monster at " + new Pair<>(i, j));
-                            remove(finalImage, monster, i, j);
+                            remove(finalImageWithoutMonsters, monster, i, j);
                         }
                     }
                 }
                 monsterImage.rotate();
-                if (r == 4) {
-                    monsterImage.flipHorizontal();
+                if (r == 3) {
+                    monsterImage.flipVertical();
                 }
             }
 
-            for (int i = 0; i < finalImage.length; i++) {
-                for (int j = 0; j < finalImage[i].length; j++) {
-                    if (finalImage[i][j].equals(1)) {
+            System.out.println(toPic(finalImageWithoutMonsters));
+
+            System.out.println("Final image is " + finalImageWithoutMonsters.length + ":" + finalImageWithoutMonsters[0].length);
+
+            int waves = 0;
+            for (int i = 0; i < finalImageWithoutMonsters.length; i++) {
+                for (int j = 0; j < finalImageWithoutMonsters[i].length; j++) {
+                    if (finalImageWithoutMonsters[i][j].equals(1)) {
                         waves++;
                     }
                 }
@@ -417,6 +430,8 @@ public class Day20 {
     private boolean match(Integer[][] map, Integer[][] pattern, int dx, int dy) {
         for (int x = 0; x < pattern.length; x++) {
             for (int y = 0; y < pattern[x].length; y++) {
+                assert x + dx < map.length;
+                assert y + dy < map[0].length;
                 if (pattern[x][y].equals(1)) {
                     if (map[dx + x][dy + y].equals(0)) {
                         return false;
@@ -427,15 +442,14 @@ public class Day20 {
         return true;
     }
 
-    private boolean remove(Integer[][] map, Integer[][] pattern, int dx, int dy) {
+    private void remove(Integer[][] map, Integer[][] pattern, int dx, int dy) {
         for (int x = 0; x < pattern.length; x++) {
             for (int y = 0; y < pattern[x].length; y++) {
                 if (pattern[x][y].equals(1)) {
-                    map[dx + x][dy + y] = 0;
+                    map[dx + x][dy + y] = 2;
                 }
             }
         }
-        return true;
     }
 
     private boolean isReverse(int a) {
@@ -489,7 +503,9 @@ public class Day20 {
 
         count = new Day20(true).solve("day20.txt", 2); //144 tiles
         System.out.println("Result: " + count);
-//        assert count == 273;  // 2209 too height
+        //        assert count == 273;
+        // 2209 too height (not 2208)
+        // 303  too low
         //*/
     }
 }
