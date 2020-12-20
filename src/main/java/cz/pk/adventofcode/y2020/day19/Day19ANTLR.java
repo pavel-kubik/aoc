@@ -84,7 +84,7 @@ public class Day19ANTLR implements ANTLRErrorListener {
 //        System.out.println("Result: " + count);
 //        assert count == 2;
 
-        count = new Day19ANTLR().solve("day19.txt");
+        count = new Day19ANTLR().solve("2020/day19.txt");
         System.out.println("Result: " + count);
         //assert count == 845;
         // low 103
