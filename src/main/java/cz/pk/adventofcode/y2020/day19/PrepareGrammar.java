@@ -47,6 +47,6 @@ public class PrepareGrammar {
 
     public static void main(String[] args) throws IOException {
         //new PrepareGrammar().transformToGrammar("grammar_test.txt");
-        new PrepareGrammar().transformToGrammar("grammar.txt");
+        new PrepareGrammar().transformToGrammar("2020/grammar.txt");
     }
 }

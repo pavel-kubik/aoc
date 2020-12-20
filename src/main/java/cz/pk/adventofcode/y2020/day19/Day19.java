@@ -205,7 +205,7 @@ public class Day19 {
         //        System.out.println("Result: " + count);
         //        assert count == 2;
 
-        count = new Day19().count("grammar.txt", "day19.txt");
+        count = new Day19().count("2020/grammar.txt", "2020/day19.txt");
         System.out.println("Result: " + count);
         assert count == 332;    // ITER = 3
         // 330 too low [ITER = 2]
