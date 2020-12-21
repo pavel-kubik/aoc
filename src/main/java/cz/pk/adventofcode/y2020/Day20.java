@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2020;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -503,7 +503,7 @@ public class Day20 {
 //        System.out.println("Result: " + count);
 //        assert count == 273;
 
-        count = new Day20(true).solve("day20.txt", 2); //144 tiles
+        count = new Day20(true).solve("2020/day20.txt", 2); //144 tiles
         System.out.println("Result: " + count);
         //        assert count == 273;
         // 2209 too height (not 2208)
