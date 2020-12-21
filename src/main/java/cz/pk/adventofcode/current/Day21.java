@@ -55,7 +55,7 @@ public class Day21 {
         }
     }
 
-    public long solve(String file) {
+    public String solve(String file) {
         List<Food> foods = new TypeCollector(file).process();
         System.out.println(foods);
 
@@ -76,6 +76,7 @@ public class Day21 {
         }
 
         Set<String> ingredientsWithAllergen = new HashSet<>();
+        Map<String, Set<String>> ingredientsByAllergen = new HashMap<>();
         for (Map.Entry<String, List<Integer>> entry : foodByAllergen.entrySet()) {
             System.out.println("Checking allergen: " + entry.getKey());
             Set<String> ingredientsIntersect = foodById.get(entry.getValue().get(0)).getIngredients();
@@ -84,6 +85,7 @@ public class Day21 {
                 ingredientsIntersect = intersect(ingredientsIntersect, foodById.get(foodId).getIngredients());
             }
             System.out.println(ingredientsIntersect);
+            ingredientsByAllergen.put(entry.getKey(), ingredientsIntersect);
             ingredientsWithAllergen.addAll(ingredientsIntersect);
         }
 
@@ -95,16 +97,41 @@ public class Day21 {
         }
         System.out.println(ingredientsWithoutAllergen);
 
-        int sum = 0;
-        for (String ingredient : ingredientsWithoutAllergen) {
-            for (Food food : foods) {
-                if (food.getIngredients().contains(ingredient)) {
-                    sum++;
+//        int sum = 0;
+//        for (String ingredient : ingredientsWithoutAllergen) {
+//            for (Food food : foods) {
+//                if (food.getIngredients().contains(ingredient)) {
+//                    sum++;
+//                }
+//            }
+//        }
+
+        Map<String, String> allergenByIngredients = new HashMap<>();
+        while (true) {
+            String matchedIngredient = null;
+            for (Map.Entry<String, Set<String>> entry : ingredientsByAllergen.entrySet()) {
+                // allergen, ingredients
+                if (entry.getValue().size() == 1) {
+                    matchedIngredient = entry.getValue().iterator().next();
+                    allergenByIngredients.put(matchedIngredient, entry.getKey());
+                    System.out.println(matchedIngredient + "\t" + entry.getKey());
                 }
             }
+            if (matchedIngredient == null) {
+                break;
+            }
+            for (Set<String> ingredientList : ingredientsByAllergen.values()) {
+                ingredientList.remove(matchedIngredient);
+            }
+        }
+        assert allergenByIngredients.size() == ingredientsByAllergen.size();
+
+        StringBuilder sb = new StringBuilder();
+        for (String ingredient : allergenByIngredients.keySet()) {
+            sb.append(ingredient).append(",");
         }
 
-        return sum;
+        return sb.toString();
     }
 
     private Set<String> intersect(Set<String> s1, Set<String> s2) {
@@ -118,15 +145,15 @@ public class Day21 {
     }
 
     public static void main(String[] args) {
-        long count;
+        String count;
         //*
         count = new Day21(true).solve("day21_test.txt");
         System.out.println("Result: " + count);
-        assert count == 5;
+        assert count.equals("mxmxvkd,sqjhc,fvjkl,");
 
         count = new Day21(true).solve("day21.txt");
         System.out.println("Result: " + count);
-        assert count == 1930;
+        //assert count == 1930;
 
         /*/
 
