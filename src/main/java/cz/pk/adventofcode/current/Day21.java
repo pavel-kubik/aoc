@@ -1,8 +1,15 @@
 package cz.pk.adventofcode.current;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import cz.pk.adventofcode.util.DataCollector;
 import lombok.AllArgsConstructor;
@@ -15,74 +22,111 @@ public class Day21 {
 
     @Data
     @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
-    }
+    class Food {
+        private final Set<String> ingredients;
+        private final Set<String> allergens;
 
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
-
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
+        @Override
         public String toString() {
-            return value;
+            return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                    .append("ingredients", ingredients)
+                    .append("allergens", allergens)
+                    .toString();
         }
     }
 
-    class TypeCollector extends DataCollector<Subject> {
+    class TypeCollector extends DataCollector<Food> {
 
         public TypeCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+        protected Food processLine(String line) {
+            String[] parts = line.split("\\(");
+            assert parts.length == 2;
+            String[] ingredients = parts[0].trim().split(" ");
+            assert parts[1].startsWith("contains ");
+            String allergensLine = parts[1].substring("contains ".length()).split("\\)")[0];
+            String[] allergens = allergensLine.split(", ");
+            return new Food(
+                    new HashSet<>(Arrays.asList(ingredients)),
+                    new HashSet<>(Arrays.asList(allergens)));
         }
     }
 
     public long solve(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
-        return 0;
+        List<Food> foods = new TypeCollector(file).process();
+        System.out.println(foods);
+
+        // prepare data
+        Set<String> allergens = new HashSet<>();
+        Set<String> ingredients = new HashSet<>();
+        Map<Integer, Food> foodById = new HashMap<>();
+        Map<String, List<Integer>> foodByAllergen = new HashMap<>();
+        //
+        for (int i = 0; i < foods.size(); i++) {
+            Food food = foods.get(i);
+            allergens.addAll(food.getAllergens());
+            ingredients.addAll(food.getIngredients());
+            foodById.put(i, food);
+            for (String allergen : food.getAllergens()) {
+                foodByAllergen.computeIfAbsent(allergen, k -> new ArrayList<>()).add(i);
+            }
+        }
+
+        Set<String> ingredientsWithAllergen = new HashSet<>();
+        for (Map.Entry<String, List<Integer>> entry : foodByAllergen.entrySet()) {
+            System.out.println("Checking allergen: " + entry.getKey());
+            Set<String> ingredientsIntersect = foodById.get(entry.getValue().get(0)).getIngredients();
+            for (int i = 1; i < entry.getValue().size(); i++) {
+                Integer foodId = entry.getValue().get(i);
+                ingredientsIntersect = intersect(ingredientsIntersect, foodById.get(foodId).getIngredients());
+            }
+            System.out.println(ingredientsIntersect);
+            ingredientsWithAllergen.addAll(ingredientsIntersect);
+        }
+
+        Set<String> ingredientsWithoutAllergen = new HashSet<>();
+        for (String i : ingredients) {
+            if (!ingredientsWithAllergen.contains(i)) {
+                ingredientsWithoutAllergen.add(i);
+            }
+        }
+        System.out.println(ingredientsWithoutAllergen);
+
+        int sum = 0;
+        for (String ingredient : ingredientsWithoutAllergen) {
+            for (Food food : foods) {
+                if (food.getIngredients().contains(ingredient)) {
+                    sum++;
+                }
+            }
+        }
+
+        return sum;
     }
 
-    public long solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
-        return 0;
+    private Set<String> intersect(Set<String> s1, Set<String> s2) {
+        Set<String> out = new HashSet<>(s1);
+        for (String s : s1) {
+            if (!s2.contains(s)) {
+                out.remove(s);
+            }
+        }
+        return out;
     }
 
     public static void main(String[] args) {
         long count;
         //*
-        count = new Day21(true).solve("day12_test.txt");
+        count = new Day21(true).solve("day21_test.txt");
         System.out.println("Result: " + count);
-        assert count == 1;
+        assert count == 5;
 
-        count = new Day21(true).solve("day12.txt");
+        count = new Day21(true).solve("day21.txt");
         System.out.println("Result: " + count);
-        //assert count == 845;
+        assert count == 1930;
 
         /*/
 
