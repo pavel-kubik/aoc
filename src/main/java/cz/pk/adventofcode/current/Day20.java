@@ -324,7 +324,7 @@ public class Day20 {
             Pair<Integer> rightIdxs = matchIndexes(baseBorders, rightBorders);
 
             System.out.println("Move: " + rightIdxs);
-            base.flipAndRotate(1, rightIdxs.a).flipHorizontal();
+            base.flipAndRotate(1, rightIdxs.a);//.flipHorizontal();
 
             // rotate rest of first row
             for (int y = 1; y < order.length; y++) {
@@ -336,7 +336,7 @@ public class Day20 {
                 //                if (move.b >= 2 && move.b < 6) {
                 //                    imagesById.get(order[0][y]).flip(move.b);
                 //                }
-                if (reverse(move.a, move.b)) {
+                if (move.b < 4) {
                     imagesById.get(order[0][y]).flipHorizontal();
                 }
             }
@@ -357,6 +357,7 @@ public class Day20 {
 
             // reconstruct image
             int BOX_SIZE = 8;
+//            int BOX_SIZE = 11;
             Integer[][] finalImage = new Integer[BOX_SIZE * size][BOX_SIZE * size];
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
@@ -368,6 +369,7 @@ public class Day20 {
                             .pic;
 
                     placeImage(finalImage, img, i * BOX_SIZE, j * BOX_SIZE, 1, 9);
+//                    placeImage(finalImage, img, i * BOX_SIZE, j * BOX_SIZE, 0, 10);
                 }
             }
 
@@ -497,9 +499,9 @@ public class Day20 {
         assert count == 32287787075651l;
         /*/
 
-        count = new Day20(true).solve("day20_test.txt", 2);    //9 tiles
-        System.out.println("Result: " + count);
-        assert count == 273;
+//        count = new Day20(true).solve("day20_test.txt", 2);    //9 tiles
+//        System.out.println("Result: " + count);
+//        assert count == 273;
 
         count = new Day20(true).solve("day20.txt", 2); //144 tiles
         System.out.println("Result: " + count);
