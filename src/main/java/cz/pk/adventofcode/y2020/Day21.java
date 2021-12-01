@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2020;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -147,11 +147,11 @@ public class Day21 {
     public static void main(String[] args) {
         String count;
         //*
-        count = new Day21(true).solve("day21_test.txt");
+        count = new Day21(true).solve("2020/day21_test.txt");
         System.out.println("Result: " + count);
         assert count.equals("mxmxvkd,sqjhc,fvjkl,");
 
-        count = new Day21(true).solve("day21.txt");
+        count = new Day21(true).solve("2020/day21.txt");
         System.out.println("Result: " + count);
         //assert count == 1930;
 
