@@ -70,19 +70,19 @@ public class Day22 {
     public static void main(String[] args) throws IOException {
         long count;
         //*
-        count = new Day22(true).solve("day22_test.txt", 1);
+        count = new Day22(true).solve("2020/day22_test.txt", 1);
         System.out.println("Result: " + count);
         assert count == 306;
 
-        count = new Day22(true).solve("day22.txt", 1);
+        count = new Day22(true).solve("2020/day22.txt", 1);
         System.out.println("Result: " + count);
         assert count == 33559;
 
-        count = new Day22(true).solve("day22_test.txt", 2);
+        count = new Day22(true).solve("2020/day22_test.txt", 2);
         System.out.println("Result: " + count);
         assert count == 291;
 
-        count = new Day22(true).solve("day22.txt", 2);
+        count = new Day22(true).solve("2020/day22.txt", 2);
         System.out.println("Result: " + count);
         //assert count == 33559;
 
