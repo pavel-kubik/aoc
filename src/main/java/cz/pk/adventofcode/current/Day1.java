@@ -66,17 +66,29 @@ public class Day1 {
     }
 
     public long solve2(String file) {
-        Integer[] data = new TypeCollector(file).process().toArray(new Integer[1]);
+        Integer[] data2 = new TypeCollector(file).process().toArray(new Integer[1]);
+        Integer[] data = new Integer[data2.length - 2];
+        for (int i=0;i<data2.length - 2;i++) {
+            data[i] = data2[i] + data2[i+1] + data2[i+2];
+        }
+        int lastValue = data[0];
+        int count = 0;
+        for (int i=1;i<data.length;i++) {
+            if (lastValue < data[i]) {
+                count++;
+            }
+            lastValue = data[i];
+        }
         System.out.println(data);
-        return 0;
+        return count;
     }
 
     public static void main(String[] args) {
         long count;
-        //*
+        /*
         count = new Day1(true).solve("day1_test.txt");
         System.out.println("Result: " + count);
-        assert count == 1;
+        //assert count == 1;
 
         count = new Day1(true).solve("day1.txt");
         System.out.println("Result: " + count);
@@ -84,15 +96,14 @@ public class Day1 {
 
         /*/
 
-        count = new Day13(true).solve2("2020/day12_test.txt");
+        count = new Day1(true).solve2("day1_test.txt");
         System.out.println("Result: " + count);
-        assert count == 25;
+        //assert count == 25;
 
-        count = new Day13(true).solve2("2020/day12.txt");
+        count = new Day1(true).solve2("day1.txt");
         System.out.println("Result: " + count);
         //assert count == 27016;
 
-         */
         //*/
     }
 }
