@@ -64,19 +64,21 @@ public class Day2 {
 
     public long solve(String file) {
         Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        int forward = 0;
-        int up = 0;
+        int position = 0;
+        int depth = 0;
+        int aim = 0;
         for (int i=0;i<data.length;i++) {
             if (data[i].type == Type.FORWARD) {
-                forward += data[i].size;
+                position += data[i].size;
+                depth += data[i].size*aim;
             } else if (data[i].type == Type.UP) {
-                up += data[i].size;
+                aim -= data[i].size;
             } else if (data[i].type == Type.DOWN) {
-                up -= data[i].size;
+                aim += data[i].size;
             }
         }
         System.out.println(data);
-        return up*forward;
+        return position*depth;
     }
 
     public long solve2(String file) {
@@ -94,7 +96,7 @@ public class Day2 {
 
         count = new Day2(true).solve("day2.txt");
         System.out.println("Result: " + count);
-        //assert count == 845;
+        //assert count == 1781819478;
 
         /*/
 
