@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.String.format;
+
 public abstract class DataCollector<TYPE> {
 
     List<TYPE> result = new ArrayList<>();
@@ -16,9 +18,12 @@ public abstract class DataCollector<TYPE> {
     public DataCollector(String file) {
         try {
             URL resource = getClass().getClassLoader().getResource(file);
+            if (resource == null) {
+                throw new RuntimeException(format("Can't find file at [ %s ].", file));
+            }
             data = Files.readAllLines(Path.of(resource.getPath()));
         } catch (IOException e) {
-            throw new RuntimeException("Can't read file " + file, e);
+            throw new RuntimeException(format("Can't read file [ %s ].", file), e);
         }
     }
 

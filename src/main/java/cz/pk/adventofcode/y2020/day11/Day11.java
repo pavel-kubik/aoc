@@ -269,7 +269,7 @@ public class Day11 {
     //*
     public int solvePart1WithMatrix(String file) {
         Place[] type = new Place[1];
-        Matrix<Place> places = new PuzzleSolver2D<Place>(Place.class, file)
+        Matrix<Place> places = new PuzzleSolver2D<>(Place.class, file)
                 .load(line -> {
                     // TODO mapper from String (line) to Enum[] to speed it up
                     return line.chars()

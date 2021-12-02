@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day2;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,6 +64,23 @@ public class Day2 {
 
     public long solve(String file) {
         Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        int forward = 0;
+        int depth = 0;
+        for (int i=0;i<data.length;i++) {
+            if (data[i].type == Type.FORWARD) {
+                forward += data[i].size;
+            } else if (data[i].type == Type.UP) {
+                depth -= data[i].size;
+            } else if (data[i].type == Type.DOWN) {
+                depth += data[i].size;
+            }
+        }
+        System.out.println(data);
+        return depth*forward;
+    }
+
+    public long solve2(String file) {
+        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
         int position = 0;
         int depth = 0;
         int aim = 0;
@@ -81,34 +98,24 @@ public class Day2 {
         return position*depth;
     }
 
-    public long solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
-        return 0;
-    }
-
     public static void main(String[] args) {
         long count;
         //*
-        count = new Day2(true).solve("day2_test.txt");
+        count = new Day2(true).solve("2021/day2_test.txt");
         System.out.println("Result: " + count);
-        //assert count == 1;
+        assert count == 150;
 
-        count = new Day2(true).solve("day2.txt");
+        count = new Day2(true).solve("2021/day2.txt");
         System.out.println("Result: " + count);
-        //assert count == 1781819478;
-
-        /*/
-
-        count = new Day2(true).solve2("day2_test.txt");
+        assert count == 1635930;
+        //*/
+        count = new Day2(true).solve2("2021/day2_test.txt");
         System.out.println("Result: " + count);
-        //assert count == 25;
+        assert count == 900;
 
-        count = new Day2(true).solve2("day2.txt");
+        count = new Day2(true).solve2("2021/day2.txt");
         System.out.println("Result: " + count);
-        //assert count == 27016;
-
-         */
+        assert count == 1781819478;
         //*/
     }
 }

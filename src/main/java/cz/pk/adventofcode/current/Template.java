@@ -2,11 +2,16 @@ package cz.pk.adventofcode.current;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import static cz.pk.adventofcode.util.DataCollectorFactory.collectData;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 @Data
 public class Template {
@@ -62,7 +67,15 @@ public class Template {
     }
 
     public long solve(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        // general data structure
+        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        // string lines
+        //List<String> data = new StringCollector(file).process();
+        // matrix
+        List<List<Long>> data = collectData(
+                file,
+                (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
+
         System.out.println(data);
         return 0;
     }
@@ -78,23 +91,22 @@ public class Template {
         //*
         count = new Template(true).solve("day_test.txt");
         System.out.println("Result: " + count);
-        //assert count == 1;
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 111;
 
         count = new Template(true).solve("day.txt");
         System.out.println("Result: " + count);
-        //assert count == 845;
+        assert count == 222;
 
         /*/
 
-        count = new Day13(true).solve2("day_test.txt");
+        count = new Template(true).solve2("day_test.txt");
         System.out.println("Result: " + count);
-        //assert count == 25;
+        assert count == 333;
 
-        count = new Day13(true).solve2("day.txt");
+        count = new Template(true).solve2("day.txt");
         System.out.println("Result: " + count);
-        //assert count == 27016;
-
-         */
+        assert count == 444;
         //*/
     }
 }
