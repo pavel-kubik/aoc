@@ -21,8 +21,9 @@ public class Day2 {
     }
 
     enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
+        FORWARD("forward"),
+        DOWN("down"),
+        UP("up"),
         ;
 
         private static final Map<String, Type> values;
@@ -55,16 +56,27 @@ public class Day2 {
 
         @Override
         protected Subject processLine(String line) {
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
+            Type type = Type.get(String.valueOf(line.split(" ")[0]));
+            Integer size = Integer.valueOf(line.split(" ")[1]);
             return new Subject(type, size);
         }
     }
 
     public long solve(String file) {
         Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        int forward = 0;
+        int up = 0;
+        for (int i=0;i<data.length;i++) {
+            if (data[i].type == Type.FORWARD) {
+                forward += data[i].size;
+            } else if (data[i].type == Type.UP) {
+                up += data[i].size;
+            } else if (data[i].type == Type.DOWN) {
+                up -= data[i].size;
+            }
+        }
         System.out.println(data);
-        return 0;
+        return up*forward;
     }
 
     public long solve2(String file) {
