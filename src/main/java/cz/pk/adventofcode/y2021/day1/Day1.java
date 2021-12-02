@@ -1,10 +1,13 @@
 package cz.pk.adventofcode.y2021.day1;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.LongCollector;
 import lombok.Data;
 
 @Data
@@ -52,32 +55,32 @@ public class Day1 {
     }
 
     public long solve(String file) {
-        Integer[] data = new TypeCollector(file).process().toArray(new Integer[1]);
-        int lastValue = data[0];
+        List<Long> data = new LongCollector(file).process();
+        long lastValue = data.get(0);
         int count = 0;
-        for (int i=1;i<data.length;i++) {
-            if (lastValue < data[i]) {
+        for (int i=1;i<data.size();i++) {
+            if (lastValue < data.get(i)) {
                 count++;
             }
-            lastValue = data[i];
+            lastValue = data.get(i);
         }
         System.out.println(data);
         return count;
     }
 
     public long solve2(String file) {
-        Integer[] data2 = new TypeCollector(file).process().toArray(new Integer[1]);
-        Integer[] data = new Integer[data2.length - 2];
-        for (int i=0;i<data2.length - 2;i++) {
-            data[i] = data2[i] + data2[i+1] + data2[i+2];
+        List<Long> data2 = new LongCollector(file).process();
+        List<Long> data = new ArrayList<>();
+        for (int i=0;i<data2.size() - 2;i++) {
+            data.add(data2.get(i) + data2.get(i+1) + data2.get(i+2));
         }
-        int lastValue = data[0];
+        long lastValue = data.get(0);
         int count = 0;
-        for (int i=1;i<data.length;i++) {
-            if (lastValue < data[i]) {
+        for (int i=1;i<data.size();i++) {
+            if (lastValue < data.get(i)) {
                 count++;
             }
-            lastValue = data[i];
+            lastValue = data.get(i);
         }
         System.out.println(data);
         return count;
@@ -85,25 +88,22 @@ public class Day1 {
 
     public static void main(String[] args) {
         long count;
-        /*
-        count = new Day1(true).solve("day1_test.txt");
+        //*
+        count = new Day1(true).solve("2021/day1_test.txt");
         System.out.println("Result: " + count);
-        //assert count == 1;
+        assert count == 7;
 
-        count = new Day1(true).solve("day1.txt");
+        count = new Day1(true).solve("2021/day1.txt");
         System.out.println("Result: " + count);
-        //assert count == 845;
-
-        /*/
-
-        count = new Day1(true).solve2("2021/Day1/day1_test.txt");
+        assert count == 1681;
+        //*/
+        count = new Day1(true).solve2("2021/day1_test.txt");
         System.out.println("Result: " + count);
-        //assert count == 25;
+        assert count == 5;
 
-        count = new Day1(true).solve2("2021/Day1/day1.txt");
+        count = new Day1(true).solve2("2021/day1.txt");
         System.out.println("Result: " + count);
-        //assert count == 27016;
-
+        assert count == 1704;
         //*/
     }
 }
