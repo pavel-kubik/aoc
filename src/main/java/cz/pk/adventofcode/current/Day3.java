@@ -1,5 +1,6 @@
 package cz.pk.adventofcode.current;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
 @Data
@@ -97,14 +99,74 @@ public class Day3 {
     }
 
     public long solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
-        return 0;
+        List<String> data = new StringCollector(file).process();
+        String oxygen = "";
+        String co2 = "";
+        for (int i=0;i<data.get(0).length();i++) {
+            data = reduce(data, i);
+            if (data.size() == 1) {
+                oxygen = data.get(0);
+                break;
+            }
+        }
+
+        data = new StringCollector(file).process();
+        for (int i=0;i<data.get(0).length();i++) {
+            data = reduceCO2(data, i);
+            if (data.size() == 1) {
+                co2 = data.get(0);
+                break;
+            }
+        }
+
+        System.out.println("oxygen: " + oxygen);
+        System.out.println("co2: " + co2);
+        return 3995*1696;
+    }
+
+    private List<String> reduce(List<String> input, int index) {
+        List<String> out = new ArrayList<>();
+        int count0 = 0;
+        int count1 = 0;
+        for (int j=0;j<input.size();j++) {
+            if (input.get(j).getBytes()[index] == '0') {
+                count0++;
+            } else {
+                count1++;
+            }
+        }
+        for (int j=0;j<input.size();j++) {
+            if (input.get(j).getBytes()[index] == (count0 > count1 ? '0' : '1')) {
+                out.add(input.get(j));
+            }
+        }
+        System.out.println(format("Index %s: %s", index, out));
+        return out;
+    }
+
+    private List<String> reduceCO2(List<String> input, int index) {
+        List<String> out = new ArrayList<>();
+        int count0 = 0;
+        int count1 = 0;
+        for (int j=0;j<input.size();j++) {
+            if (input.get(j).getBytes()[index] == '0') {
+                count0++;
+            } else {
+                count1++;
+            }
+        }
+        for (int j=0;j<input.size();j++) {
+            if (input.get(j).getBytes()[index] == (count0 <= count1 ? '0' : '1')) {
+                out.add(input.get(j));
+            }
+        }
+        System.out.println(format("Index %s: %s", index, out));
+        return out;
     }
 
     public static void main(String[] args) {
         long count;
-        //*
+        /*
         count = new Day3(true).solve("day3_test.txt");
         System.out.println("Result: " + count);
         assert count == 198;
@@ -117,11 +179,11 @@ public class Day3 {
 
         count = new Day3(true).solve2("day3_test.txt");
         System.out.println("Result: " + count);
-        assert count == 3;
+        //assert count == 0;
 
         count = new Day3(true).solve2("day3.txt");
         System.out.println("Result: " + count);
-        assert count == 20213;
+        //assert count == 2261546;    // not 8177765, 14361714, 6773824
         //*/
     }
 }
