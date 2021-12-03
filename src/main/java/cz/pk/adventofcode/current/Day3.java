@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import static cz.pk.adventofcode.util.DataCollectorFactory.collectData;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day3 {
@@ -69,14 +68,32 @@ public class Day3 {
         // general data structure
         //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
         // string lines
-        //List<String> data = new StringCollector(file).process();
-        // matrix
-        List<List<Long>> data = collectData(
-                file,
-                (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
+        List<String> data = new StringCollector(file).process();
+        int gamma = 0;
+        int epsilon = 0;
+        int rad = data.get(0).length();
+        for (int i=0;i<data.get(0).length();i++) {
+            int count0 = 0;
+            int count1 = 0;
+            for (int j=0;j<data.size();j++) {
+                if (data.get(j).getBytes()[i] == '0') {
+                    count0++;
+                } else {
+                    count1++;
+                }
+            }
+            if (count0 > count1) {
+                epsilon += Math.pow(2, rad - 1);
+            } else {
+                gamma += Math.pow(2, rad - 1);
+            }
+            rad--;
+        }
 
         System.out.println(data);
-        return 0;
+        System.out.println("gamma: " + gamma);
+        System.out.println("epsilon: " + epsilon);
+        return gamma*epsilon;
     }
 
     public long solve2(String file) {
@@ -90,11 +107,11 @@ public class Day3 {
         //*
         count = new Day3(true).solve("day3_test.txt");
         System.out.println("Result: " + count);
-        assert count == 3;
+        assert count == 198;
 
         count = new Day3(true).solve("day3.txt");
         System.out.println("Result: " + count);
-        assert count == 20213;
+        assert count == 2261546;
 
         /*/
 
