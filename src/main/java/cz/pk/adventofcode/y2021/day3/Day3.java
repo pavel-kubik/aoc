@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,22 +166,22 @@ public class Day3 {
 
     public static void main(String[] args) {
         long count;
-        /*
-        count = new Day3(true).solve("day3_test.txt");
+        //*
+        count = new Day3(true).solve("2021/day3_test.txt");
         System.out.println("Result: " + count);
         assert count == 198;
 
-        count = new Day3(true).solve("day3.txt");
+        count = new Day3(true).solve("2021/day3.txt");
         System.out.println("Result: " + count);
         assert count == 2261546;
 
-        /*/
+        //*/
 
-        count = new Day3(true).solve2("day3_test.txt");
+        count = new Day3(true).solve2("2021/day3_test.txt");
         System.out.println("Result: " + count);
         //assert count == 0;
 
-        count = new Day3(true).solve2("day3.txt");
+        count = new Day3(true).solve2("2021/day3.txt");
         System.out.println("Result: " + count);
         //assert count == 2261546;    // not 8177765, 14361714, 6773824
         //*/
