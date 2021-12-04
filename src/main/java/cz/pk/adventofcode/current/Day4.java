@@ -1,15 +1,19 @@
 package cz.pk.adventofcode.current;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.GroupProcessor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import static cz.pk.adventofcode.util.DataCollectorFactory.collectData;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -66,18 +70,139 @@ public class Day4 {
         }
     }
 
-    public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        // string lines
-        //List<String> data = new StringCollector(file).process();
-        // matrix
-        List<List<Long>> data = collectData(
-                file,
-                (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
+    class BingoProcessor extends GroupProcessor {
+        private List<Integer> numbers;
+        private List<Integer[][]> bingos;
+        private boolean firstGroup;
 
-        System.out.println(data);
-        return 0;
+        public BingoProcessor(String file) throws IOException {
+            super(file);
+            bingos = new ArrayList<>();
+            firstGroup = true;
+        }
+
+        @Override
+        protected int processGroup(List<String> groupLines) {
+            if (firstGroup) {
+                String firstLine = groupLines.get(0);
+                numbers = stream(firstLine.split(",")).map(Integer::valueOf).collect(toList());
+                firstGroup = false;
+            } else {
+                Integer[][] bingo = new Integer[groupLines.size()][];
+                for (int i = 0; i < groupLines.size(); i++) {
+                    String line = groupLines.get(i).trim();
+                    Integer[] lineNumbers = stream(line.split("\\s+")).map(Integer::valueOf).collect(toList()).toArray(new Integer[1]);
+                    bingo[i] = lineNumbers;
+                }
+                bingos.add(bingo);
+            }
+            return 0;
+        }
+
+        public List<Integer> getNumbers() {
+            return numbers;
+        }
+
+        public List<Integer[][]> getBingos() {
+            return bingos;
+        }
+
+        @Override
+        public String toString() {
+            return new ToStringBuilder(this)
+                    .append("numbers", numbers)
+                    .append("bingos", bingos)
+                    .toString();
+        }
+    }
+
+    private void markNumberAtBingos(Integer number, List<Integer[][]> bingos) {
+        for (int i=0;i<bingos.size();i++) {
+            markNumberAtBingos(number, bingos.get(i));
+        }
+    }
+
+    private void markNumberAtBingos(Integer number, Integer[][] bingo) {
+        for (int i = 0; i < bingo.length; i++) {
+            for (int j = 0; j < bingo[i].length; j++) {
+                if (bingo[i][j].equals(number)) {
+                    bingo[i][j] = -1;
+                }
+            }
+        }
+    }
+
+    private int checkBingo(List<Integer[][]> bingos) {
+        for (int i=0;i<bingos.size();i++) {
+            if (checkBingo(bingos.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean checkBingo(Integer[][] bingo) {
+        // line
+        for (int i = 0; i < bingo.length; i++) {
+            boolean checked = true;
+            for (int j = 0; j < bingo[i].length; j++) {
+                if (!bingo[i][j].equals(-1)) {
+                    checked = false;
+                    break;
+                }
+            }
+            if (checked) {
+                return true;
+            }
+        }
+        // column
+        for (int i = 0; i < bingo.length; i++) {
+            boolean checked = true;
+            for (int j = 0; j < bingo[i].length; j++) {
+                if (!bingo[j][i].equals(-1)) {
+                    checked = false;
+                    break;
+                }
+            }
+            if (checked) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int sumRemainingNumbers(Integer[][] bingo) {
+        int sum = 0;
+        for (int i = 0; i < bingo.length; i++) {
+            for (int j = 0; j < bingo[i].length; j++) {
+                if (!bingo[i][j].equals(-1)) {
+                    sum += bingo[i][j];
+                }
+            }
+        }
+        return sum;
+    }
+
+    public long solve(String file) throws IOException {
+        BingoProcessor bingos = new BingoProcessor(file);
+        bingos.processGroups();
+
+        int winner = -1;
+        int lastNumber = -1;
+        for (int i=0;i<bingos.getNumbers().size();i++) {
+            markNumberAtBingos(bingos.getNumbers().get(i), bingos.getBingos());
+            int winIdx = checkBingo(bingos.getBingos());
+            if (winIdx != -1) {
+                winner = winIdx;
+                lastNumber = bingos.getNumbers().get(i);
+                break;
+            }
+        }
+
+        int remainingNumbers = sumRemainingNumbers(bingos.getBingos().get(winner));
+
+        System.out.println(bingos);
+        return lastNumber*remainingNumbers;
     }
 
     public long solve2(String file) {
@@ -86,17 +211,17 @@ public class Day4 {
         return 0;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         long count;
         //*
         count = new Day4(true).solve("day4_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 111;
+        assert count == 4512;
 
         count = new Day4(true).solve("day4.txt");
         System.out.println("Result: " + count);
-        assert count == 222;
+        assert count == 11774; //28987
 
         /*/
 
