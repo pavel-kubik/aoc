@@ -64,7 +64,6 @@ public class Day1 {
             }
             lastValue = data.get(i);
         }
-        System.out.println(data);
         return count;
     }
 
@@ -82,11 +81,11 @@ public class Day1 {
             }
             lastValue = data.get(i);
         }
-        System.out.println(data);
         return count;
     }
 
     public static void main(String[] args) {
+        System.out.println(Day1.class);
         long count;
         //*
         count = new Day1(true).solve("2021/day1_test.txt");

@@ -15,12 +15,7 @@ public class PuzzleSolver2D<TYPE> {
 
     public PuzzleSolver2D(Class<TYPE> clazz, String file) {
         this.clazz = clazz;
-        try {
-            URL resource = getClass().getClassLoader().getResource(file);
-            lines = Files.readAllLines(Path.of(resource.getPath()));
-        } catch (IOException e) {
-            throw new RuntimeException("Can't read file " + file, e);
-        }
+        lines = FileReadUtil.readAllLines(file);
     }
 
     /**

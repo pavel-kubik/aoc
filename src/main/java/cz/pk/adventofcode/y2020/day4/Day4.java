@@ -1,5 +1,8 @@
 package cz.pk.adventofcode.y2020.day4;
 
+import cz.pk.adventofcode.util.FileReadUtil;
+import cz.pk.adventofcode.y2020.day1.Day1;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -13,6 +16,7 @@ public class Day4 {
     String[] mandatoryFiedls = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day4.class);
         System.out.println("Valid: " + new Day4().countValid());
     }
 
@@ -106,8 +110,7 @@ public class Day4 {
     }
 
     int countValid() throws IOException {
-        URL resource = getClass().getClassLoader().getResource("2020/day4.txt");
-        List<String> data = Files.readAllLines(Path.of(resource.getPath()));
+        List<String> data = FileReadUtil.readAllLines("2020/day4.txt");
 
         int valid = 0;
         HashMap<String, String> fields = new HashMap<>();

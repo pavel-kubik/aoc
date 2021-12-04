@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import cz.pk.adventofcode.util.FileReadUtil;
+import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.Data;
 
 @Data
@@ -77,8 +79,7 @@ public class Day18 {
     }
 
     public long solve(String file, int part) throws IOException {
-        URL resource = getClass().getClassLoader().getResource(file);
-        List<String> lines = Files.readAllLines(Path.of(resource.getPath()));
+        List<String> lines = FileReadUtil.readAllLines(file);
         long sum = 0;
         for (String line : lines) {
             sum += evaluateWithBrackets(line, part);
@@ -87,6 +88,7 @@ public class Day18 {
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day18.class);
         long count;
         //*
         count = new Day18().evaluateWithoutBrackets("1 + 2 * 3 + 4 * 5 + 6", 1);

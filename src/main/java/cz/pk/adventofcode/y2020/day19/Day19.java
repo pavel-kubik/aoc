@@ -1,5 +1,8 @@
 package cz.pk.adventofcode.y2020.day19;
 
+import cz.pk.adventofcode.util.FileReadUtil;
+import cz.pk.adventofcode.y2020.day1.Day1;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -48,8 +51,7 @@ public class Day19 {
     }
 
     private List<String> loadFile(String file) throws IOException {
-        URL resource = getClass().getClassLoader().getResource(file);
-        List<String> data = Files.readAllLines(Path.of(resource.getPath()));
+        List<String> data = FileReadUtil.readAllLines(file);
         return data;
     }
 
@@ -199,6 +201,7 @@ public class Day19 {
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day19.class);
         long count;
 
         //        count = new Day19().count("grammar_test.txt", "day19_test.txt");

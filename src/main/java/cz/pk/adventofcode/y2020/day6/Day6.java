@@ -7,10 +7,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.GroupProcessor;
+import cz.pk.adventofcode.y2020.day1.Day1;
 
 public class Day6 {
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day6.class);
         int sum = new Day6().sumGroups();
         System.out.println("Sum: " + sum);
     }

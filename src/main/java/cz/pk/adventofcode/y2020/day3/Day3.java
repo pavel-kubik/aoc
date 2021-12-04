@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.List;
 
 import cz.pk.adventofcode.util.StringCollector;
+import cz.pk.adventofcode.y2020.day1.Day1;
 
 public class Day3 {
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day3.class);
         //int slopes = new Day3().checkSlope(3, false);
         //System.out.println("Slopes " + slopes);
         int[] rightDiffs = {1, 3, 5, 7};

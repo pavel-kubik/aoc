@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.y2020.day1.Day1;
 
 public class Day8 {
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day8.class);
         //System.out.println(new Day8().findCycle()); //1137
         System.out.println(new Day8().fixCycle());
     }

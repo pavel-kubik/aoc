@@ -1,6 +1,8 @@
 package cz.pk.adventofcode.util;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,12 +19,12 @@ public class FileReadUtil {
     }
 
     List<String> readAllLinesInternal(String file) {
+        URL resource = getClass().getClassLoader().getResource(file);
         try {
-            URL resource = getClass().getClassLoader().getResource(file);
-            if (resource == null) {
-                throw new RuntimeException(format("Can't find file at [ %s ].", file));
-            }
-            return Files.readAllLines(Path.of(resource.getPath()));
+            File fileDescription = new File(resource.toURI());
+            return Files.readAllLines(Path.of(fileDescription.getPath()));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(format("File [ %s ] not found.", file), e);
         } catch (IOException e) {
             throw new RuntimeException(format("Can't read file [ %s ].", file), e);
         }

@@ -87,6 +87,7 @@ public class Template {
     }
 
     public static void main(String[] args) {
+        System.out.println(Template.class);
         long count;
         //*
         count = new Template(true).solve("day_test.txt");
@@ -98,7 +99,7 @@ public class Template {
         System.out.println("Result: " + count);
         assert count == 222;
 
-        /*/
+        //*/
 
         count = new Template(true).solve2("day_test.txt");
         System.out.println("Result: " + count);

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.Data;
 
 @Data
@@ -149,6 +150,7 @@ public class Day17 {
     }
 
     public static void main(String[] args) {
+        System.out.println(Day17.class);
         long count;
         //*
         count = new Day17(true).solve("2020/day17_test.txt");

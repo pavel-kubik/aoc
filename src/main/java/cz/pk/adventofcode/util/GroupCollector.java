@@ -11,9 +11,8 @@ public abstract class GroupCollector<T> {
 
     List<String> data;
 
-    public GroupCollector(String file) throws IOException {
-        URL resource = getClass().getClassLoader().getResource(file);
-        data = Files.readAllLines(Path.of(resource.getPath()));
+    public GroupCollector(String file) {
+        data = FileReadUtil.readAllLines(file);
     }
 
     protected abstract T processGroup(List<String> groupLines);
