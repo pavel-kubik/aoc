@@ -205,15 +205,41 @@ public class Day4 {
         return lastNumber*remainingNumbers;
     }
 
-    public long solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
-        return 0;
+    public long solve2(String file) throws IOException {
+        BingoProcessor bingos = new BingoProcessor(file);
+        bingos.processGroups();
+
+        int winner = -1;
+        int lastNumber = -1;
+        for (int i=0;i<bingos.getNumbers().size();i++) {
+            System.out.println("Take number " + bingos.getNumbers().get(i));
+            markNumberAtBingos(bingos.getNumbers().get(i), bingos.getBingos());
+            int winIdx = checkBingo(bingos.getBingos());
+            boolean finish = false;
+            while (winIdx != -1) {
+                winner = winIdx;
+                if (bingos.getBingos().size() > 1) {
+                    bingos.getBingos().remove(winner);
+                    System.out.println("Removed idx " + winIdx);
+                } else {
+                    lastNumber = bingos.getNumbers().get(i);
+                    finish = true;
+                    break;
+                }
+                winIdx = checkBingo(bingos.getBingos());
+            }
+            if (finish) break;
+        }
+
+        int remainingNumbers = sumRemainingNumbers(bingos.getBingos().get(winner));
+
+        System.out.println(bingos);
+        return lastNumber*remainingNumbers;
     }
 
     public static void main(String[] args) throws IOException {
         long count;
-        //*
+        /*
         count = new Day4(true).solve("day4_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
@@ -223,15 +249,15 @@ public class Day4 {
         System.out.println("Result: " + count);
         assert count == 11774; //28987
 
-        /*/
+        //*/
 
-        count = new Template(true).solve2("day4_test.txt");
-        System.out.println("Result: " + count);
-        assert count == 333;
+        //count = new Day4(true).solve2("day4_test.txt");
+        //System.out.println("Result: " + count);
+        //assert count == 1924;
 
-        count = new Template(true).solve2("day4.txt");
+        count = new Day4(true).solve2("day4.txt");
         System.out.println("Result: " + count);
-        assert count == 444;
+        assert count == 444;    //0
         //*/
     }
 }
