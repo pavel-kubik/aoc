@@ -31,7 +31,7 @@ public class AdventOfCodeApplication {
             cz.pk.adventofcode.y2020.day8.Day8.main(args);
             cz.pk.adventofcode.y2020.day9.Day9.main(args);
             cz.pk.adventofcode.y2020.day10.Day10.main(args);
-            //cz.pk.adventofcode.y2020.day11.Day11.main(args); //TODO fix
+            cz.pk.adventofcode.y2020.day11.Day11.main(args); //TODO fix matrix
             cz.pk.adventofcode.y2020.day12.Day12.main(args);
             cz.pk.adventofcode.y2020.day13.Day13.main(args);
             cz.pk.adventofcode.y2020.day14.Day14.main(args);
@@ -42,10 +42,10 @@ public class AdventOfCodeApplication {
             //cz.pk.adventofcode.y2020.day19.Day19.main(args);  // takes too long :-)
             cz.pk.adventofcode.y2020.day20.Day20.main(args);
             cz.pk.adventofcode.y2020.day21.Day21.main(args);
-            cz.pk.adventofcode.y2020.day22.Day22.main(args);
-            //cz.pk.adventofcode.y2020.day23.Day23.main(args);
-            //cz.pk.adventofcode.y2020.day24.Day24.main(args);
-            //cz.pk.adventofcode.y2020.day25.Day25.main(args);
+            cz.pk.adventofcode.y2020.day22.Day22.main(args);    //TODO finish 2nd part
+            //cz.pk.adventofcode.y2020.day23.Day23.main(args);  //TODO finish
+            //cz.pk.adventofcode.y2020.day24.Day24.main(args);  //TODO finish
+            //cz.pk.adventofcode.y2020.day25.Day25.main(args);  //TODO finish
             Day1.main(args);
             Day2.main(args);
             Day3.main(args);
