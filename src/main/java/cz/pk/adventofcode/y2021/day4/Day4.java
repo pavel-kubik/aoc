@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day4;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -239,25 +239,25 @@ public class Day4 {
 
     public static void main(String[] args) throws IOException {
         long count;
-        /*
-        count = new Day4(true).solve("day4_test.txt");
+        //*
+        count = new Day4(true).solve("2021/day4_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 4512;
 
-        count = new Day4(true).solve("day4.txt");
+        count = new Day4(true).solve("2021/day4.txt");
         System.out.println("Result: " + count);
         assert count == 11774; //28987
 
         //*/
 
-        //count = new Day4(true).solve2("day4_test.txt");
-        //System.out.println("Result: " + count);
-        //assert count == 1924;
-
-        count = new Day4(true).solve2("day4.txt");
+        count = new Day4(true).solve2("2021/day4_test.txt");
         System.out.println("Result: " + count);
-        assert count == 444;    //0
+        assert count == 1924;
+
+        count = new Day4(true).solve2("2021/day4.txt");
+        System.out.println("Result: " + count);
+        assert count == 4495;    //0
         //*/
     }
 }

@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.y2020;
+package cz.pk.adventofcode.y2020.day21;
 
 import java.util.ArrayList;
 import java.util.Arrays;

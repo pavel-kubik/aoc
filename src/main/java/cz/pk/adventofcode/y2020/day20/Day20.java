@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.y2020;
+package cz.pk.adventofcode.y2020.day20;
 
 import java.io.IOException;
 import java.util.ArrayList;
