@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.y2020;
+package cz.pk.adventofcode.y2020.day18;
 
 import java.io.IOException;
 import java.net.URL;

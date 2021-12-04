@@ -16,15 +16,7 @@ public abstract class DataCollector<TYPE> {
     protected int lineNumber;
 
     public DataCollector(String file) {
-        try {
-            URL resource = getClass().getClassLoader().getResource(file);
-            if (resource == null) {
-                throw new RuntimeException(format("Can't find file at [ %s ].", file));
-            }
-            data = Files.readAllLines(Path.of(resource.getPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(format("Can't read file [ %s ].", file), e);
-        }
+        data = FileReadUtil.readAllLines(file);
     }
 
     protected abstract TYPE processLine(String line);

@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.y2020;
+package cz.pk.adventofcode.y2020.day22;
 
 import java.io.IOException;
 import java.util.LinkedList;
