@@ -31,7 +31,8 @@ public class Matrix<TYPE> {
         for (int i = 0; i < data.length; i++) {
             rows.add(Arrays.asList(data[i]));
         }
-        return new Matrix<T>();
+        return Matrix.instance(rows);
+        //return new Matrix<T>();
     }
 
     public static <T> Matrix<T> instance(List<List<T>> rows) {

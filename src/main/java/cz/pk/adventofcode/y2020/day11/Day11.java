@@ -9,7 +9,6 @@ import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.MatrixUtil;
 import cz.pk.adventofcode.util.PuzzleSolver2D;
-import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.Data;
 
 import static java.util.stream.Collectors.toList;
@@ -35,9 +34,9 @@ public class Day11 {
     public static void main(String[] args) throws IOException {
         System.out.println(Day11.class);
         //TODO fix matrixes
-        int result = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
-        System.out.println("Result " + result);
-        assert result == 37;
+//        int result = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
+//        System.out.println("Result " + result);
+//        assert result == 37;
 
         int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
         System.out.println("Result: " + count);
@@ -282,13 +281,15 @@ public class Day11 {
         Matrix<Place> newPlaces = places;
         do {
             places = newPlaces;
+            //System.out.println("Places:\n" + places);
             Matrix<Integer> surround = places.convolution(
                     Matrix.instance(new Integer[][]{
                             {1, 1, 1},
                             {1, 0, 1},
                             {1, 1, 1}}),
                     (p, c) -> c.equals(1) && p == Place.OCCUPIED_SEAT ? 1 : 0,
-                    0, (a, b) -> a + b);
+                    0, (sum, windowOpResult) -> sum + windowOpResult);
+            //System.out.println("Surround:\n" + surround);
             newPlaces = places.applyMatrix(
                     surround,
                     (p, s) -> {
@@ -299,6 +300,7 @@ public class Day11 {
                         } else {
                             return Place.FREE_SEAT;
                         }});
+            System.out.println("New places:\n" + newPlaces);
         } while (!places.equals(newPlaces));
         return places.apply(v -> v.equals(Place.OCCUPIED_SEAT) ? 1 : 0);
     }
