@@ -1,5 +1,6 @@
 package cz.pk.adventofcode.y2021.day3;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +93,7 @@ public class Day3 {
             rad--;
         }
 
-        System.out.println(data);
+        //System.out.println(data);
         System.out.println("gamma: " + gamma);
         System.out.println("epsilon: " + epsilon);
         return gamma*epsilon;
@@ -121,8 +122,8 @@ public class Day3 {
 
         System.out.println("oxygen: " + oxygen);
         System.out.println("co2: " + co2);
-        // TODO convert bin string to number
-        return 3995*1696;
+        // convert bin string to number
+        return new BigInteger(oxygen, 2).longValue()*new BigInteger(co2, 2).longValue();
     }
 
     private List<String> reduce(List<String> input, int index) {
