@@ -8,6 +8,8 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
+import static java.lang.String.format;
+
 public class Matrix<TYPE> {
     private List<List<TYPE>> rows;
     private int width;
@@ -77,21 +79,26 @@ public class Matrix<TYPE> {
 
     private <TYPE_CM, TYPE_O>
     TYPE_O convolutionFrame(int x, int y, Matrix<TYPE_CM> convolutionMatrix, BiFunction<TYPE, TYPE_CM, TYPE_O> op, TYPE_O initialValue, BinaryOperator<TYPE_O> collector) {
+        //System.out.println(format("Item[%d,%d]", x, y));
         int cmRows = convolutionMatrix.rows.size();
         TYPE_O out = initialValue;
         for (int i = 0; i < cmRows; i++) {
             int cmCols = convolutionMatrix.rows.get(i).size();
             for (int j = 0; j < cmCols; j++) {
-                int dx = x - cmRows / 2 + i;
-                int dy = y - cmCols / 2 + i;
+                int dx = i - cmRows / 2;
+                int dy = j - cmCols / 2;
+                //System.out.println(format("DX: %d, DY: %d", dx, dy));
                 if (x + dx >= 0 &&
                         x + dx < rows.size() &&
                         y + dy >= 0 &&
                         y + dy < rows.get(x + dx).size()) {
-                    out = collector.apply(out, op.apply(rows.get(x + dx).get(y + dy), convolutionMatrix.get(i, j)));
+                    TYPE_O item = op.apply(rows.get(x + dx).get(y + dy), convolutionMatrix.get(i, j));
+                    //System.out.println(format("M[%d,%d]*c[%d,%d] = %d", x + dx, y + dy, i, j, item));
+                    out = collector.apply(out, item);
                 }
             }
         }
+        //System.out.println(format(" ...sum=%s", out));
         return out;
     }
 

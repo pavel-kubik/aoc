@@ -11,6 +11,7 @@ import cz.pk.adventofcode.util.MatrixUtil;
 import cz.pk.adventofcode.util.PuzzleSolver2D;
 import lombok.Data;
 
+import static cz.pk.adventofcode.y2020.day11.Day11.Place.*;
 import static java.util.stream.Collectors.toList;
 
 @Data
@@ -23,9 +24,9 @@ public class Day11 {
     private static Place switchPlace(Place place) {
         switch (place) {
             case OCCUPIED_SEAT:
-                return Place.FREE_SEAT;
+                return FREE_SEAT;
             case FREE_SEAT:
-                return Place.OCCUPIED_SEAT;
+                return OCCUPIED_SEAT;
             default:
                 return place;
         }
@@ -33,18 +34,22 @@ public class Day11 {
 
     public static void main(String[] args) throws IOException {
         System.out.println(Day11.class);
-        //TODO fix matrixes
-//        int result = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
-//        System.out.println("Result " + result);
-//        assert result == 37;
-
-        int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
-        System.out.println("Result: " + count);
+        //
+        int count = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
+        System.out.println("Result " + count);
         assert count == 37;
 
-        count = new Day11(false).countFreePlaces("2020/day11.txt");
-        System.out.println("Result: " + count);
+        count = new Day11(true).solvePart1WithMatrix("2020/day11.txt");
+        System.out.println("Result " + count);
         assert count == 2296;
+
+        //int count = new Day11(true).countFreePlaces("2020/day11_test.txt");
+        //System.out.println("Result: " + count);
+        //assert count == 37;
+
+        //count = new Day11(false).countFreePlaces("2020/day11.txt");
+        //System.out.println("Result: " + count);
+        //assert count == 2296;
         // not 2662
         // not 2163
 
@@ -65,20 +70,20 @@ public class Day11 {
                 switch (places[i][j]) {
                     case FREE_SEAT:
                         if (occupiedArround(i, j, places) == 0) {
-                            out[i][j] = Place.OCCUPIED_SEAT;
+                            out[i][j] = OCCUPIED_SEAT;
                         } else {
-                            out[i][j] = Place.FREE_SEAT;
+                            out[i][j] = FREE_SEAT;
                         }
                         break;
                     case OCCUPIED_SEAT:
                         if (occupiedArround(i, j, places) >= 4) {
-                            out[i][j] = Place.FREE_SEAT;
+                            out[i][j] = FREE_SEAT;
                         } else {
-                            out[i][j] = Place.OCCUPIED_SEAT;
+                            out[i][j] = OCCUPIED_SEAT;
                         }
                         break;
                     case EMPTY:
-                        out[i][j] = Place.EMPTY;
+                        out[i][j] = EMPTY;
                         break;
                     default:
                         assert false;
@@ -103,7 +108,7 @@ public class Day11 {
 
     private boolean isOccupied(int x, int y, Place[][] places) {
         if (x >= 0 && y >= 0 && x < places.length && y < places[0].length) {
-            return places[x][y] == Place.OCCUPIED_SEAT;
+            return places[x][y] == OCCUPIED_SEAT;
         } else {
             return false;
         }
@@ -126,7 +131,7 @@ public class Day11 {
             }
         } while (!isEquals(places, newPlaces));
 
-        return count(newPlaces, Place.OCCUPIED_SEAT);
+        return count(newPlaces, OCCUPIED_SEAT);
     }
 
     private String printPlaces(Place[][] places) {
@@ -165,11 +170,11 @@ public class Day11 {
 
     private boolean isOccupiedLongDistance(int x, int y, int dx, int dy, Place[][] places) {
         if (x + dx >= 0 && y + dy >= 0 && x + dx < places.length && y + dy < places[0].length) {
-            if (places[x + dx][y + dy] == Place.EMPTY) {
+            if (places[x + dx][y + dy] == EMPTY) {
                 // see more far
                 return isOccupiedLongDistance(x + dx, y + dy, dx, dy, places);
             } else {
-                return places[x + dx][y + dy] == Place.OCCUPIED_SEAT;
+                return places[x + dx][y + dy] == OCCUPIED_SEAT;
             }
         } else {
             return false;
@@ -197,20 +202,20 @@ public class Day11 {
                 switch (places[i][j]) {
                     case FREE_SEAT:
                         if (occupiedLongDistance(i, j, places) == 0) {
-                            out[i][j] = Place.OCCUPIED_SEAT;
+                            out[i][j] = OCCUPIED_SEAT;
                         } else {
-                            out[i][j] = Place.FREE_SEAT;
+                            out[i][j] = FREE_SEAT;
                         }
                         break;
                     case OCCUPIED_SEAT:
                         if (occupiedLongDistance(i, j, places) >= 5) {
-                            out[i][j] = Place.FREE_SEAT;
+                            out[i][j] = FREE_SEAT;
                         } else {
-                            out[i][j] = Place.OCCUPIED_SEAT;
+                            out[i][j] = OCCUPIED_SEAT;
                         }
                         break;
                     case EMPTY:
-                        out[i][j] = Place.EMPTY;
+                        out[i][j] = EMPTY;
                         break;
                     default:
                         assert false;
@@ -237,7 +242,7 @@ public class Day11 {
             }
         } while (!isEquals(places, newPlaces));
 
-        return count(newPlaces, Place.OCCUPIED_SEAT);
+        return count(newPlaces, OCCUPIED_SEAT);
     }
 
     enum Place {
@@ -287,22 +292,23 @@ public class Day11 {
                             {1, 1, 1},
                             {1, 0, 1},
                             {1, 1, 1}}),
-                    (p, c) -> c.equals(1) && p == Place.OCCUPIED_SEAT ? 1 : 0,
+                    (place, c) -> c.equals(1) && place == OCCUPIED_SEAT ? 1 : 0,
                     0, (sum, windowOpResult) -> sum + windowOpResult);
             //System.out.println("Surround:\n" + surround);
             newPlaces = places.applyMatrix(
                     surround,
-                    (p, s) -> {
-                        if (p.equals(Place.OCCUPIED_SEAT) && s >= 4) {
-                            return switchPlace(p);
-                        } else if(p.equals(Place.FREE_SEAT) && s == 0) {
-                            return switchPlace(p);
+                    (place, s) -> {
+                        if (place.equals(OCCUPIED_SEAT) && s >= 4) {
+                            return switchPlace(place);
+                        } else if(place.equals(FREE_SEAT) && s == 0) {
+                            return switchPlace(place);
+                        } else if(place.equals(EMPTY)){
+                            return EMPTY;
                         } else {
-                            return Place.FREE_SEAT;
+                          return place; //unchanged
                         }});
-            System.out.println("New places:\n" + newPlaces);
         } while (!places.equals(newPlaces));
-        return places.apply(v -> v.equals(Place.OCCUPIED_SEAT) ? 1 : 0);
+        return places.apply(v -> v.equals(OCCUPIED_SEAT) ? 1 : 0);
     }
 
     class PlaceCollector extends DataCollector<Place[]> {
@@ -317,13 +323,13 @@ public class Day11 {
                 //TODO automatically convert value to ENUM and move it to library
                 switch (line.charAt(i)) {
                     case '.':
-                        newLine[i] = Place.EMPTY;
+                        newLine[i] = EMPTY;
                         break;
                     case 'L':
-                        newLine[i] = Place.FREE_SEAT;
+                        newLine[i] = FREE_SEAT;
                         break;
                     case '#':
-                        newLine[i] = Place.OCCUPIED_SEAT;
+                        newLine[i] = OCCUPIED_SEAT;
                         break;
                 }
             }
