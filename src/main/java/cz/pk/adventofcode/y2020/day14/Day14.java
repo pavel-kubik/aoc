@@ -14,6 +14,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import static cz.pk.adventofcode.util.BinaryUtil.bin2Dec;
+import static cz.pk.adventofcode.util.BinaryUtil.dec2Bin;
 import static java.lang.String.format;
 
 @Data
@@ -105,36 +107,6 @@ public class Day14 {
         assert value.size() == 36;
         memory.put(mem, value);
         System.out.println(format("Add [%d] = %d", mem, bin2Dec(value)));
-    }
-
-    private long bin2Dec(List<Integer> bits) {
-        assert bits.size() == 36;
-        long number = 0;
-        long base = 1;
-        for (int i = bits.size() - 1; i >= 0; i--) {
-            number += base * bits.get(i);
-            base *= 2;
-        }
-        assert dec2Bin(number).equals(bits);
-        return number;
-    }
-
-    private List<Integer> dec2Bin(long number) {
-        List<Integer> bin;
-        bin = Long.toBinaryString(number).chars()
-                .mapToObj(c -> (char) c)
-                .map(c -> c == '1' ? 1 : 0)
-                .collect(Collectors.toList());
-        // add leading zeros
-        for (int i = bin.size(); i < 36; i++) {
-            bin.add(0, 0);
-        }
-        //Collections.reverse(bin);
-        //assert bin2Dec(bin) == number;
-        if (bin.size() != 36) {
-            assert bin.size() == 36;
-        }
-        return bin;
     }
 
     private List<Integer> applyMask(List<Integer> value, List<Integer> mask) {
@@ -256,6 +228,7 @@ public class Day14 {
     }
 
     public static void main(String[] args) {
+        System.out.println(Day14.class);
         new Day14(true).test();
 
         long count;
