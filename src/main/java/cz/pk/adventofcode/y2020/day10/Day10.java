@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.LongCollector;
+import cz.pk.adventofcode.y2020.day1.Day1;
 
 public class Day10 {
 
@@ -14,6 +15,7 @@ public class Day10 {
     Map<Long, Long> cache = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day10.class);
         int diff = new Day10().findJoytageDiff("2020/day10_test.txt", 3);
         System.out.println("Diff = " + diff);
         assert diff == 7 * 5;

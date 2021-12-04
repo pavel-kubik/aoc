@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cz.pk.adventofcode.y2020.day1.Day1;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -145,6 +146,7 @@ public class Day21 {
     }
 
     public static void main(String[] args) {
+        System.out.println(Day21.class);
         String count;
         //*
         count = new Day21(true).solve("2020/day21_test.txt");

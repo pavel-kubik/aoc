@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.y2021.day1.Day1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -99,6 +100,7 @@ public class Day2 {
     }
 
     public static void main(String[] args) {
+        System.out.println(Day2.class);
         long count;
         //*
         count = new Day2(true).solve("2021/day2_test.txt");

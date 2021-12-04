@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +18,7 @@ import static cz.pk.adventofcode.util.StringUtil.removeSuffix;
 public class Day7 {
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day7.class);
         //System.out.println(new Day7().countVariants("shiny gold")); //177
         System.out.println(new Day7().countContent("shiny gold"));  // 127 - test, 34988
     }

@@ -17,13 +17,7 @@ public abstract class GroupProcessor {
     List<String> data;
 
     public GroupProcessor(String file) throws IOException {
-        URL resource = getClass().getClassLoader().getResource(file);
-        try {
-            File fileDescription = new File(resource.toURI());
-            data = Files.readAllLines(Path.of(fileDescription.getPath()));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(format("File [ %s ] not found.", file), e);
-        }
+        data = FileReadUtil.readAllLines(file);
     }
 
     protected abstract int processGroup(List<String> groupLines);

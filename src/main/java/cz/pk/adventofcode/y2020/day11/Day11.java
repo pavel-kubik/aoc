@@ -9,6 +9,7 @@ import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.MatrixUtil;
 import cz.pk.adventofcode.util.PuzzleSolver2D;
+import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.Data;
 
 import static java.util.stream.Collectors.toList;
@@ -32,6 +33,7 @@ public class Day11 {
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day11.class);
         //TODO fix matrixes
         int result = new Day11(true).solvePart1WithMatrix("2020/day11_test.txt");
         System.out.println("Result " + result);

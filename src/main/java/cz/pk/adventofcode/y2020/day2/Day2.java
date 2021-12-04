@@ -1,5 +1,8 @@
 package cz.pk.adventofcode.y2020.day2;
 
+import cz.pk.adventofcode.util.FileReadUtil;
+import cz.pk.adventofcode.y2020.day1.Day1;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -11,6 +14,7 @@ import static java.lang.String.format;
 public class Day2 {
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day2.class);
         new Day2().checkPasswords();
     }
 
@@ -32,8 +36,7 @@ public class Day2 {
     }
 
     public void checkPasswords() throws IOException {
-        URL resource = getClass().getClassLoader().getResource("2020/day2.txt");
-        List<String> data = Files.readAllLines(Path.of(resource.getPath()));
+        List<String> data = FileReadUtil.readAllLines("2020/day2.txt");
         int valid = 0;
         for (String line : data) {
             //num-num char: string

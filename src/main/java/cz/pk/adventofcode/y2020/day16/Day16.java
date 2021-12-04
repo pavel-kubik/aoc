@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import cz.pk.adventofcode.util.FileReadUtil;
+import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -47,8 +49,7 @@ public class Day16 {
     }
 
     public long solve(String file, int part) throws IOException {
-        URL resource = getClass().getClassLoader().getResource(file);
-        List<String> data = Files.readAllLines(Path.of(resource.getPath()));
+        List<String> data = FileReadUtil.readAllLines(file);
 
         List<String> numbersAtTicket = new ArrayList<>();
         List<String> yourTicket = new ArrayList<>();
@@ -202,6 +203,7 @@ public class Day16 {
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day16.class);
         long count;
         //*
         count = new Day16().solve("2020/day16_test.txt", 1);

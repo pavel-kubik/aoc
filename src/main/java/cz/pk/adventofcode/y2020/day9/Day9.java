@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.LongCollector;
+import cz.pk.adventofcode.y2020.day1.Day1;
 
 public class Day9 {
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day9.class);
         //System.out.println(new Day9().findWeeknes(25)); //70639851
         System.out.println(new Day9().findSum(70639851));
     }
