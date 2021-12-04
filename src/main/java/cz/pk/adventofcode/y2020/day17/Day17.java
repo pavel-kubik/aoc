@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.y2020;
+package cz.pk.adventofcode.y2020.day17;
 
 import java.util.List;
 import java.util.stream.Collectors;
