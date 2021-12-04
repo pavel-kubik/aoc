@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.BitSet;
 import java.util.List;
 
+import cz.pk.adventofcode.util.FileReadUtil;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -33,8 +34,7 @@ public class Day19ANTLR implements ANTLRErrorListener {
     int sum;
 
     public long solve(String file) throws IOException, InterruptedException {
-        URL resource = getClass().getClassLoader().getResource(file);
-        List<String> data = Files.readAllLines(Path.of(resource.getPath()));
+        List<String> data = FileReadUtil.readAllLines(file);
 
         sum = 0;
         for (String line : data) {

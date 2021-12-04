@@ -5,6 +5,7 @@ import static java.lang.String.format;
 public class Day1 {
 
     public static void main(String[] args) {
+        System.out.println(Day1.class);
         int result = new Day1().findSubAndMultiple(DataDay1.data, 2020);
         System.out.println("Result is " + result);
         result = new Day1().findSubThreeAndMultiple(DataDay1.data, 2020);

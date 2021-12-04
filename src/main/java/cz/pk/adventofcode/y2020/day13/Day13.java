@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.FileReadUtil;
+import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -59,8 +61,7 @@ public class Day13 {
     public long solve(String file) throws IOException {
         BusSheet[] busSheets = new TypeCollector("2020/day13_sheet.txt").process().toArray(new BusSheet[1]);
 
-        URL resource = getClass().getClassLoader().getResource(file);
-        List<String> lines = Files.readAllLines(Path.of(resource.getPath()));
+        List<String> lines = FileReadUtil.readAllLines(file);
         long timestamp = Integer.valueOf(lines.get(0));
         List<Integer> validBusses = Arrays.asList(lines.get(1).split(",")).stream()
                 .filter(b -> !b.equals("x"))
@@ -147,6 +148,7 @@ public class Day13 {
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day13.class);
         long count;
         /*
         count = new Day13(true).solve("day13_test.txt");

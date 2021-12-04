@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class Day12 {
     private MoveType direction = MoveType.EAST;
 
     public static void main(String[] args) {
+        System.out.println(Day12.class);
         int count;
         count = new Day12(true).solve("2020/day12_test.txt");
         System.out.println("Result: " + count);

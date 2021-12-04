@@ -1,5 +1,8 @@
 package cz.pk.adventofcode.y2020.day5;
 
+import cz.pk.adventofcode.util.FileReadUtil;
+import cz.pk.adventofcode.y2020.day1.Day1;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -10,6 +13,7 @@ import java.util.List;
 public class Day5 {
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day5.class);
         int seatId = new Day5().findMySeatId();
         System.out.println(seatId);
     }
@@ -41,9 +45,8 @@ public class Day5 {
         return seatId;
     }
 
-    int findMaxSeatId() throws IOException {
-        URL resource = getClass().getClassLoader().getResource("2020/day5.txt");
-        List<String> data = Files.readAllLines(Path.of(resource.getPath()));
+    int findMaxSeatId() {
+        List<String> data = FileReadUtil.readAllLines("2020/day5.txt");
         int max = -1;
         for (int i = 0; i < data.size(); i++) {
             int currentSeatId = findSeat(data.get(i));
@@ -54,9 +57,8 @@ public class Day5 {
         return max;
     }
 
-    int findMySeatId() throws IOException {
-        URL resource = getClass().getClassLoader().getResource("2020/day5.txt");
-        List<String> data = Files.readAllLines(Path.of(resource.getPath()));
+    int findMySeatId() {
+        List<String> data = FileReadUtil.readAllLines("2020/day5.txt");
         List<Integer> seats = new ArrayList();
         for (int i = 0; i < 1016; i++) {
             seats.add(i);

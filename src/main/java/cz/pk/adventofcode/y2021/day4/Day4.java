@@ -201,7 +201,6 @@ public class Day4 {
 
         int remainingNumbers = sumRemainingNumbers(bingos.getBingos().get(winner));
 
-        System.out.println(bingos);
         return lastNumber*remainingNumbers;
     }
 
@@ -212,7 +211,6 @@ public class Day4 {
         int winner = -1;
         int lastNumber = -1;
         for (int i=0;i<bingos.getNumbers().size();i++) {
-            System.out.println("Take number " + bingos.getNumbers().get(i));
             markNumberAtBingos(bingos.getNumbers().get(i), bingos.getBingos());
             int winIdx = checkBingo(bingos.getBingos());
             boolean finish = false;
@@ -220,7 +218,6 @@ public class Day4 {
                 winner = winIdx;
                 if (bingos.getBingos().size() > 1) {
                     bingos.getBingos().remove(winner);
-                    System.out.println("Removed idx " + winIdx);
                 } else {
                     lastNumber = bingos.getNumbers().get(i);
                     finish = true;
@@ -233,11 +230,11 @@ public class Day4 {
 
         int remainingNumbers = sumRemainingNumbers(bingos.getBingos().get(winner));
 
-        System.out.println(bingos);
         return lastNumber*remainingNumbers;
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println(Day4.class);
         long count;
         //*
         count = new Day4(true).solve("2021/day4_test.txt");

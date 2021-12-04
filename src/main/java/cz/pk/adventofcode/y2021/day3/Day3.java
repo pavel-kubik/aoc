@@ -121,6 +121,7 @@ public class Day3 {
 
         System.out.println("oxygen: " + oxygen);
         System.out.println("co2: " + co2);
+        // TODO convert bin string to number
         return 3995*1696;
     }
 
@@ -140,7 +141,7 @@ public class Day3 {
                 out.add(input.get(j));
             }
         }
-        System.out.println(format("Index %s: %s", index, out));
+        //System.out.println(format("Index %s: %s", index, out));
         return out;
     }
 
@@ -160,11 +161,12 @@ public class Day3 {
                 out.add(input.get(j));
             }
         }
-        System.out.println(format("Index %s: %s", index, out));
+        //System.out.println(format("Index %s: %s", index, out));
         return out;
     }
 
     public static void main(String[] args) {
+        System.out.println(Day3.class);
         long count;
         //*
         count = new Day3(true).solve("2021/day3_test.txt");
