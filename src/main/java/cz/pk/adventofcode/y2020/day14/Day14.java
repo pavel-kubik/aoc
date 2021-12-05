@@ -205,8 +205,8 @@ public class Day14 {
                 List<Integer> number = dec2Bin(instructions[i].number);
                 List<Pair<Long>> addresses = applyMaskToMemory(instructions[i].addr, mask);
                 for (Pair<Long> addrAndMask : addresses) {
-                    Long addr = addrAndMask.a;
-                    Long maskDec = addrAndMask.b;
+                    Long addr = addrAndMask.first;
+                    Long maskDec = addrAndMask.second;
                     assert addr >= 0;
                     addNumberToMemory(addr, number);
                 }

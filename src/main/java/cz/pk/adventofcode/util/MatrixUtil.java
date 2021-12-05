@@ -14,8 +14,8 @@ public class MatrixUtil<T> {
     }
 
     public <T> boolean same(Pair<T[][]> pair) {
-        T[][] a = pair.a;
-        T[][] b = pair.b;
+        T[][] a = pair.first;
+        T[][] b = pair.second;
         for (int i = 0; i < a.length; i++) {
             for (int j = 0; j < a[i].length; j++) {
                 if (!a[i][j].equals(b[i][j])) {
