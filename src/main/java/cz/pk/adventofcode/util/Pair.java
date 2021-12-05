@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class Pair<T> {
-    public T a;
-    public T b;
+    public T first;
+    public T second;
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("[").append(a).append(",").append(b).append("]").toString();
+                .append("[").append(first).append(",").append(second).append("]").toString();
     }
 }

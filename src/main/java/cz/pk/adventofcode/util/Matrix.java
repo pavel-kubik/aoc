@@ -17,6 +17,8 @@ public class Matrix<TYPE> {
 
     public Matrix<TYPE> setRows(List<List<TYPE>> rows) {
         this.rows = rows;
+        this.height = rows.size();
+        this.width = rows.get(0).size();
         return this;
     }
 
@@ -134,6 +136,27 @@ public class Matrix<TYPE> {
         return Matrix.instance(outRows);
     }
 
+    /**
+     * [A] op [B] -> [a_i_j op b_i_j]
+     */
+    public Matrix<TYPE>
+    merge(Matrix<TYPE> b,
+                BiFunction<Integer, Integer, Boolean> op) {
+        List<List<TYPE>> outRows = new ArrayList<>();
+        for (int i = 0; i < rows.size(); i++) {
+            List<TYPE> outRow = new ArrayList<>();
+            for (int j = 0; j < rows.get(i).size(); j++) {
+                if (op.apply(i, j)) {
+                    outRow.add(this.get(i, j));
+                } else {
+                    outRow.add(b.get(i, j));
+                }
+            }
+            outRows.add(outRow);
+        }
+        return Matrix.instance(outRows);
+    }
+
     public Integer apply(Function<Object, Integer> op) {
         Integer out = 0;
         for (int i = 0; i < rows.size(); i++) {
@@ -172,4 +195,11 @@ public class Matrix<TYPE> {
         return sb.toString();
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }
