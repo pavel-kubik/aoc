@@ -1,11 +1,9 @@
 package cz.pk.adventofcode.current;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.Matrix;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,94 +18,177 @@ public class Day5 {
 
     @Data
     @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
+    class Line {
+        int x1;
+        int y1;
+        int x2;
+        int y2;
+
+        public boolean isLine() {
+            return x1 == x2 || y1 == y2;
+        }
+
+        public boolean isHorizontal() {
+            return y1 == y2;
+        }
+
+        public boolean isVertical() {
+            return x1 == x2;
+        }
+
+        public boolean isDiagonal() {
+            return Math.abs(x1 - x2) == Math.abs(y1 - y2);
+        }
+
     }
 
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
-
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
-        public String toString() {
-            return value;
-        }
-    }
-
-    class TypeCollector extends DataCollector<Subject> {
+    class TypeCollector extends DataCollector<Line> {
 
         public TypeCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+        protected Line processLine(String line) {
+            String[] points = line.split("->");
+            String[] p1 = points[0].trim().split(",");
+            String[] p2 = points[1].trim().split(",");
+            return new Line(
+                    Integer.valueOf(String.valueOf(p1[0])),
+                    Integer.valueOf(String.valueOf(p1[1])),
+                    Integer.valueOf(String.valueOf(p2[0])),
+                    Integer.valueOf(String.valueOf(p2[1])));
         }
     }
 
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        // string lines
-        //List<String> data = new StringCollector(file).process();
-        // matrix
-        List<List<Long>> data = collectData(
-                file,
-                (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
+        Line[] data = new TypeCollector(file).process().toArray(new Line[1]);
+
+        List<Line> lines = stream(data).filter(Line::isLine).collect(toList());
+
+        int[][] field = new int[1000][1000];
+        lines.stream().forEach(line -> {
+            System.out.println(line);
+            if (line.isHorizontal()) {
+                if (line.getX2() > line.getX1()) {
+                    for (int i = line.getX1(); i <= line.getX2(); i++) {
+                        field[i][line.getY1()]++;
+                    }
+                } else {
+                    for (int i = line.getX2(); i <= line.getX1(); i++) {
+                        field[i][line.getY1()]++;
+                    }
+                }
+            } else {
+                if (line.getY2() > line.getY1()) {
+                    for (int i = line.getY1(); i <= line.getY2(); i++) {
+                        field[line.getX1()][i]++;
+                    }
+                } else {
+                    for (int i = line.getY2(); i <= line.getY1(); i++) {
+                        field[line.getX1()][i]++;
+                    }
+                }
+            }
+        });
+
+        // count
+        int sum = 0;
+        for (int i = 0; i < 1000; i++) {
+            for (int j = 0; j < 1000; j++) {
+                sum += field[i][j] >= 2 ? 1 : 0;
+            }
+        }
 
         System.out.println(data);
-        return 0;
+        return sum;
     }
 
     public long solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        int size = 1000;
+        Line[] data = new TypeCollector(file).process().toArray(new Line[1]);
+
+        List<Line> lines = stream(data).collect(toList());
+
+        int[][] field = new int[size][size];
+        lines.stream().forEach(line -> {
+            System.out.println(line);
+            if (line.isHorizontal()) {
+                if (line.getX2() > line.getX1()) {
+                    for (int i = line.getX1(); i <= line.getX2(); i++) {
+                        field[i][line.getY1()]++;
+                    }
+                } else {
+                    for (int i = line.getX2(); i <= line.getX1(); i++) {
+                        field[i][line.getY1()]++;
+                    }
+                }
+            } else if (line.isVertical()) {
+                if (line.getY2() > line.getY1()) {
+                    for (int i = line.getY1(); i <= line.getY2(); i++) {
+                        field[line.getX1()][i]++;
+                    }
+                } else {
+                    for (int i = line.getY2(); i <= line.getY1(); i++) {
+                        field[line.getX1()][i]++;
+                    }
+                }
+            } else if (line.isDiagonal()) {
+                int dx = line.getX2() - line.getX1() > 0 ? 1 : -1;
+                int dy = line.getY2() - line.getY1() > 0 ? 1 : -1;
+                int iter = 0;
+                if (dx < 0) {
+                    for (int i = line.getX1(); i >= line.getX2(); i += dx) {
+                        field[i][line.getY1() + dy * iter]++;
+                        iter++;
+                    }
+                } else {
+                    for (int i = line.getX1(); i <= line.getX2(); i += dx) {
+                        field[i][line.getY1() + dy * iter]++;
+                        iter++;
+                    }
+                }
+            } else {
+                System.out.println("Invalid line " + line);
+            }
+
+        });
+
+        // count
+        int sum = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                sum += field[i][j] >= 2 ? 1 : 0;
+            }
+        }
+
         System.out.println(data);
-        return 0;
+        return sum;
+
     }
 
     public static void main(String[] args) {
         System.out.println(Day5.class);
         long count;
-        //*
+        /*
         count = new Day5(true).solve("day5_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 111;
+        assert count == 5;
 
         count = new Day5(true).solve("day5.txt");
         System.out.println("Result: " + count);
-        assert count == 222;
+        assert count == 6687;
 
         /*/
 
         count = new Day5(true).solve2("day5_test.txt");
         System.out.println("Result: " + count);
-        assert count == 333;
+        assert count == 12;
 
         count = new Day5(true).solve2("day5.txt");
         System.out.println("Result: " + count);
-        assert count == 444;
+        assert count == 18326;
         //*/
     }
 }
