@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import com.sun.jdi.InternalException;
 import cz.pk.adventofcode.util.GroupCollector;
 import cz.pk.adventofcode.util.Pair;
-import cz.pk.adventofcode.y2020.day1.Day1;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -325,7 +324,7 @@ public class Day20 {
             Pair<Integer> rightIdxs = matchIndexes(baseBorders, rightBorders);
 
             System.out.println("Move: " + rightIdxs);
-            base.flipAndRotate(1, rightIdxs.a);//.flipHorizontal();
+            base.flipAndRotate(1, rightIdxs.first);//.flipHorizontal();
 
             // rotate rest of first row
             for (int y = 1; y < order.length; y++) {
@@ -333,11 +332,11 @@ public class Day20 {
                 Image imageB = imagesById.get(order[0][y]);
                 Pair<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
                 System.out.println("Move: " + move);
-                imagesById.get(order[0][y]).flipAndRotate(3, move.b);
+                imagesById.get(order[0][y]).flipAndRotate(3, move.second);
                 //                if (move.b >= 2 && move.b < 6) {
                 //                    imagesById.get(order[0][y]).flip(move.b);
                 //                }
-                if (move.b < 4) {
+                if (move.second < 4) {
                     imagesById.get(order[0][y]).flipHorizontal();
                 }
             }
@@ -348,8 +347,8 @@ public class Day20 {
                     Image imageB = imagesById.get(order[x][y]);
                     Pair<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
                     System.out.println("Move: " + move);
-                    imagesById.get(order[x][y]).flipAndRotate(0, move.b);
-                    if (move.b < 4) {
+                    imagesById.get(order[x][y]).flipAndRotate(0, move.second);
+                    if (move.second < 4) {
                         imagesById.get(order[x][y]).flipVertical();
                     }
                 }
