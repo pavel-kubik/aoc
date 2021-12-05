@@ -170,7 +170,7 @@ public class Day5 {
     public static void main(String[] args) {
         System.out.println(Day5.class);
         long count;
-        /*
+        //*
         count = new Day5(true).solve("day5_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
@@ -180,7 +180,7 @@ public class Day5 {
         System.out.println("Result: " + count);
         assert count == 6687;
 
-        /*/
+        //*/
 
         count = new Day5(true).solve2("day5_test.txt");
         System.out.println("Result: " + count);
@@ -188,7 +188,7 @@ public class Day5 {
 
         count = new Day5(true).solve2("day5.txt");
         System.out.println("Result: " + count);
-        assert count == 18326;
+        assert count == 19851; //18326;
         //*/
     }
 }
