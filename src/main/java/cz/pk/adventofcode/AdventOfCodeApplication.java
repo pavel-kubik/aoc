@@ -1,5 +1,7 @@
 package cz.pk.adventofcode;
 
+import cz.pk.adventofcode.y2021.day5.Day5;
+import cz.pk.adventofcode.y2021.day6.Day6;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,6 +52,8 @@ public class AdventOfCodeApplication {
             Day2.main(args);
             Day3.main(args);
             Day4.main(args);
+            Day5.main(args);
+            Day6.main(args);
         };
     }
 
