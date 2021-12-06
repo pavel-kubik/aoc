@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day6;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.StringCollector;
@@ -7,7 +7,6 @@ import lombok.Data;
 
 import java.util.*;
 
-import static cz.pk.adventofcode.util.DataCollectorFactory.collectData;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -66,12 +65,8 @@ public class Day6 {
     }
 
     public long solve(String file) {
-        List<String> data = new StringCollector(file).process();
-        String[] agesStr = data.get(0).split(",");
-        List<Integer> ages = new ArrayList<>();
-        for (int i = 0; i < agesStr.length; i++) {
-            ages.add(Integer.valueOf(agesStr[i]).intValue());
-        }
+        List<Integer> ages = stream(new StringCollector(file)
+                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
         System.out.println(ages);
 
         for (int day = 0; day < 80; day++) {
@@ -86,20 +81,15 @@ public class Day6 {
                 }
             }
             ages.addAll(newGen);
-            System.out.println(format("Day %d (%d): %s", day, ages.size(), ages));
+            System.out.printf("Day %d (%d)\n", day, ages.size());
         }
 
-        System.out.println(data);
         return ages.size();
     }
 
     public long solve2(String file) {
-        List<String> data = new StringCollector(file).process();
-        String[] agesStr = data.get(0).split(",");
-        List<Integer> ages = new ArrayList<>();
-        for (int i = 0; i < agesStr.length; i++) {
-            ages.add(Integer.valueOf(agesStr[i]).intValue());
-        }
+        List<Integer> ages = stream(new StringCollector(file)
+                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
         System.out.println(ages);
 
         long population[] = new long[9];
@@ -132,24 +122,24 @@ public class Day6 {
         System.out.println(Day6.class);
         long count;
         //*
-        count = new Day6(true).solve("day6_test.txt");
+        count = new Day6(true).solve("2021/day6_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 5934;
 
-        count = new Day6(true).solve("day6.txt");
+        count = new Day6(true).solve("2021/day6.txt");
         System.out.println("Result: " + count);
         assert count == 372300;
 
         //*/
 
-        count = new Day6(true).solve2("day6_test.txt");
+        count = new Day6(true).solve2("2021/day6_test.txt");
         System.out.println("Result: " + count);
         assert count == 26984457539l;
 
-        count = new Day6(true).solve2("day6.txt");
+        count = new Day6(true).solve2("2021/day6.txt");
         System.out.println("Result: " + count);
-        assert count == 444;
+        assert count == 1675781200288l;
         //*/
     }
 }
