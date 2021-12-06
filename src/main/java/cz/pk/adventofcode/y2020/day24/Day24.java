@@ -1,10 +1,8 @@
 package cz.pk.adventofcode.y2020.day24;
 
-import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.HexagonUtil;
+import cz.pk.adventofcode.util.*;
 import cz.pk.adventofcode.util.HexagonUtil.Direction;
-import cz.pk.adventofcode.util.Matrix;
-import cz.pk.adventofcode.util.Pair;
+import cz.pk.adventofcode.util.HexagonUtil.HexagonCoordinate;
 import lombok.Data;
 
 import java.util.*;
@@ -61,42 +59,50 @@ public class Day24 {
         }
     }
 
-    private void switchTile(int[][] field, int x, int y) {
-        if (field[x][y] == 0) {
-            field[x][y] = 1;
+    private void switchTile(Cube<Integer> field, HexagonCoordinate coordinate, int offset) {
+        if (field.get(coordinate.getQ() + offset, coordinate.getR() + offset, coordinate.getS() + offset).equals(0)) {
+            field.set(coordinate.getQ() + offset, coordinate.getR() + offset, coordinate.getS() + offset, 1);
         } else {
-            field[x][y] = 0;
+            field.set(coordinate.getQ() + offset, coordinate.getR() + offset, coordinate.getS() + offset, 0);
         }
+    }
+
+    private int findMaxDimension(List<HexagonCoordinate> coordinates) {
+        int minX = 0, maxX = 0, minY = 0, maxY = 0, minZ = 0, maxZ = 0;
+        for (HexagonCoordinate coordinate : coordinates) {
+            if (coordinate.getQ() < minX) minX = coordinate.getQ();
+            if (coordinate.getQ() > maxX) maxX = coordinate.getQ();
+            if (coordinate.getR() < minY) minY = coordinate.getR();
+            if (coordinate.getR() > maxY) maxY = coordinate.getR();
+            if (coordinate.getS() < minZ) minZ = coordinate.getS();
+            if (coordinate.getS() > maxZ) maxZ = coordinate.getS();
+        }
+        int dimX = maxX - minX + 1;
+        int dimY = maxY - minY + 1;
+        int dimZ = maxZ - minZ + 1;
+        return  Math.max(dimX, Math.max(dimY, dimZ));
     }
 
     public long solve(String file) {
         List<List<Direction>> directions = new DirectionCollector(file).process();
-        System.out.println(Matrix.instance(directions));
+        //System.out.println(Matrix.instance(directions));
 
-        System.out.println("test: " + parseLine("nwwswee"));
-        System.out.println("Position: " + walkOnHexagon(parseLine("nwwswee")));
+        //System.out.println("test: " + parseLine("nwwswee"));
+        //System.out.println("Position: " + walkOnHexagon(parseLine("nwwswee")));
 
-        List<Pair<Integer>> coordinates = directions.stream()
+        List<HexagonCoordinate> coordinates = directions.stream()
                 .map(line -> walkOnHexagon(line))
                 .collect(toList());
-        System.out.println("Positions: " + coordinates);
+        //System.out.println("Positions: " + coordinates);
 
-        int minX = coordinates.stream().min((a, b) -> a.first.compareTo(b.first)).get().first;
-        int maxX = coordinates.stream().max((a, b) -> a.first.compareTo(b.first)).get().first;
-        int minY = coordinates.stream().min((a, b) -> a.second.compareTo(b.second)).get().second;
-        int maxY = coordinates.stream().max((a, b) -> a.second.compareTo(b.second)).get().second;
+        int dim = findMaxDimension(coordinates);
 
-        int[][] field = new int[maxX-minX+1][maxY-minY+1];
-        for (Pair<Integer> coordinate : coordinates) {
-            switchTile(field, -minX + coordinate.first, -minY + coordinate.second);
+        Cube<Integer> field = Cube.instance(dim, 0);
+        for (HexagonCoordinate coordinate : coordinates) {
+            switchTile(field, coordinate, dim / 2);
         }
 
-        int count = 0;
-        for (int i = 0; i < field.length; i++) {
-            for (int j = 0; j < field[i].length; j++) {
-                count += field[i][j];
-            }
-        }
+        int count = field.map(0, (a, b) -> a + b);
 
         return count;
     }
@@ -104,51 +110,29 @@ public class Day24 {
     public long solve2(String file) {
         List<List<Direction>> directions = new DirectionCollector(file).process();
 
-        List<Pair<Integer>> coordinates = directions.stream()
+        List<HexagonCoordinate> coordinates = directions.stream()
                 .map(line -> walkOnHexagon(line))
                 .collect(toList());
-        System.out.println("Positions: " + coordinates);
+        //System.out.println("Positions: " + coordinates);
 
-        int minX = coordinates.stream().min((a, b) -> a.first.compareTo(b.first)).get().first;
-        int maxX = coordinates.stream().max((a, b) -> a.first.compareTo(b.first)).get().first;
-        int minY = coordinates.stream().min((a, b) -> a.second.compareTo(b.second)).get().second;
-        int maxY = coordinates.stream().max((a, b) -> a.second.compareTo(b.second)).get().second;
+        int dim = findMaxDimension(coordinates) + 202;
 
-        int sizeX = maxX-minX+1;
-        int sizeY = maxY-minY+1;
-        int[][] field = new int[sizeX+5][sizeY+5];
-        for (Pair<Integer> coordinate : coordinates) {
-            switchTile(field, 3 - minX + coordinate.first, 3 - minY + coordinate.second);
+        Cube<Integer> field = Cube.instance(dim, 0);
+        for (HexagonCoordinate coordinate : coordinates) {
+            switchTile(field, coordinate, dim / 2);
         }
-        // TODO read https://www.redblobgames.com/grids/hexagons/
 
-        int count = 0;
-        Matrix<Integer> fieldMatrix = Matrix.instance(Stream.of(field)
-                .map(array -> IntStream.of(array).boxed().toArray(Integer[]::new))
-                .toArray(Integer[][]::new));
-        for (int day = 0; day < 2; day++) {
-            System.out.println("Field:\n" + fieldMatrix);
-            Matrix<Integer> surroundEven = fieldMatrix.convolution(
-                    Matrix.instance(new Integer[][]{
-                            {1, 1, 0},
-                            {1, 0, 1},
-                            {1, 1, 0}}),
-                    (f, c) -> f * c,
-                    0,
-                    (a, b) -> a + b);
-            Matrix<Integer> surroundOdd = fieldMatrix.convolution(
-                    Matrix.instance(new Integer[][]{
-                            {0, 1, 1},
-                            {1, 0, 1},
-                            {0, 1, 1}}),
-                    (f, c) -> f * c,
-                    0,
-                    (a, b) -> a + b);
-            Matrix<Integer> surround = surroundEven
-                    .merge(surroundOdd, (i, j) -> i % 2 == 0);
-            System.out.println("Surround:\n" + surround);
-            fieldMatrix = fieldMatrix.applyMatrix(surround, (f, s) -> {
-                if (f == 1) {
+        int count = field.map(0, (a, b) -> a + b);
+
+        //System.out.println("Field:\n" + field);
+        for (int day = 0; day < 100; day++) {
+            field = field.applyOperation((Cube<Integer> cube, HexagonCoordinate coordinate) -> {
+                int s = 0;  // number of black in surround
+                for (Direction direction : Direction.values()) {
+                    HexagonCoordinate delta = new HexagonCoordinate(direction.getQ(), direction.getR(), direction.getS());
+                    s += cube.get(coordinate.plus(delta));
+                }
+                if (cube.get(coordinate) == 1) {
                     // black
                     if (s == 0 || s > 2) {
                         return 0;
@@ -164,13 +148,9 @@ public class Day24 {
                     }
                 }
             });
+            //System.out.println("Field:\n" + field);
 
-            count = 0;
-            for (int i = 0; i < fieldMatrix.getHeight(); i++) {
-                for (int j = 0; j < fieldMatrix.getWidth(); j++) {
-                    count += fieldMatrix.get(i, j);
-                }
-            }
+            count = field.map(0, (a, b) -> a + b);
             System.out.println(format("Day %d: %d", day+1, count));
         }
 

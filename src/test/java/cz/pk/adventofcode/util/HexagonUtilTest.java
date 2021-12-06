@@ -1,6 +1,7 @@
 package cz.pk.adventofcode.util;
 
 import cz.pk.adventofcode.util.HexagonUtil.Direction;
+import cz.pk.adventofcode.util.HexagonUtil.HexagonCoordinate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +21,11 @@ public class HexagonUtilTest {
                 EAST,
                 EAST,
         });
-        Pair<Integer> finalStop = HexagonUtil.walkOnHexagon(directions);
+        HexagonCoordinate finalStop = HexagonUtil.walkOnHexagon(directions);
         System.out.println("Final: " + finalStop);
-        assert finalStop.first == 0;
-        assert finalStop.second == 0;
+        assert finalStop.getQ() == 0;
+        assert finalStop.getR() == 0;
+        assert finalStop.getS() == 0;
     }
 
     @Test
@@ -33,10 +35,11 @@ public class HexagonUtilTest {
                 SOUTHEAST,
                 WEST,
         });
-        Pair<Integer> finalStop = HexagonUtil.walkOnHexagon(directions);
+        HexagonCoordinate finalStop = HexagonUtil.walkOnHexagon(directions);
         System.out.println("Final: " + finalStop);
-        assert finalStop.first == 0;
-        assert finalStop.second == 0;
+        assert finalStop.getQ() == 0;
+        assert finalStop.getR() == 0;
+        assert finalStop.getS() == 0;
     }
 
     @Test
@@ -55,9 +58,10 @@ public class HexagonUtilTest {
                 NORTHWEST,
                 NORTHWEST,
         });
-        Pair<Integer> finalStop = HexagonUtil.walkOnHexagon(directions);
+        HexagonCoordinate finalStop = HexagonUtil.walkOnHexagon(directions);
         System.out.println("Final: " + finalStop);
-        assert finalStop.first == 0;
-        assert finalStop.second == 0;
+        assert finalStop.getQ() == 0;
+        assert finalStop.getR() == 0;
+        assert finalStop.getS() == 0;
     }
 }
