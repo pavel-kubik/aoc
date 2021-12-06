@@ -1,15 +1,14 @@
 package cz.pk.adventofcode.current;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cz.pk.adventofcode.util.DataCollectorFactory.collectData;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -67,45 +66,81 @@ public class Day6 {
     }
 
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        // string lines
-        //List<String> data = new StringCollector(file).process();
-        // matrix
-        List<List<Long>> data = collectData(
-                file,
-                (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
+        List<String> data = new StringCollector(file).process();
+        String[] agesStr = data.get(0).split(",");
+        List<Integer> ages = new ArrayList<>();
+        for (int i = 0; i < agesStr.length; i++) {
+            ages.add(Integer.valueOf(agesStr[i]).intValue());
+        }
+        System.out.println(ages);
+
+        for (int day = 0; day < 80; day++) {
+            List<Integer> newGen = new ArrayList<>();
+            for (int i = 0; i < ages.size(); i++) {
+                ages.set(i, ages.get(i) - 1);
+            }
+            for (int i = 0; i < ages.size(); i++) {
+                if (ages.get(i) == -1) {
+                    newGen.add(8);
+                    ages.set(i, 6);
+                }
+            }
+            ages.addAll(newGen);
+            System.out.println(format("Day %d (%d): %s", day, ages.size(), ages));
+        }
 
         System.out.println(data);
-        return 0;
+        return ages.size();
     }
 
     public long solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<String> data = new StringCollector(file).process();
+        String[] agesStr = data.get(0).split(",");
+        List<Integer> ages = new ArrayList<>();
+        for (int i = 0; i < agesStr.length; i++) {
+            ages.add(Integer.valueOf(agesStr[i]).intValue());
+        }
+        System.out.println(ages);
+
+        for (int day = 0; day < 256; day++) {
+            List<Integer> newGen = new ArrayList<>();
+            for (int i = 0; i < ages.size(); i++) {
+                ages.set(i, ages.get(i) - 1);
+            }
+            for (int i = 0; i < ages.size(); i++) {
+                if (ages.get(i) == -1) {
+                    newGen.add(8);
+                    ages.set(i, 6);
+                }
+            }
+            ages.addAll(newGen);
+            //System.out.println(format("Day %d (%d): %s", day, ages.size(), ages));
+        }
+
         System.out.println(data);
-        return 0;
+        return ages.size();
     }
 
     public static void main(String[] args) {
         System.out.println(Day6.class);
         long count;
         //*
-        count = new Day6(true).solve("day_test.txt");
+        count = new Day6(true).solve("day6_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 111;
+        assert count == 5934;
 
-        count = new Day6(true).solve("day.txt");
+        count = new Day6(true).solve("day6.txt");
         System.out.println("Result: " + count);
-        assert count == 222;
+        assert count == 372300;
 
         //*/
 
-        count = new Day6(true).solve2("day_test.txt");
+        count = new Day6(true).solve2("day6_test.txt");
         System.out.println("Result: " + count);
-        assert count == 333;
+        assert count == 26984457539l;
 
-        count = new Day6(true).solve2("day.txt");
+        count = new Day6(true).solve2("day6.txt");
         System.out.println("Result: " + count);
         assert count == 444;
         //*/
