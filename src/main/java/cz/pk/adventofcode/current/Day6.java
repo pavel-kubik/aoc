@@ -102,23 +102,30 @@ public class Day6 {
         }
         System.out.println(ages);
 
-        for (int day = 0; day < 256; day++) {
-            List<Integer> newGen = new ArrayList<>();
-            for (int i = 0; i < ages.size(); i++) {
-                ages.set(i, ages.get(i) - 1);
-            }
-            for (int i = 0; i < ages.size(); i++) {
-                if (ages.get(i) == -1) {
-                    newGen.add(8);
-                    ages.set(i, 6);
-                }
-            }
-            ages.addAll(newGen);
-            //System.out.println(format("Day %d (%d): %s", day, ages.size(), ages));
+        long population[] = new long[9];
+        for (Integer age : ages) {
+            population[age]++;
         }
 
-        System.out.println(data);
-        return ages.size();
+        for (int day = 0; day < 256; day++) {
+            long[] newGen = new long[9];
+            newGen[8] = population[0];  // new lanternfish
+
+            for (int i = 1; i < population.length; i++) {
+                newGen[i-1] = population[i];
+            }
+
+            newGen[6] += population[0]; // reset interval
+
+            population = newGen;
+        }
+
+        long count = 0;
+        for (int i = 0; i < population.length; i++) {
+            count += population[i];
+        }
+
+        return count;
     }
 
     public static void main(String[] args) {
