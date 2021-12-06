@@ -86,6 +86,7 @@ public class Day7 {
         Matrix<Long> m = Matrix.instance(data);
 
         System.out.println(data);
+        m.map(0l, (a, b) -> a + b);
         return 0;
     }
 
