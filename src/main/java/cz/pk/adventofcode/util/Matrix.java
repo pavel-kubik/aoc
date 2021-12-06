@@ -182,6 +182,16 @@ public class Matrix<TYPE> {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    public <TYPE_O> TYPE_O map(TYPE_O initialValue, BiFunction<TYPE_O, TYPE, TYPE_O> mapFunction) {
+        TYPE_O out = initialValue;
+        for (int i = 0; i < rows.size(); i++) {
+            for (int j = 0; j < rows.get(i).size(); j++) {
+                out = mapFunction.apply(out, get(i, j));
+            }
+        }
+        return out;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

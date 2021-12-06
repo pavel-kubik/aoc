@@ -308,7 +308,8 @@ public class Day11 {
                           return place; //unchanged
                         }});
         } while (!places.equals(newPlaces));
-        return places.apply(v -> v.equals(OCCUPIED_SEAT) ? 1 : 0);
+        //return places.apply(v -> v.equals(OCCUPIED_SEAT) ? 1 : 0);
+        return places.map(0, (sum, v) -> sum + (v.equals(OCCUPIED_SEAT) ? 1 : 0));
     }
 
     class PlaceCollector extends DataCollector<Place[]> {
