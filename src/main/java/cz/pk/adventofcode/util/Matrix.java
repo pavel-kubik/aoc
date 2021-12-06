@@ -36,7 +36,6 @@ public class Matrix<TYPE> {
             rows.add(Arrays.asList(data[i]));
         }
         return Matrix.instance(rows);
-        //return new Matrix<T>();
     }
 
     public static <T> Matrix<T> instance(List<List<T>> rows) {
