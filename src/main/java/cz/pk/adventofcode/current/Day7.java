@@ -2,6 +2,7 @@ package cz.pk.adventofcode.current;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
+import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -67,33 +68,72 @@ public class Day7 {
         }
     }
 
+    public List<Integer> loadData(String file) {
+        return stream(new StringCollector(file)
+                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
+    }
+
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<Integer> horizontal = loadData(file);
 
-        // string lines
-        //List<String> data = new StringCollector(file).process();
+        int minY = Integer.MAX_VALUE;
+        int maxY = -Integer.MAX_VALUE;
+        for (int i = 0; i < horizontal.size(); i++) {
+            if (horizontal.get(i) < minY) minY = horizontal.get(i);
+            if (horizontal.get(i) > maxY) maxY = horizontal.get(i);
+        }
 
-        // 1 line separated by ,
-        //List<Integer> ages = stream(new StringCollector(file)
-        //        .process().get(0).split(",")).toList()
-        //        .stream().map(Integer::valueOf).toList();
+        int minYStart = -1;
+        long minFuel = Long.MAX_VALUE;
+        for (int i = minY; i < maxY; i++) {
+            long fuel = 0;
+            for (int y = 0; y < horizontal.size(); y++) {
+                fuel += Math.abs(horizontal.get(y) - i);
+            }
+            if (fuel < minFuel) {
+                minFuel = fuel;
+                minYStart = i;
+            }
+        }
 
-        // matrix
-        List<List<Long>> data = collectData(
-                file,
-                (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        Matrix<Long> m = Matrix.instance(data);
-
-        System.out.println(data);
-        m.map(0l, (a, b) -> a + b);
-        return 0;
+        return minFuel;
     }
 
     public long solve2(String file) {
-        Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-        System.out.println(data);
-        return 0;
+        List<Integer> horizontal = loadData(file);
+
+        int minY = Integer.MAX_VALUE;
+        int maxY = -Integer.MAX_VALUE;
+        for (int i = 0; i < horizontal.size(); i++) {
+            if (horizontal.get(i) < minY) minY = horizontal.get(i);
+            if (horizontal.get(i) > maxY) maxY = horizontal.get(i);
+        }
+
+        assert countFuelConsumption(Math.abs(16 - 5)) == 66;
+
+        int minYStart = -1;
+        long minFuel = Long.MAX_VALUE;
+        for (int i = minY; i < maxY; i++) {
+            long fuel = 0;
+            for (int y = 0; y < horizontal.size(); y++) {
+                fuel += countFuelConsumption(Math.abs(horizontal.get(y) - i));
+            }
+            if (fuel < minFuel) {
+                minFuel = fuel;
+                minYStart = i;
+            }
+        }
+
+        return minFuel;
+    }
+
+    private long countFuelConsumption(Integer distance) {
+        int sum = 0;
+        int costOfStep = 1;
+        for (int i = 0; i < distance; i++) {
+            sum += costOfStep++;
+        }
+        return sum;
     }
 
     public static void main(String[] args) {
@@ -103,21 +143,21 @@ public class Day7 {
         count = new Day7(true).solve("day7_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 111;
+        assert count == 37;
 
         count = new Day7(true).solve("day7.txt");
         System.out.println("Result: " + count);
-        assert count == 222;
+        assert count == 349769;
 
         //*/
 
         count = new Day7(true).solve2("day7_test.txt");
         System.out.println("Result: " + count);
-        assert count == 333;
+        assert count == 168;
 
         count = new Day7(true).solve2("day7.txt");
         System.out.println("Result: " + count);
-        assert count == 444;
+        assert count == 99540554;
         //*/
     }
 }
