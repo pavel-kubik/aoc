@@ -1,13 +1,12 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day8;
 
-import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
 
-import static cz.pk.adventofcode.current.Day8.DIGITS.*;
+import static cz.pk.adventofcode.y2021.day8.Day8.DIGITS.*;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -234,22 +233,22 @@ public class Day8 {
         System.out.println(Day8.class);
         long count;
         //*
-        count = new Day8(true).solve("day8_test.txt");
+        count = new Day8(true).solve("2021/day8_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 26;
 
-        count = new Day8(true).solve("day8.txt");
+        count = new Day8(true).solve("2021/day8.txt");
         System.out.println("Result: " + count);
         assert count == 342;
 
         //*/
 
-        count = new Day8(true).solve2("day8_test.txt");
+        count = new Day8(true).solve2("2021/day8_test.txt");
         System.out.println("Result: " + count);
         assert count == 61229;
 
-        count = new Day8(true).solve2("day8.txt");
+        count = new Day8(true).solve2("2021/day8.txt");
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
