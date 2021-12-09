@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.Pair;
+import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -150,13 +150,13 @@ public class Day14 {
         return -1;
     }
 
-    private List<Pair<Long>> applyMaskToMemory(long addr, List<Integer> mask) {
+    private List<Vector2<Long>> applyMaskToMemory(long addr, List<Integer> mask) {
         assert mask.size() == 36;
         int fluidIdx = firstFluid(mask);
         if (fluidIdx == -1) {
-            return Arrays.asList(new Pair<Long>(bin2Dec(applyMask2(dec2Bin(addr), mask)), bin2Dec(mask)));
+            return Arrays.asList(new Vector2<Long>(bin2Dec(applyMask2(dec2Bin(addr), mask)), bin2Dec(mask)));
         } else {
-            List<Pair<Long>> out = new ArrayList<>();
+            List<Vector2<Long>> out = new ArrayList<>();
 
             List<Integer> addr0 = setBit(fluidIdx, 0, dec2Bin(addr));
             List<Integer> addr1 = setBit(fluidIdx, 1, dec2Bin(addr));
@@ -203,10 +203,10 @@ public class Day14 {
                 mask = instructions[i].mask;
             } else {
                 List<Integer> number = dec2Bin(instructions[i].number);
-                List<Pair<Long>> addresses = applyMaskToMemory(instructions[i].addr, mask);
-                for (Pair<Long> addrAndMask : addresses) {
-                    Long addr = addrAndMask.first;
-                    Long maskDec = addrAndMask.second;
+                List<Vector2<Long>> addresses = applyMaskToMemory(instructions[i].addr, mask);
+                for (Vector2<Long> addrAndMask : addresses) {
+                    Long addr = addrAndMask.x;
+                    Long maskDec = addrAndMask.y;
                     assert addr >= 0;
                     addNumberToMemory(addr, number);
                 }

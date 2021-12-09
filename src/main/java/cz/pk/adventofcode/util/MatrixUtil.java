@@ -13,9 +13,9 @@ public class MatrixUtil<T> {
         this.clazz = clazz;
     }
 
-    public <T> boolean same(Pair<T[][]> pair) {
-        T[][] a = pair.first;
-        T[][] b = pair.second;
+    public <T> boolean same(Vector2<T[][]> pair) {
+        T[][] a = pair.x;
+        T[][] b = pair.y;
         for (int i = 0; i < a.length; i++) {
             for (int j = 0; j < a[i].length; j++) {
                 if (!a[i][j].equals(b[i][j])) {

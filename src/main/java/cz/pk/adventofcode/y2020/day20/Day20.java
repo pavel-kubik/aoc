@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import com.sun.jdi.InternalException;
 import cz.pk.adventofcode.util.GroupCollector;
-import cz.pk.adventofcode.util.Pair;
+import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -321,22 +321,22 @@ public class Day20 {
             List<Long> baseBorders = enumerateBorder(base.pic);
             List<Long> rightBorders = enumerateBorder(right.pic);
 
-            Pair<Integer> rightIdxs = matchIndexes(baseBorders, rightBorders);
+            Vector2<Integer> rightIdxs = matchIndexes(baseBorders, rightBorders);
 
             System.out.println("Move: " + rightIdxs);
-            base.flipAndRotate(1, rightIdxs.first);//.flipHorizontal();
+            base.flipAndRotate(1, rightIdxs.x);//.flipHorizontal();
 
             // rotate rest of first row
             for (int y = 1; y < order.length; y++) {
                 Image imageA = imagesById.get(order[0][y - 1]);
                 Image imageB = imagesById.get(order[0][y]);
-                Pair<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
+                Vector2<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
                 System.out.println("Move: " + move);
-                imagesById.get(order[0][y]).flipAndRotate(3, move.second);
+                imagesById.get(order[0][y]).flipAndRotate(3, move.y);
                 //                if (move.b >= 2 && move.b < 6) {
                 //                    imagesById.get(order[0][y]).flip(move.b);
                 //                }
-                if (move.second < 4) {
+                if (move.y < 4) {
                     imagesById.get(order[0][y]).flipHorizontal();
                 }
             }
@@ -345,10 +345,10 @@ public class Day20 {
                 for (int y = 0; y < order.length; y++) {
                     Image imageA = imagesById.get(order[x - 1][y]);
                     Image imageB = imagesById.get(order[x][y]);
-                    Pair<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
+                    Vector2<Integer> move = matchIndexes(enumerateBorder(imageA.pic), enumerateBorder(imageB.pic));
                     System.out.println("Move: " + move);
-                    imagesById.get(order[x][y]).flipAndRotate(0, move.second);
-                    if (move.second < 4) {
+                    imagesById.get(order[x][y]).flipAndRotate(0, move.y);
+                    if (move.y < 4) {
                         imagesById.get(order[x][y]).flipVertical();
                     }
                 }
@@ -401,7 +401,7 @@ public class Day20 {
                 for (int i = 0; i < finalImage.length - monster.length + 1; i++) {
                     for (int j = 0; j < finalImage[i].length - monster[0].length + 1; j++) {
                         if (match(finalImage, monster, i, j)) {
-                            System.out.println("Monster at " + new Pair<>(i, j));
+                            System.out.println("Monster at " + new Vector2<>(i, j));
                             remove(finalImageWithoutMonsters, monster, i, j);
                         }
                     }
@@ -462,11 +462,11 @@ public class Day20 {
         return isReverse(a) && !isReverse(b) || !isReverse(a) && isReverse(b);
     }
 
-    private Pair<Integer> matchIndexes(List<Long> ac, List<Long> bc) {
+    private Vector2<Integer> matchIndexes(List<Long> ac, List<Long> bc) {
         for (int i = 0; i < ac.size(); i++) {
             for (int j = 0; j < bc.size(); j++) {
                 if (ac.get(i).equals(bc.get(j))) {
-                    return new Pair(i, j);
+                    return new Vector2(i, j);
                 }
             }
         }

@@ -63,8 +63,16 @@ public class Matrix<TYPE> {
         }
     }
 
+    public TYPE get(Vector2<Integer> vector) {
+        return get(vector.x, vector.y); // TODO x should go to columns
+    }
+
     public void set(int row, int col, TYPE value) {
         rows.get(row).set(col, value);
+    }
+
+    public void set(Vector2<Integer> vector, TYPE value) {
+        set(vector.x, vector.y, value); // TODO x should go to columns
     }
 
     public <T> boolean equals(Matrix<TYPE> matrix) {
@@ -79,12 +87,12 @@ public class Matrix<TYPE> {
         return true;
     }
     public Matrix<TYPE>
-    applyOperation(BiFunction<Matrix<TYPE>, Pair<Integer>, TYPE> op) {
+    applyOperation(BiFunction<Matrix<TYPE>, Vector2<Integer>, TYPE> op) {
         List<List<TYPE>> out = new ArrayList<>();
         for (int i = 0; i < rows.size(); i++) {
             List<TYPE> d2 = new ArrayList<>();
             for (int j = 0; j < rows.get(i).size(); j++) {
-                d2.add(op.apply(this, new Pair<>(i, j)));
+                d2.add(op.apply(this, new Vector2<>(i, j)));
             }
             out.add(d2);
         }
