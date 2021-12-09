@@ -38,6 +38,18 @@ public class Matrix<TYPE> {
         return Matrix.instance(rows);
     }
 
+    public static <T> Matrix<T> instance(int width, int height, T initialValue) {
+        List<List<T>> rows = new ArrayList<>();
+        for (int i = 0; i < height; i++) {
+            List<T> row = new ArrayList<>();
+            for (int j = 0; j < width; j++) {
+                row.add(initialValue);
+            }
+            rows.add(row);
+        }
+        return Matrix.instance(rows);
+    }
+
     public static <T> Matrix<T> instance(List<List<T>> rows) {
         return new Matrix<T>().setRows(rows);
     }

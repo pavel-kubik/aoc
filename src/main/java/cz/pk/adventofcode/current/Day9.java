@@ -2,6 +2,7 @@ package cz.pk.adventofcode.current;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
+import cz.pk.adventofcode.util.Pair;
 import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -66,8 +67,10 @@ public class Day9 {
 
     private boolean isMin(List<Integer> vals, Integer value) {
         for (Integer v : vals) {
-            if (value >= v) {
-                return false;
+            if (v != null) {
+                if (value >= v) {
+                    return false;
+                }
             }
         }
         return true;
@@ -89,14 +92,10 @@ public class Day9 {
                     int x = c.first;
                     int y = c.second;
                     List<Integer> sur = new ArrayList<>();
-                    for (int i = -1; i < 2; i++) {
-                        for (int j = -1; j < 2; j++) {
-                            if (i==0 && j == 0) continue;
-                            if (m.get(x + i, y + j) != null) {
-                                sur.add(m.get(x + i, y + j));
-                            }
-                        }
-                    }
+                    sur.add(m.get(x + 1, y));
+                    sur.add(m.get(x - 1, y));
+                    sur.add(m.get(x, y + 1));
+                    sur.add(m.get(x, y - 1));
                     if (isMin(sur, m.get(x, y))) {
                         return m.get(x, y);
                     } else {
@@ -110,16 +109,25 @@ public class Day9 {
         return count;
     }
 
-    private void markBasis(Matrix<Integer> m, int x, int y, int base) {
+    private void markBasis(Matrix<Integer> m, int x, int y, int base, Matrix<Integer> used) {
+        if (used.get(x, y) != 0) {
+            return;
+        }
         m.set(x, y, -base); // mark as counted
-        for (int dx = -1; dx < 2; dx++) {
-            for (int dy = -1; dy < 2; dy++) {
-                if (dx==0 && dy == 0) continue;
-                if (m.get(x + dx, y + dy) != null && m.get(x + dx, y + dy) == base + 1) {
-                    // new point
-                    if (base + 1 < 9) {
-                        markBasis(m, x + dx, y + dy, base + 1);
-                    }
+        used.set(x, y, 1);
+        Pair<Integer>[] points = new Pair[]{
+                new Pair<>(1, 0),
+                new Pair<>(-1, 0),
+                new Pair<>(0, 1),
+                new Pair<>(0, -1),
+        };
+        for (Pair<Integer> point : points) {
+            int dx = point.first;
+            int dy = point.second;
+            if (m.get(x + dx, y + dy) != null && m.get(x + dx, y + dy) == base + 1) {
+                // new point
+                if (base + 1 < 9) {
+                    markBasis(m, x + dx, y + dy, base + 1, used);
                 }
             }
         }
@@ -148,23 +156,20 @@ public class Day9 {
         Matrix<Integer> data = Matrix.instance(mtx);
         System.out.println(data);
 
+        Matrix<Integer> used = Matrix.instance(data.getWidth(), data.getHeight(), 0);
         Matrix<Integer> surround = data.applyOperation(
                 (m, c) -> {
                     int x = c.first;
                     int y = c.second;
                     List<Integer> sur = new ArrayList<>();
-                    for (int dx = -1; dx < 2; dx++) {
-                        for (int dy = -1; dy < 2; dy++) {
-                            if (dx==0 && dy == 0) continue;
-                            if (m.get(x + dx, y + dy) != null) {
-                                sur.add(m.get(x + dx, y + dy));
-                            }
-                        }
-                    }
+                    sur.add(m.get(x + 1, y));
+                    sur.add(m.get(x - 1, y));
+                    sur.add(m.get(x, y + 1));
+                    sur.add(m.get(x, y - 1));
                     if (isMin(sur, m.get(x, y))) {
                         int base = m.get(x, y);
                         System.out.println("Count base " + x + "," + y);
-                        markBasis(m, x, y, base);
+                        markBasis(m, x, y, base, used);
                         //System.out.println(m);
                         int count = m.map(0, (a, b) -> a + (b < 0 ? 1 : 0));
                         if (m.get(x, y) == 0) count++;
@@ -186,9 +191,8 @@ public class Day9 {
             return 0;
         });
 
-        System.out.println(basinsSize);
-
         Collections.sort(basinsSize, Collections.reverseOrder());
+        System.out.println(basinsSize);
 
         return basinsSize.get(0) * basinsSize.get(1) * basinsSize.get(2);
     }
@@ -214,7 +218,10 @@ public class Day9 {
 
         count = new Day9(true).solve2("day9.txt");
         System.out.println("Result: " + count);
-        assert count == 44; //>931491
-        //*/
+        assert count == 44; //>931491 (99, 97, 97), not 950796 (99, 98, 98)
+        // not 941094 (99, 98, 97)
+        // not 960400 (100, 98, 98)
+        // not 912576
+        // not 388360 ;-(
     }
 }
