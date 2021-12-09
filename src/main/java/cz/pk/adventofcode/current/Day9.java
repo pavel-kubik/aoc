@@ -1,5 +1,12 @@
 package cz.pk.adventofcode.current;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.Pair;
@@ -7,9 +14,6 @@ import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.*;
-
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 @Data
@@ -109,12 +113,9 @@ public class Day9 {
         return count;
     }
 
-    private void markBasis(Matrix<Integer> m, int x, int y, int base, Matrix<Integer> used) {
-        if (used.get(x, y) != 0) {
-            return;
-        }
+    private void markBasin(Matrix<Integer> m, int x, int y) {
+        int base = m.get(x, y);
         m.set(x, y, -base); // mark as counted
-        used.set(x, y, 1);
         Pair<Integer>[] points = new Pair[]{
                 new Pair<>(1, 0),
                 new Pair<>(-1, 0),
@@ -124,17 +125,17 @@ public class Day9 {
         for (Pair<Integer> point : points) {
             int dx = point.first;
             int dy = point.second;
-            if (m.get(x + dx, y + dy) != null && m.get(x + dx, y + dy) == base + 1) {
+            if (m.get(x + dx, y + dy) != null && m.get(x + dx, y + dy) > base) {
                 // new point
-                if (base + 1 < 9) {
-                    markBasis(m, x + dx, y + dy, base + 1, used);
+                if (m.get(x + dx, y + dy) < 9) {
+                    markBasin(m, x + dx, y + dy);
                 }
             }
         }
         //System.out.printf("(%d,%d): %d\n", x, y, base);
     }
 
-    private void unmarkBasis(Matrix<Integer> matrix) {
+    private void unmarkBasin(Matrix<Integer> matrix) {
         matrix.applyOperation((m, c) -> {
             if (m.get(c.first, c.second) < 0) {
                 m.set(c.first, c.second, -m.get(c.first, c.second));
@@ -156,7 +157,6 @@ public class Day9 {
         Matrix<Integer> data = Matrix.instance(mtx);
         System.out.println(data);
 
-        Matrix<Integer> used = Matrix.instance(data.getWidth(), data.getHeight(), 0);
         Matrix<Integer> surround = data.applyOperation(
                 (m, c) -> {
                     int x = c.first;
@@ -167,15 +167,14 @@ public class Day9 {
                     sur.add(m.get(x, y + 1));
                     sur.add(m.get(x, y - 1));
                     if (isMin(sur, m.get(x, y))) {
-                        int base = m.get(x, y);
                         System.out.println("Count base " + x + "," + y);
-                        markBasis(m, x, y, base, used);
-                        //System.out.println(m);
+                        markBasin(m, x, y);
+                        System.out.print(m);
                         int count = m.map(0, (a, b) -> a + (b < 0 ? 1 : 0));
                         if (m.get(x, y) == 0) count++;
-                        //System.out.println("Size: " + count);
-                        unmarkBasis(m);
-                        //System.out.println(m);
+                        System.out.printf("Size: %d\n\n", count);
+                        unmarkBasin(m);
+                        System.out.println(m);
                         return count;
                     } else {
                         return -1;
@@ -184,7 +183,7 @@ public class Day9 {
         System.out.println(surround);
 
         List<Integer> basinsSize = new ArrayList<>();
-        int count = surround.map(0, (a, b) -> {
+        surround.map(0, (a, b) -> {
             if (b > 0) {
                 basinsSize.add(b);
             }
@@ -223,5 +222,8 @@ public class Day9 {
         // not 960400 (100, 98, 98)
         // not 912576
         // not 388360 ;-(
+        // not 812912
+        // not 839325
+        // 950600
     }
 }
