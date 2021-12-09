@@ -43,7 +43,12 @@ public class Matrix<TYPE> {
     }
 
     public TYPE get(int row, int col) {
-        return rows.get(row).get(col);
+        if (row >= 0 && row < rows.size() &&
+            col >= 0 && col < rows.get(row).size()) {
+            return rows.get(row).get(col);
+        } else {
+            return null;
+        }
     }
 
     public void set(int row, int col, TYPE value) {
@@ -60,6 +65,18 @@ public class Matrix<TYPE> {
             }
         }
         return true;
+    }
+    public Matrix<TYPE>
+    applyOperation(BiFunction<Matrix<TYPE>, Pair<Integer>, TYPE> op) {
+        List<List<TYPE>> out = new ArrayList<>();
+        for (int i = 0; i < rows.size(); i++) {
+            List<TYPE> d2 = new ArrayList<>();
+            for (int j = 0; j < rows.get(i).size(); j++) {
+                d2.add(op.apply(this, new Pair<>(i, j)));
+            }
+            out.add(d2);
+        }
+        return Matrix.instance(out);
     }
 
     public <TYPE_CM, TYPE_O>
