@@ -62,6 +62,13 @@ public class Template {
 
         @Override
         protected Subject processLine(String line) {
+            // numbers in line without separator - Subject: List<Integer>
+            //return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
+
+            // numbers in line with separator - Subject: List<Integer>
+            // decimal - can be any base - change 2nd argument in parseInt
+            //return stream(line.split(" ")).map(n -> Integer.parseInt(n, 10)).collect(toList());
+
             Type type = Type.get(String.valueOf(line.charAt(0)));
             Integer size = Integer.valueOf(line.substring(1));
             return new Subject(type, size);
