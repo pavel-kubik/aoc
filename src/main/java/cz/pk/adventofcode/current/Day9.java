@@ -55,17 +55,15 @@ public class Day9 {
         }
     }
 
-    class TypeCollector extends DataCollector<Subject> {
+    class NumberCollector extends DataCollector<List<Integer>> {
 
-        public TypeCollector(String file) {
+        public NumberCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+        protected List<Integer> processLine(String line) {
+            return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
         }
     }
 
@@ -81,15 +79,9 @@ public class Day9 {
     }
 
     public long solve(String file) {
-        // string lines
-        List<String> in = new StringCollector(file)
-                        .process();
-        List<List<Integer>> mtx = new ArrayList<>();
-        for (String line : in) {
-            mtx.add(line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList()));
-        }
-        Matrix<Integer> data = Matrix.instance(mtx);
-        System.out.println(data);
+        List<List<Integer>> matrixData = new NumberCollector(file).process();
+        Matrix<Integer> data = Matrix.instance(matrixData);
+        if (debug) System.out.println(data);
 
         Matrix<Integer> surround = data.applyOperation(
                 (m, c) -> {
@@ -101,14 +93,14 @@ public class Day9 {
                     sur.add(m.get(x, y + 1));
                     sur.add(m.get(x, y - 1));
                     if (isMin(sur, m.get(x, y))) {
-                        return m.get(x, y);
+                        return m.get(x, y) + 1;
                     } else {
                         return -1;
                     }
                });
         System.out.println(surround);
 
-        int count = surround.map(0, (a, b) -> a + ((b != -1) ? b + 1 : 0));
+        int count = surround.map(0, (a, b) -> a + ((b != -1) ? b : 0));
 
         return count;
     }
@@ -147,15 +139,9 @@ public class Day9 {
     }
 
     public long solve2(String file) {
-        // string lines
-        List<String> in = new StringCollector(file)
-                .process();
-        List<List<Integer>> mtx = new ArrayList<>();
-        for (String line : in) {
-            mtx.add(line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList()));
-        }
-        Matrix<Integer> data = Matrix.instance(mtx);
-        System.out.println(data);
+        List<List<Integer>> matrixData = new NumberCollector(file).process();
+        Matrix<Integer> data = Matrix.instance(matrixData);
+        if (debug) System.out.println(data);
 
         Matrix<Integer> surround = data.applyOperation(
                 (m, c) -> {
@@ -167,27 +153,26 @@ public class Day9 {
                     sur.add(m.get(x, y + 1));
                     sur.add(m.get(x, y - 1));
                     if (isMin(sur, m.get(x, y))) {
-                        System.out.println("Count base " + x + "," + y);
+                        if (debug) System.out.println("Count base " + x + "," + y);
                         markBasin(m, x, y);
-                        System.out.print(m);
+                        if (debug) System.out.print(m);
                         int count = m.map(0, (a, b) -> a + (b < 0 ? 1 : 0));
                         if (m.get(x, y) == 0) count++;
-                        System.out.printf("Size: %d\n\n", count);
+                        if (debug) System.out.printf("Size: %d\n\n", count);
                         unmarkBasin(m);
-                        System.out.println(m);
+                        if (debug) System.out.println(m);
                         return count;
                     } else {
                         return -1;
                     }
                 });
-        System.out.println(surround);
+        if (debug) System.out.println(surround);
 
-        List<Integer> basinsSize = new ArrayList<>();
-        surround.map(0, (a, b) -> {
+        List<Integer> basinsSize = surround.map(new ArrayList(), (a, b) -> {
             if (b > 0) {
-                basinsSize.add(b);
+                a.add(b);
             }
-            return 0;
+            return a;
         });
 
         Collections.sort(basinsSize, Collections.reverseOrder());
@@ -199,13 +184,13 @@ public class Day9 {
     public static void main(String[] args) {
         System.out.println(Day9.class);
         long count;
-        /*
+        //*
         count = new Day9(true).solve("day9_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 15;
 
-        count = new Day9(true).solve("day9.txt");
+        count = new Day9(false).solve("day9.txt");
         System.out.println("Result: " + count);
         assert count == 545;
 
@@ -215,9 +200,9 @@ public class Day9 {
         System.out.println("Result: " + count);
         assert count == 1134;
 
-        count = new Day9(true).solve2("day9.txt");
+        count = new Day9(false).solve2("day9.txt");
         System.out.println("Result: " + count);
-        assert count == 44; //>931491 (99, 97, 97), not 950796 (99, 98, 98)
+        assert count == 950600; //>931491 (99, 97, 97), not 950796 (99, 98, 98)
         // not 941094 (99, 98, 97)
         // not 960400 (100, 98, 98)
         // not 912576
