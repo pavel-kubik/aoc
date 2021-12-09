@@ -1,7 +1,5 @@
 package cz.pk.adventofcode;
 
-import cz.pk.adventofcode.y2021.day5.Day5;
-import cz.pk.adventofcode.y2021.day6.Day6;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +10,8 @@ import cz.pk.adventofcode.y2021.day1.Day1;
 import cz.pk.adventofcode.y2021.day2.Day2;
 import cz.pk.adventofcode.y2021.day3.Day3;
 import cz.pk.adventofcode.y2021.day4.Day4;
+import cz.pk.adventofcode.y2021.day5.Day5;
+import cz.pk.adventofcode.y2021.day6.Day6;
 
 @SpringBootApplication
 public class AdventOfCodeApplication {
@@ -33,7 +33,7 @@ public class AdventOfCodeApplication {
             cz.pk.adventofcode.y2020.day8.Day8.main(args);
             cz.pk.adventofcode.y2020.day9.Day9.main(args);
             cz.pk.adventofcode.y2020.day10.Day10.main(args);
-            cz.pk.adventofcode.y2020.day11.Day11.main(args); //TODO fix matrix
+            cz.pk.adventofcode.y2020.day11.Day11.main(args);
             cz.pk.adventofcode.y2020.day12.Day12.main(args);
             cz.pk.adventofcode.y2020.day13.Day13.main(args);
             cz.pk.adventofcode.y2020.day14.Day14.main(args);
