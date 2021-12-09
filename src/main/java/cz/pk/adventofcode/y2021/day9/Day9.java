@@ -9,16 +9,23 @@ import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
-import cz.pk.adventofcode.util.Pair;
+import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import static cz.pk.adventofcode.util.PKMath.isMin;
 import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day9 {
 
     private final boolean debug;
+
+    private final Vector2<Integer>[] topology = new Vector2[]{
+            new Vector2<>(1, 0),
+            new Vector2<>(-1, 0),
+            new Vector2<>(0, 1),
+            new Vector2<>(0, -1)};
 
     @Data
     @AllArgsConstructor
@@ -66,33 +73,19 @@ public class Day9 {
         }
     }
 
-    private boolean isMin(List<Integer> vals, Integer value) {
-        for (Integer v : vals) {
-            if (v != null) {
-                if (value >= v) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public long solve(String file) {
         List<List<Integer>> matrixData = new NumberCollector(file).process();
         Matrix<Integer> data = Matrix.instance(matrixData);
         if (debug) System.out.println(data);
 
         Matrix<Integer> surround = data.applyOperation(
-                (m, c) -> {
-                    int x = c.first;
-                    int y = c.second;
-                    List<Integer> sur = new ArrayList<>();
-                    sur.add(m.get(x + 1, y));
-                    sur.add(m.get(x - 1, y));
-                    sur.add(m.get(x, y + 1));
-                    sur.add(m.get(x, y - 1));
-                    if (isMin(sur, m.get(x, y))) {
-                        return m.get(x, y) + 1;
+                (matrix, field) -> {
+                    List<Integer> sur = Arrays.stream(topology)
+                            .filter(neighbour -> matrix.get(field.plus(neighbour)) != null)
+                            .map(neighbour -> matrix.get(field.plus(neighbour)))
+                            .collect(toList());
+                    if (isMin(matrix.get(field), sur)) {
+                        return matrix.get(field) + 1;
                     } else {
                         return -1;
                     }
@@ -104,22 +97,14 @@ public class Day9 {
         return count;
     }
 
-    private void markBasin(Matrix<Integer> m, int x, int y) {
-        int base = m.get(x, y);
-        m.set(x, y, -base); // mark as counted
-        Pair<Integer>[] points = new Pair[]{
-                new Pair<>(1, 0),
-                new Pair<>(-1, 0),
-                new Pair<>(0, 1),
-                new Pair<>(0, -1),
-        };
-        for (Pair<Integer> point : points) {
-            int dx = point.first;
-            int dy = point.second;
-            if (m.get(x + dx, y + dy) != null && m.get(x + dx, y + dy) > base) {
+    private void markBasin(Matrix<Integer> m, Vector2 position) {
+        int base = m.get(position);
+        m.set(position, -base); // mark as counted
+        for (Vector2<Integer> neighbour : topology) {
+            if (m.get(position.plus(neighbour)) != null && m.get(position.plus(neighbour)) > base) {
                 // new point
-                if (m.get(x + dx, y + dy) < 9) {
-                    markBasin(m, x + dx, y + dy);
+                if (m.get(position.plus(neighbour)) < 9) {
+                    markBasin(m, position.plus(neighbour));
                 }
             }
         }
@@ -128,10 +113,10 @@ public class Day9 {
 
     private void unmarkBasin(Matrix<Integer> matrix) {
         matrix.applyOperation((m, c) -> {
-            if (m.get(c.first, c.second) < 0) {
-                m.set(c.first, c.second, -m.get(c.first, c.second));
+            if (m.get(c) < 0) {
+                m.set(c, -m.get(c));
             } else {
-                m.set(c.first, c.second, m.get(c.first, c.second));
+                m.set(c, m.get(c));
             }
             return 0;
         });
@@ -143,23 +128,16 @@ public class Day9 {
         if (debug) System.out.println(data);
 
         Matrix<Integer> surround = data.applyOperation(
-                (m, c) -> {
-                    int x = c.first;
-                    int y = c.second;
-                    List<Integer> sur = new ArrayList<>();
-                    sur.add(m.get(x + 1, y));
-                    sur.add(m.get(x - 1, y));
-                    sur.add(m.get(x, y + 1));
-                    sur.add(m.get(x, y - 1));
-                    if (isMin(sur, m.get(x, y))) {
-                        if (debug) System.out.println("Count base " + x + "," + y);
-                        markBasin(m, x, y);
-                        if (debug) System.out.print(m);
-                        int count = m.map(0, (a, b) -> a + (b < 0 ? 1 : 0));
-                        if (m.get(x, y) == 0) count++;
-                        if (debug) System.out.printf("Size: %d\n\n", count);
-                        unmarkBasin(m);
-                        if (debug) System.out.println(m);
+                (matrix, field) -> {
+                    List<Integer> sur = Arrays.stream(topology)
+                            .filter(neighbour -> matrix.get(field.plus(neighbour)) != null)
+                            .map(neighbour -> matrix.get(field.plus(neighbour)))
+                            .collect(toList());
+                    if (isMin(matrix.get(field), sur)) {
+                        markBasin(matrix, field);
+                        int count = matrix.map(0, (a, b) -> a + (b < 0 ? 1 : 0));
+                        if (matrix.get(field) == 0) count++;
+                        unmarkBasin(matrix);
                         return count;
                     } else {
                         return -1;
