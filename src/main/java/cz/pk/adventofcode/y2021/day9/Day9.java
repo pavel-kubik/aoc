@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day9;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,6 @@ import java.util.Map;
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.Pair;
-import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -185,22 +184,22 @@ public class Day9 {
         System.out.println(Day9.class);
         long count;
         //*
-        count = new Day9(true).solve("day9_test.txt");
+        count = new Day9(true).solve("2021/day9_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 15;
 
-        count = new Day9(false).solve("day9.txt");
+        count = new Day9(false).solve("2021/day9.txt");
         System.out.println("Result: " + count);
         assert count == 545;
 
         //*/
 
-        count = new Day9(true).solve2("day9_test.txt");
+        count = new Day9(true).solve2("2021/day9_test.txt");
         System.out.println("Result: " + count);
         assert count == 1134;
 
-        count = new Day9(false).solve2("day9.txt");
+        count = new Day9(false).solve2("2021/day9.txt");
         System.out.println("Result: " + count);
         assert count == 950600; //>931491 (99, 97, 97), not 950796 (99, 98, 98)
         // not 941094 (99, 98, 97)
