@@ -1,100 +1,144 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2020.day23;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.StringCollector;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-import static cz.pk.adventofcode.util.DataCollectorFactory.collectData;
+import java.util.*;
+
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 @Data
-public class Template {
+public class Day23 {
 
     private final boolean debug;
 
     @Data
-    @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
-    }
-
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
-
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
-        public String toString() {
-            return value;
-        }
-    }
-
-    class TypeCollector extends DataCollector<Subject> {
-
-        public TypeCollector(String file) {
-            super(file);
-        }
+    @RequiredArgsConstructor
+    private class Node {
+        private final int value;
+        private Node next;
+        //TODO wtf
+        //private Node previous;
 
         @Override
-        protected Subject processLine(String line) {
-            // numbers in line without separator - Subject: List<Integer>
-            //return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
-
-            // numbers in line with separator - Subject: List<Integer>
-            // decimal - can be any base - change 2nd argument in parseInt
-            //return stream(line.split(" ")).map(n -> Integer.parseInt(n, 10)).collect(toList());
-
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+        public String toString() {
+            return "Node{" +
+                    "value=" + value +
+                    '}';
         }
+    }
+
+    private Node buildCircle(List<Integer> values) {
+        Node last = null;
+        Node previous = null;
+        Node current = null;
+        Node first = null;
+        for (Integer value : values){
+            current = new Node(value);
+            if (last == null) {
+                last = current;
+            }
+            current.setNext(previous);
+            previous = current;
+        }
+        first = current;
+        last.setNext(first);
+        return first;
+    }
+
+    private Node removeCups(Node circle, int count) {
+        Node firstRemoved = circle.getNext();
+        Node lastRemoved = firstRemoved;
+        for (int i = 0; i < count - 1; i++) {
+            lastRemoved = lastRemoved.getNext();
+        }
+        circle.setNext(lastRemoved.getNext());
+        lastRemoved.setNext(null);
+        return firstRemoved;
+    }
+
+    private void addCups(Node add, Node newNodes) {
+        Node lastNewNodes = newNodes;
+        while (lastNewNodes.getNext() != null) {
+            lastNewNodes = lastNewNodes.getNext();
+        }
+
+        Node connectTo = add.getNext();
+        add.setNext(newNodes);
+        lastNewNodes.setNext(connectTo);
+    }
+
+    private String printCups(Node circle) {
+        StringBuilder out = new StringBuilder();
+        Node current = circle;
+        do {
+            out.append(current.getValue()).append(" ");
+            current = current.getNext();
+        } while (current != null && current != circle);
+        return out.toString();
+    }
+
+    private long cups2Long(Node circle) {
+        StringBuilder out = new StringBuilder();
+        Node current = circle;
+        do {
+            out.append(current.getValue());
+            current = current.getNext();
+        } while (current != circle);
+        return Long.parseLong(out.toString());
+    }
+
+    private Node findNodeBeforeValue(Node circle, int value) {
+        Node current = circle;
+        do {
+            if (current.getValue() == value) {
+                return current;
+            }
+            current = current.getNext();
+        } while (current != circle);
+        return null;
+    }
+
+    private Node findDestination(Node circle, int value) {
+        Node target = null;
+        do {
+            if (value-- < 0) {
+                value = 9;
+            };
+            target = findNodeBeforeValue(circle, value);
+        } while (target == null);
+
+        return target;
     }
 
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<Integer> cupValues = new StringCollector(file).process()
+                .get(0).chars()
+                .mapToObj(c -> (char)c)
+                .map(c -> Integer.parseInt(c.toString()))
+                .collect(toList());
 
-        // string lines
-        //List<String> data = new StringCollector(file).process();
+        // build circle
+        Collections.reverse(cupValues);
+        Node circle = buildCircle(cupValues);
+        System.out.println(printCups(circle));
+        for (int i = 0; i < 10; i++) {
+            Node removed = removeCups(circle, 3);
+            System.out.println("Removed: " + printCups(removed));
+            System.out.println("Remaining circle: " + printCups(circle));
 
-        // 1 line separated by ,
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
+            Node destination = findDestination(circle, removed.getValue());
 
-        // matrix
-        //List<List<Long>> data = collectData(
-        //        file,
-        //        (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        //Matrix<Long> m = Matrix.instance(data);
-        //m.map(0l, (a, b) -> a + b);
+            // wrong - should find cup with label
+            addCups(destination, removed);
 
-        System.out.println(data);
-        return data.get(0);
+            circle = circle.getNext();
+            System.out.println(printCups(circle));
+        }
+
+        return cups2Long(circle);
     }
 
     public long solve2(String file) {
@@ -105,25 +149,25 @@ public class Template {
     }
 
     public static void main(String[] args) {
-        System.out.println(Template.class);
+        System.out.println(Day23.class);
         long count;
         //*
-        count = new Template(true).solve("day_test.txt");
+        count = new Day23(true).solve("2020/day23_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 11;
 
-        count = new Template(true).solve("day.txt");
+        count = new Day23(true).solve("2020/day23.txt");
         System.out.println("Result: " + count);
         assert count == 22;
 
         //*/
 
-        count = new Template(true).solve2("day_test.txt");
+        count = new Day23(true).solve2("2020/day23_test.txt");
         System.out.println("Result: " + count);
         assert count == 33;
 
-        count = new Template(true).solve2("day.txt");
+        count = new Day23(true).solve2("2020/day23.txt");
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
