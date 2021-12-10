@@ -16,7 +16,7 @@ public class Day9 {
     }
 
     public long findWeeknes(int preamble) throws IOException {
-        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> i).collect(Collectors.toList());
+        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> i).toList();
         for (int i = preamble; i < numbers.size(); i++) {
             long currentNumber = numbers.get(i);
             if (!isValid(i, preamble, numbers)) {
@@ -41,7 +41,7 @@ public class Day9 {
     }
 
     public long findSum(long sum) throws IOException {
-        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> i).collect(Collectors.toList());
+        List<Long> numbers = new LongCollector("2020/day9.txt").process().stream().map(i -> i).toList();
         for (int i = 0; i < numbers.size(); i++) {
             for (int j = i + 1; j < numbers.size(); j++) {
                 if (sum(i, j, numbers) == sum) {

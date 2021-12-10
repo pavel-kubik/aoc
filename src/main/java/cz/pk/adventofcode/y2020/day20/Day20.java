@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.sun.jdi.InternalException;
 import cz.pk.adventofcode.util.GroupCollector;
 import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
@@ -190,7 +189,7 @@ public class Day20 {
         return line.chars()
                 .mapToObj(i -> (char) i)
                 .map(c -> c == '#' ? 1 : 0)
-                .collect(Collectors.toList())
+                .toList()
                 .toArray(new Integer[1]);
     }
 
@@ -470,7 +469,7 @@ public class Day20 {
                 }
             }
         }
-        throw new InternalException("Not match");
+        throw new RuntimeException("Not match");
     }
 
     private void placeImage(Integer[][] out, Integer[][] pic, int x, int y, int from, int to) {

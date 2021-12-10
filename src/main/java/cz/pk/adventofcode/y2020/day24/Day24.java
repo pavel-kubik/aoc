@@ -178,7 +178,7 @@ public class Day24 {
 
         count = new Day24(true).solve2("2020/day24.txt");
         System.out.println("Result: " + count);
-        assert count == 444;    //17
+        assert count == 3804;    //17
         //*/
     }
 }

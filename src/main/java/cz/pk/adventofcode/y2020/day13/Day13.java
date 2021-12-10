@@ -45,14 +45,14 @@ public class Day13 {
                         .skip(1)
                         .filter(i -> !i.equals("bus"))
                         .map(b -> Integer.valueOf(b))
-                        .collect(Collectors.toList());
+                        .toList();
                 return null;
             } else {
                 Integer time = Integer.valueOf(items[0]);
                 List<Boolean> buses = Arrays.asList(items).stream()
                         .skip(1)
                         .map(i -> i.equals("D"))
-                        .collect(Collectors.toList());
+                        .toList();
                 return new BusSheet(time, buses);
             }
         }
@@ -66,7 +66,7 @@ public class Day13 {
         List<Integer> validBusses = Arrays.asList(lines.get(1).split(",")).stream()
                 .filter(b -> !b.equals("x"))
                 .map(b -> Integer.valueOf(b))
-                .collect(Collectors.toList());
+                .toList();
 
         long minTimestamp = Long.MAX_VALUE;
         int minBus = -1;
@@ -95,7 +95,7 @@ public class Day13 {
         long step = initialStep;
         List<Integer> validBusses = Arrays.asList(busSequence.split(",")).stream()
                 .map(b -> !b.equals("x") ? Integer.valueOf(b) : 0)
-                .collect(Collectors.toList());
+                .toList();
 
         List<Bus> buses = new ArrayList<>();
         for (int i = 0; i < validBusses.size(); i++) {
