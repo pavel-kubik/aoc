@@ -88,7 +88,7 @@ public class Day14 {
                 List<Integer> mask = parts[2].chars()
                         .mapToObj(c -> (char) c)
                         .map(c -> c == 'X' ? -1 : Integer.valueOf(c.toString()))
-                        .collect(Collectors.toList());
+                        .toList();
                 return new Instruction(Type.MASK, mask);
             } else if (line.startsWith("mem")) {
                 String[] parts = line.split(" ");

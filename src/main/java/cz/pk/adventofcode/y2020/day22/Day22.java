@@ -34,7 +34,7 @@ public class Day22 {
             List<Integer> cards = groupLines.subList(1, groupLines.size())
                     .stream()
                     .map(s -> Integer.valueOf(s))
-                    .collect(Collectors.toList());
+                    .toList();
             return new Deck(playes, new LinkedList<>(cards));
         }
     }

@@ -36,7 +36,7 @@ public class Day16 {
     public List<Long> parseTicket(String ticket) {
         return Arrays.stream(ticket.split(","))
                 .map(v -> Long.valueOf(v))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public boolean isPartOf(long value, List<Interval> intervals) {
@@ -79,7 +79,7 @@ public class Day16 {
                     .map(l -> l.trim())
                     .map(l -> new Interval(Long.parseLong(l.split("-")[0]),
                             Long.parseLong(l.split("-")[1])))
-                    .collect(Collectors.toList());
+                    .toList();
             fieldsByInterval.put(fieldName, lineInterval);
             intervals.addAll(lineInterval);
         }
@@ -142,7 +142,7 @@ public class Day16 {
                 List<String> selectedKeys = allowedPositionsForKey.entrySet().stream()
                         .filter(e -> e.getValue().size() == 1)
                         .map(e -> e.getKey())
-                        .collect(Collectors.toList());
+                        .toList();
                 for (String key : selectedKeys) {
                     assert !matchedKeys.contains(key);
                     int knownPosition = allowedPositionsForKey.get(key).get(0);
@@ -161,7 +161,7 @@ public class Day16 {
             for (Integer value : matchedKeys.stream()
                     .filter(k -> k.startsWith("departure"))
                     .map(k -> keyOrder.indexOf(k))
-                    .collect(Collectors.toList())) {
+                    .toList()) {
                 multiple *= parseTicket(yourTicket.get(1)).get(value);
             }
 

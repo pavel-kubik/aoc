@@ -81,7 +81,7 @@ public class Day8 {
     }
 
     List<Instruction> copy(List<Instruction> instructionList) {
-        return instructionList.stream().map(i -> i.copy()).collect(Collectors.toList());
+        return instructionList.stream().map(i -> i.copy()).toList();
     }
 
     enum Operation {

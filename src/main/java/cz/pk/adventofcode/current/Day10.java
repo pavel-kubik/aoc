@@ -201,7 +201,7 @@ public class Day10 {
             }
             List<Long> missingRanks = completeChars.stream()
                     .map(ch -> rankMissingCharacter(ch))
-                    .collect(Collectors.toList());
+                    .toList();
             long lineCount = 0;
             for (Long rank : missingRanks) {
                 lineCount = rank + 5*lineCount;

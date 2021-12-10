@@ -1,5 +1,8 @@
 package cz.pk.adventofcode;
 
+import cz.pk.adventofcode.y2021.day7.Day7;
+import cz.pk.adventofcode.y2021.day8.Day8;
+import cz.pk.adventofcode.y2021.day9.Day9;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -46,14 +49,18 @@ public class AdventOfCodeApplication {
             cz.pk.adventofcode.y2020.day21.Day21.main(args);
             cz.pk.adventofcode.y2020.day22.Day22.main(args);    //TODO finish 2nd part
             //cz.pk.adventofcode.y2020.day23.Day23.main(args);  //TODO finish
-            //cz.pk.adventofcode.y2020.day24.Day24.main(args);  //TODO finish
-            //cz.pk.adventofcode.y2020.day25.Day25.main(args);  //TODO finish
+            cz.pk.adventofcode.y2020.day24.Day24.main(args);
+            cz.pk.adventofcode.y2020.day25.Day25.main(args);
             Day1.main(args);
             Day2.main(args);
             Day3.main(args);
             Day4.main(args);
             Day5.main(args);
             Day6.main(args);
+            Day7.main(args);
+            Day8.main(args);
+            Day9.main(args);
+            System.out.println("All works!");
         };
     }
 

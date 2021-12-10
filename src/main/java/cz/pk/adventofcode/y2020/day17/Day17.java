@@ -27,7 +27,7 @@ public class Day17 {
             return line.chars()
                     .mapToObj(i -> (char) i)
                     .map(c -> c == '#' ? 1 : 0)
-                    .collect(Collectors.toList());
+                    .toList();
         }
     }
 

@@ -38,7 +38,7 @@ public class Day10 {
     }
 
     public int findJoytageDiff(String file, long allowedDiff) throws IOException {
-        List<Long> outputJoltages = new LongCollector(file).process().stream().map(i -> i).collect(Collectors.toList());
+        List<Long> outputJoltages = new LongCollector(file).process();
         outputJoltages.sort(Long::compareTo);
         System.out.println(outputJoltages);
         long joltage = 0;
@@ -57,7 +57,7 @@ public class Day10 {
     }
 
     public long findJoytageArrangements(String file, long allowedDiff) throws IOException {
-        List<Long> outputJoltages = new LongCollector(file).process().stream().map(i -> i).collect(Collectors.toList());
+        List<Long> outputJoltages = new LongCollector(file).process();
         outputJoltages.add(0, 0L);
         outputJoltages.sort(Long::compareTo);
         System.out.println(outputJoltages);
