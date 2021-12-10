@@ -5,13 +5,10 @@ import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day10 {
@@ -73,33 +70,148 @@ public class Day10 {
         }
     }
 
+    private boolean isOpen(String character) {
+        return List.of("(", "[", "{", "<").contains(character);
+    }
+
+    private boolean isClosed(String character) {
+        return List.of(")", "]", "}", ">").contains(character);
+    }
+
+    private boolean match(String openChar, String closeChar) {
+        switch (openChar) {
+            case "(":
+                return closeChar.equals(")");
+            case "[":
+                return closeChar.equals("]");
+            case "{":
+                return closeChar.equals("}");
+            case "<":
+                return closeChar.equals(">");
+            default:
+                throw new RuntimeException("Unknown open character " + openChar);
+        }
+    }
+
+    private String getClosingCharacter(String openChar) {
+        switch (openChar) {
+            case "(":
+                return ")";
+            case "[":
+                return "]";
+            case "{":
+                return "}";
+            case "<":
+                return ">";
+            default:
+                throw new RuntimeException("Unknown open character " + openChar);
+        }
+    }
+
+    private long rankIllegalCharacter(String character) {
+        switch (character) {
+            case ")":
+                return 3;
+            case "]":
+                return 57;
+            case "}":
+                return 1197;
+            case ">":
+                return 25137;
+            default:
+                throw new RuntimeException("Unknown open character " + character);
+        }
+    }
+
+    private long rankMissingCharacter(String character) {
+        switch (character) {
+            case ")":
+                return 1;
+            case "]":
+                return 2;
+            case "}":
+                return 3;
+            case ">":
+                return 4;
+            default:
+                throw new RuntimeException("Unknown open character " + character);
+        }
+    }
+
+    private long parseLine(String line) {
+        Stack<String> stack = new Stack<>();
+        for (int i = 0; i < line.length(); i++) {
+            String character = line.substring(i, i+1);
+            if (isOpen(character)) {
+                stack.push(character);
+            } else {
+                if (stack.isEmpty()) {
+                    break;
+                }
+                String openChar = stack.pop();
+                if (!match(openChar, character)) {
+                    return rankIllegalCharacter(character);
+                }
+            }
+        }
+        return 0;
+    }
+
+    private Stack<String> parseLine2(String line) {
+        Stack<String> stack = new Stack<>();
+        for (int i = 0; i < line.length(); i++) {
+            String character = line.substring(i, i+1);
+            if (isOpen(character)) {
+                stack.push(character);
+            } else {
+                if (stack.isEmpty()) {
+                    break;
+                }
+                String openChar = stack.pop();
+                if (!match(openChar, character)) {
+                    return null;
+                }
+            }
+        }
+        return stack;
+    }
+
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<String> data = new StringCollector(file).process();
+        long count = 0;
+        for (int i = 0; i < data.size(); i++) {
+            count += parseLine(data.get(i));
+        }
 
-        // string lines
-        //List<String> data = new StringCollector(file).process();
-
-        // 1 line separated by ,
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-
-        // matrix
-        //List<List<Long>> data = collectData(
-        //        file,
-        //        (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        //Matrix<Long> m = Matrix.instance(data);
-        //m.map(0l, (a, b) -> a + b);
-
-        System.out.println(data);
-        return data.get(0);
+        return count;
     }
 
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        List<String> data = new StringCollector(file).process();
+        long count = 0;
+        List<Long> scores = new ArrayList<>();
+        for (int i = 0; i < data.size(); i++) {
+            Stack<String> missing = parseLine2(data.get(i));
+            if (missing == null) {
+                continue;
+            }
+            List<String> completeChars = new ArrayList<>();
+            while (!missing.isEmpty()) {
+                completeChars.add(getClosingCharacter(missing.pop()));
+            }
+            List<Long> missingRanks = completeChars.stream()
+                    .map(ch -> rankMissingCharacter(ch))
+                    .collect(Collectors.toList());
+            long lineCount = 0;
+            for (Long rank : missingRanks) {
+                lineCount = rank + 5*lineCount;
+            }
+            scores.add(lineCount);
+        }
+
+        Collections.sort(scores);
+        System.out.println(scores);
+        return scores.get(scores.size()/2);
     }
 
     public static void main(String[] args) {
@@ -109,23 +221,21 @@ public class Day10 {
         count = new Day10(true).solve("day10_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 11;
+        assert count == 26397;
 
         count = new Day10(true).solve("day10.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 369105;
 
         //*/
 
         count = new Day10(true).solve2("day10_test.txt");
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 288957;
 
         count = new Day10(true).solve2("day10.txt");
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 3999363569l;
         //*/
-
-        assert "Don't forgot to set vm option -ea".isEmpty();
     }
 }
