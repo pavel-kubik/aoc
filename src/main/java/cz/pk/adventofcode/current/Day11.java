@@ -1,22 +1,20 @@
 package cz.pk.adventofcode.current;
 
+import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.StringCollector;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.Matrix;
-import cz.pk.adventofcode.util.StringCollector;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import static cz.pk.adventofcode.util.DataCollectorFactory.collectData;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 @Data
-public class Template {
+public class Day11 {
 
     private final boolean debug;
 
@@ -105,30 +103,27 @@ public class Template {
     }
 
     public static void main(String[] args) {
-        System.out.println(Template.class);
+        System.out.println(Day11.class);
         long count;
         //*
-        count = new Template(true).solve("day_test.txt");
+        count = new Day11(true).solve("day11_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 11;
 
-        count = new Template(true).solve("day.txt");
+        count = new Day11(true).solve("day11.txt");
         System.out.println("Result: " + count);
         assert count == 22;
 
         //*/
 
-        count = new Template(true).solve2("day_test.txt");
+        count = new Day11(true).solve2("day11_test.txt");
         System.out.println("Result: " + count);
         assert count == 33;
 
-        count = new Template(true).solve2("day.txt");
+        count = new Day11(true).solve2("day11.txt");
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
-
-        assert "Don't forgot to set vm option -ea".isEmpty();
-        throw new RuntimeException("VM options -ea set. You can delete this.");
     }
 }
