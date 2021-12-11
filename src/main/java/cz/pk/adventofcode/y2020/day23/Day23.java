@@ -19,8 +19,6 @@ public class Day23 {
     private class Node {
         private final int value;
         private Node next;
-        //TODO wtf
-        //private Node previous;
 
         @Override
         public String toString() {
@@ -48,13 +46,28 @@ public class Day23 {
         return first;
     }
 
-    private Node removeCups(Node circle, int count) {
-        Node firstRemoved = circle.getNext();
+    /**
+     * I know, circle has no start and end, but this is pointer to one special Node in circle
+     */
+    private Node switchCircleStart(Node circle, Node from, int count) {
+        Node lastRemoved = from.getNext();
+        boolean moveCircleHead = lastRemoved == circle;
+        for (int i = 0; i < count - 1; i++) {
+            lastRemoved = lastRemoved.getNext();
+            if (lastRemoved == circle) {
+                moveCircleHead = true;
+            }
+        }
+        return moveCircleHead ? lastRemoved.getNext() : circle;
+    }
+
+    private Node removeCups(Node from, int count) {
+        Node firstRemoved = from.getNext();
         Node lastRemoved = firstRemoved;
         for (int i = 0; i < count - 1; i++) {
             lastRemoved = lastRemoved.getNext();
         }
-        circle.setNext(lastRemoved.getNext());
+        from.setNext(lastRemoved.getNext());
         lastRemoved.setNext(null);
         return firstRemoved;
     }
@@ -71,26 +84,50 @@ public class Day23 {
     }
 
     private String printCups(Node circle) {
+        return printCups(circle, null);
+    }
+
+    private String printCups(Node circle, Node currentCup) {
         StringBuilder out = new StringBuilder();
         Node current = circle;
         do {
-            out.append(current.getValue()).append(" ");
+            if (current == currentCup) {
+                out.append("(");
+            }
+            out.append(current.getValue());
+            if (current == currentCup) {
+                out.append(")");
+            }
+            out.append(" ");
             current = current.getNext();
         } while (current != null && current != circle);
         return out.toString();
     }
 
-    private long cups2Long(Node circle) {
+    private long finalCups(Node circle) {
         StringBuilder out = new StringBuilder();
         Node current = circle;
         do {
-            out.append(current.getValue());
+            if (current.getValue() != 1) {
+                out.append(current.getValue());
+            }
             current = current.getNext();
         } while (current != circle);
         return Long.parseLong(out.toString());
     }
 
     private Node findNodeBeforeValue(Node circle, int value) {
+        Node current = circle;
+        do {
+            if (current.getNext().getValue() == value) {
+                return current;
+            }
+            current = current.getNext();
+        } while (current != circle);
+        return null;
+    }
+
+    private Node findNodeByValue(Node circle, int value) {
         Node current = circle;
         do {
             if (current.getValue() == value) {
@@ -107,7 +144,7 @@ public class Day23 {
             if (value-- < 0) {
                 value = 9;
             };
-            target = findNodeBeforeValue(circle, value);
+            target = findNodeByValue(circle, value);
         } while (target == null);
 
         return target;
@@ -123,22 +160,28 @@ public class Day23 {
         // build circle
         Collections.reverse(cupValues);
         Node circle = buildCircle(cupValues);
-        System.out.println(printCups(circle));
-        for (int i = 0; i < 10; i++) {
-            Node removed = removeCups(circle, 3);
-            System.out.println("Removed: " + printCups(removed));
-            System.out.println("Remaining circle: " + printCups(circle));
+        Node currentCup = circle;
+        for (int i = 0; i < 100; i++) {
+            System.out.println("-- move " + (i+1) + " --");
+            System.out.println("cups:" + printCups(circle, currentCup));
+            circle = switchCircleStart(circle, currentCup, 3);
+            Node removed = removeCups(currentCup, 3);
+            System.out.println("pick up: " + printCups(removed));
+            System.out.println("remaining: " + printCups(circle));
+            System.out.println("destination: " + (currentCup.getValue() - 1));
 
-            Node destination = findDestination(circle, removed.getValue());
+            Node destination = findDestination(circle, currentCup.getValue());
 
-            // wrong - should find cup with label
             addCups(destination, removed);
 
-            circle = circle.getNext();
-            System.out.println(printCups(circle));
+            currentCup = currentCup.getNext();
         }
+        System.out.println(printCups(circle, currentCup));
+        Node first = findNodeByValue(circle, 1);
 
-        return cups2Long(circle);
+        System.out.println("-- final --\n" + printCups(first));
+
+        return finalCups(first);
     }
 
     public long solve2(String file) {
@@ -155,11 +198,11 @@ public class Day23 {
         count = new Day23(true).solve("2020/day23_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 11;
+        assert count == 67384529;
 
         count = new Day23(true).solve("2020/day23.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 68245739;
 
         //*/
 
@@ -171,7 +214,5 @@ public class Day23 {
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
-
-        assert "Don't forgot to set vm option -ea".isEmpty();
     }
 }
