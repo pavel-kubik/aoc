@@ -1,5 +1,6 @@
 package cz.pk.adventofcode.y2020.day23;
 
+import cz.pk.adventofcode.util.CodeTimer;
 import cz.pk.adventofcode.util.StringCollector;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class Day23 {
         }
         first = current;
         last.setNext(first);
-        return first;
+        return last;
     }
 
     /**
@@ -138,11 +139,11 @@ public class Day23 {
         return null;
     }
 
-    private Node findDestination(Node circle, int value) {
+    private Node findDestination(Node circle, int value, int maxValue) {
         Node target = null;
         do {
             if (value-- < 0) {
-                value = 9;
+                value = maxValue;
             };
             target = findNodeByValue(circle, value);
         } while (target == null);
@@ -159,8 +160,8 @@ public class Day23 {
 
         // build circle
         Collections.reverse(cupValues);
-        Node circle = buildCircle(cupValues);
-        Node currentCup = circle;
+        Node circle = buildCircle(cupValues);   // pointer at last for 2nd part
+        Node currentCup = circle.getNext(); // start from first
         for (int i = 0; i < 100; i++) {
             System.out.println("-- move " + (i+1) + " --");
             System.out.println("cups:" + printCups(circle, currentCup));
@@ -170,7 +171,7 @@ public class Day23 {
             System.out.println("remaining: " + printCups(circle));
             System.out.println("destination: " + (currentCup.getValue() - 1));
 
-            Node destination = findDestination(circle, currentCup.getValue());
+            Node destination = findDestination(circle, currentCup.getValue(), 9);
 
             addCups(destination, removed);
 
@@ -185,10 +186,60 @@ public class Day23 {
     }
 
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        int MAX_CUPS  =  1000000;
+        int STEPS     = 10000000;
+        int ITERATION =   100000;
+        List<Integer> cupValues = new StringCollector(file).process()
+                .get(0).chars()
+                .mapToObj(c -> (char)c)
+                .map(c -> Integer.parseInt(c.toString()))
+                .collect(toList());
+        //add missing cups
+        for (int i = cupValues.size(); i <= MAX_CUPS; i++) {
+            cupValues.add(i);
+        }
+        System.out.println("10M cups generated");
+
+        // build circle
+        Collections.reverse(cupValues);
+        Node circle = buildCircle(cupValues);   // pointer at last for 2nd part
+        Node currentCup = circle.getNext(); // start from first
+        System.out.println("10M cups sorted in circle");
+        CodeTimer ct = new CodeTimer();
+        for (int i = 0; i < STEPS; i++) {
+            if (i % ITERATION == 0) {
+                System.out.println("Step " + (i/ITERATION) + "/" + (STEPS/ITERATION));
+                ct.log();
+            }
+            //System.out.println("-- move " + (i+1) + " --");
+            //System.out.println("cups:" + printCups(circle, currentCup));
+            ct.start("switchCircleStart");
+            circle = switchCircleStart(circle, currentCup, 3);
+            ct.start("removeCups");
+            Node removed = removeCups(currentCup, 3);
+            //System.out.println("pick up: " + printCups(removed));
+            //System.out.println("remaining: " + printCups(circle));
+            //System.out.println("destination: " + (currentCup.getValue() - 1));
+
+            ct.start("findDestination");
+            Node destination = findDestination(circle, currentCup.getValue(), MAX_CUPS);
+
+            ct.start("addCups");
+            addCups(destination, removed);
+            ct.stop();
+
+            currentCup = currentCup.getNext();
+        }
+        //System.out.println(printCups(circle, currentCup));
+        Node first = findNodeByValue(circle, 1);
+
+        //System.out.println("-- final --\n" + printCups(first));
+
+        int a = first.getNext().getValue();
+        int b = first.getNext().getNext().getValue();
+        System.out.println("A: " + a);
+        System.out.println("B: " + b);
+        return a*b;
     }
 
     public static void main(String[] args) {

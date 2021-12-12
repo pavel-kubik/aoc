@@ -101,6 +101,51 @@ public class Day12 {
         return allPaths.size();
     }
 
+    void generatePath2(String startPoint,
+                       Map<String, Set<String>> nodes,
+                       Set<String> visited,
+                       Set<String> visitedTwice,
+                       List<String> path,
+                       List<String> paths) {
+        if (path.size() > 2*nodes.size()) {
+            return;
+        }
+        // end -> generate path
+        if (startPoint.equals("end")) {
+            System.out.print("END (" + paths.size()+") ");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < path.size(); i++) {
+                if (i != 0) {
+                    sb.append(",");
+                }
+                sb.append(path.get(i));
+            }
+            paths.add(sb.toString());
+            System.out.println(sb.toString());
+            return;
+        }
+        // iterate nodes
+        for (String node : nodes.getOrDefault(startPoint, Set.of())) {
+            if (node.toLowerCase().equals(node) && visited.contains(node)) {
+                if (!visitedTwice.isEmpty() || node.equals("start")) {
+                    continue;
+                }
+                visitedTwice.add(node);
+            }
+            System.out.println(startPoint + " -> " + node);
+            visited.add(node);
+            path.add(node);
+            generatePath2(node, nodes, visited, visitedTwice, path, paths);
+            System.out.println("UP " + node);
+            if (visitedTwice.contains(node)) {
+                visitedTwice.remove(node);
+            } else {
+                visited.remove(node);
+            }
+            path.remove(path.size()-1); // remove last added node
+        }
+    }
+
     public long solve2(String file) {
         List<Connection> connections = new ConnectionCollector(file).process();
 
@@ -130,7 +175,8 @@ public class Day12 {
         visitedNodes.add("start");
         List<String> currentPath = new ArrayList<>();
         currentPath.add("start");
-        generatePath("start", nodes, visitedNodes, currentPath, allPaths);
+        Set<String> visitedTwice = new HashSet<>();
+        generatePath2("start", nodes, visitedNodes, visitedTwice, currentPath, allPaths);
 
         System.out.println(allPaths);
 
@@ -175,9 +221,7 @@ public class Day12 {
 
         count = new Day12(true).solve2("day12.txt");
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 130493;
         //*/
-
-        assert "Don't forgot to set vm option -ea".isEmpty();
     }
 }
