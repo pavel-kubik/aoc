@@ -5,10 +5,7 @@ import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -20,86 +17,124 @@ public class Day12 {
 
     @Data
     @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
+    class Connection {
+        String from;
+        String to;
     }
 
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
+    class ConnectionCollector extends DataCollector<Connection> {
 
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
-        public String toString() {
-            return value;
-        }
-    }
-
-    class TypeCollector extends DataCollector<Subject> {
-
-        public TypeCollector(String file) {
+        public ConnectionCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
-            // numbers in line without separator - Subject: List<Integer>
-            //return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
+        protected Connection processLine(String line) {
+            String[] pathPoints =  line.split("-");
+            return new Connection(pathPoints[0], pathPoints[1]);
+        }
+    }
 
-            // numbers in line with separator - Subject: List<Integer>
-            // decimal - can be any base - change 2nd argument in parseInt
-            //return stream(line.split(" ")).map(n -> Integer.parseInt(n, 10)).collect(toList());
-
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+    void generatePath(String startPoint,
+                      Map<String, Set<String>> nodes,
+                      Set<String> visited,
+                      List<String> path,
+                      List<String> paths) {
+        if (startPoint.equals("end")) {
+            System.out.println("END");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < path.size(); i++) {
+                if (i != 0) {
+                    sb.append(",");
+                }
+                sb.append(path.get(i));
+            }
+            paths.add(sb.toString());
+            return;
+        }
+        for (String node : nodes.getOrDefault(startPoint, Set.of())) {
+            if (node.toLowerCase().equals(node) && visited.contains(node)) {
+                continue;
+            }
+            System.out.println(startPoint + " -> " + node);
+            visited.add(node);
+            path.add(node);
+            generatePath(node, nodes, visited, path, paths);
+            visited.remove(node);
+            path.remove(node);
         }
     }
 
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<Connection> connections = new ConnectionCollector(file).process();
 
-        // string lines
-        //List<String> data = new StringCollector(file).process();
+        // build nodes map
+        Map<String, Set<String>> nodes = new HashMap<>();
+        for (Connection connection : connections) {
+            nodes.compute(connection.from, (key, value) -> {
+                if (value == null) {
+                    value = new HashSet<>();
+                }
+                value.add(connection.to);
+                return value;
+            });
 
-        // 1 line separated by ,
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
+            nodes.compute(connection.to, (key, value) -> {
+                if (value == null) {
+                    value = new HashSet<>();
+                }
+                value.add(connection.from);
+                return value;
+            });
+        }
 
-        // matrix
-        //List<List<Long>> data = collectData(
-        //        file,
-        //        (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        //Matrix<Long> m = Matrix.instance(data);
-        //m.map(0l, (a, b) -> a + b);
+        // generate all paths
+        List<String> allPaths = new ArrayList<>();
+        Set<String> visitedNodes = new HashSet<>();
+        visitedNodes.add("start");
+        List<String> currentPath = new ArrayList<>();
+        currentPath.add("start");
+        generatePath("start", nodes, visitedNodes, currentPath, allPaths);
 
-        System.out.println(data);
-        return data.get(0);
+        System.out.println(allPaths);
+
+        return allPaths.size();
     }
 
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        List<Connection> connections = new ConnectionCollector(file).process();
+
+        // build nodes map
+        Map<String, Set<String>> nodes = new HashMap<>();
+        for (Connection connection : connections) {
+            nodes.compute(connection.from, (key, value) -> {
+                if (value == null) {
+                    value = new HashSet<>();
+                }
+                value.add(connection.to);
+                return value;
+            });
+
+            nodes.compute(connection.to, (key, value) -> {
+                if (value == null) {
+                    value = new HashSet<>();
+                }
+                value.add(connection.from);
+                return value;
+            });
+        }
+
+        // generate all paths
+        List<String> allPaths = new ArrayList<>();
+        Set<String> visitedNodes = new HashSet<>();
+        visitedNodes.add("start");
+        List<String> currentPath = new ArrayList<>();
+        currentPath.add("start");
+        generatePath("start", nodes, visitedNodes, currentPath, allPaths);
+
+        System.out.println(allPaths);
+
+        return allPaths.size();
     }
 
     public static void main(String[] args) {
@@ -109,22 +144,40 @@ public class Day12 {
         count = new Day12(true).solve("day12_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 11;
+        assert count == 10;
+
+        count = new Day12(true).solve("day12_test2.txt");
+        System.out.println("Result: " + count);
+        assert count == 19;
+
+        count = new Day12(true).solve("day12_test3.txt");
+        System.out.println("Result: " + count);
+        assert count == 226;
+
 
         count = new Day12(true).solve("day12.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 4707;
 
         //*/
 
         count = new Day12(true).solve2("day12_test.txt");
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 36;
+
+        count = new Day12(true).solve2("day12_test2.txt");
+        System.out.println("Result: " + count);
+        assert count == 103;
+
+        count = new Day12(true).solve2("day12_test3.txt");
+        System.out.println("Result: " + count);
+        assert count == 3509;
 
         count = new Day12(true).solve2("day12.txt");
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
 
+        assert "Don't forgot to set vm option -ea".isEmpty();
     }
 }
