@@ -1,14 +1,12 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day12;
 
 import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.StringCollector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day12 {
@@ -187,39 +185,39 @@ public class Day12 {
         System.out.println(Day12.class);
         long count;
         //*
-        count = new Day12(true).solve("day12_test.txt");
+        count = new Day12(true).solve("2021/day12_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 10;
 
-        count = new Day12(true).solve("day12_test2.txt");
+        count = new Day12(true).solve("2021/day12_test2.txt");
         System.out.println("Result: " + count);
         assert count == 19;
 
-        count = new Day12(true).solve("day12_test3.txt");
+        count = new Day12(true).solve("2021/day12_test3.txt");
         System.out.println("Result: " + count);
         assert count == 226;
 
 
-        count = new Day12(true).solve("day12.txt");
+        count = new Day12(true).solve("2021/day12.txt");
         System.out.println("Result: " + count);
         assert count == 4707;
 
         //*/
 
-        count = new Day12(true).solve2("day12_test.txt");
+        count = new Day12(true).solve2("2021/day12_test.txt");
         System.out.println("Result: " + count);
         assert count == 36;
 
-        count = new Day12(true).solve2("day12_test2.txt");
+        count = new Day12(true).solve2("2021/day12_test2.txt");
         System.out.println("Result: " + count);
         assert count == 103;
 
-        count = new Day12(true).solve2("day12_test3.txt");
+        count = new Day12(true).solve2("2021/day12_test3.txt");
         System.out.println("Result: " + count);
         assert count == 3509;
 
-        count = new Day12(true).solve2("day12.txt");
+        count = new Day12(true).solve2("2021/day12.txt");
         System.out.println("Result: " + count);
         assert count == 130493;
         //*/
