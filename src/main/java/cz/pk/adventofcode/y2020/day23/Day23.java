@@ -3,6 +3,7 @@ package cz.pk.adventofcode.y2020.day23;
 import cz.pk.adventofcode.util.CodeTimer;
 import cz.pk.adventofcode.util.StringCollector;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
@@ -15,7 +16,6 @@ public class Day23 {
 
     private final boolean debug;
 
-    @Data
     @RequiredArgsConstructor
     private class Node {
         private final int value;
@@ -27,15 +27,28 @@ public class Day23 {
                     "value=" + value +
                     '}';
         }
+
+        public int getValue() {
+            return value;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+        public void setNext(Node next) {
+            this.next = next;
+        }
     }
 
-    private Node buildCircle(List<Integer> values) {
+    private Node buildCircle(List<Integer> values, Map<Integer, Node> cupsMapping) {
         Node last = null;
         Node previous = null;
         Node current = null;
         Node first = null;
         for (Integer value : values){
             current = new Node(value);
+            cupsMapping.put(value, current);
             if (last == null) {
                 last = current;
             }
@@ -44,7 +57,7 @@ public class Day23 {
         }
         first = current;
         last.setNext(first);
-        return last;
+        return first;
     }
 
     /**
@@ -139,41 +152,62 @@ public class Day23 {
         return null;
     }
 
-    private Node findDestination(Node circle, int value, int maxValue) {
+    private Node findDestination(int value, int maxValue, Map<Integer, Node> cupsMapping, Set<Node> removedNodes) {
+        // PT43.6037166S
         Node target = null;
         do {
-            if (value-- < 0) {
+            if (--value <= 0) {
                 value = maxValue;
             };
-            target = findNodeByValue(circle, value);
-        } while (target == null);
+            target = cupsMapping.get(value);
+        } while (removedNodes.contains(target));
+        assert target != null;
 
         return target;
     }
 
     public long solve(String file) {
+        int NUMBER_OF_CUPS  =   9;
+        int STEPS           = 100;
         List<Integer> cupValues = new StringCollector(file).process()
                 .get(0).chars()
                 .mapToObj(c -> (char)c)
                 .map(c -> Integer.parseInt(c.toString()))
                 .collect(toList());
 
+        //build cup mappings
+        Map<Integer, Node> cupsMapping = new HashMap<>();
+
         // build circle
         Collections.reverse(cupValues);
-        Node circle = buildCircle(cupValues);   // pointer at last for 2nd part
-        Node currentCup = circle.getNext(); // start from first
-        for (int i = 0; i < 100; i++) {
+        Node circle = buildCircle(cupValues, cupsMapping);
+        Node currentCup = circle;
+        for (int i = 0; i < STEPS; i++) {
             System.out.println("-- move " + (i+1) + " --");
             System.out.println("cups:" + printCups(circle, currentCup));
             circle = switchCircleStart(circle, currentCup, 3);
             Node removed = removeCups(currentCup, 3);
             System.out.println("pick up: " + printCups(removed));
             System.out.println("remaining: " + printCups(circle));
-            System.out.println("destination: " + (currentCup.getValue() - 1));
 
-            Node destination = findDestination(circle, currentCup.getValue(), 9);
+            Set<Integer> removedValues = new HashSet<>();
+            Node itRemoved = removed;
+            do {
+                removedValues.add(itRemoved.getValue());
+                itRemoved = itRemoved.getNext();
+            } while (itRemoved != null);
+            int destination = currentCup.getValue();
+            do {
+                destination--;
+                if (destination <= 0) {
+                    destination = NUMBER_OF_CUPS;
+                }
+            } while(removedValues.contains(destination));
+            System.out.println("destination: " + destination);
 
-            addCups(destination, removed);
+            Node destinationNode = cupsMapping.get(destination);
+
+            addCups(destinationNode, removed);
 
             currentCup = currentCup.getNext();
         }
@@ -181,62 +215,59 @@ public class Day23 {
         Node first = findNodeByValue(circle, 1);
 
         System.out.println("-- final --\n" + printCups(first));
-
         return finalCups(first);
     }
 
     public long solve2(String file) {
-        int MAX_CUPS  =  1000000;
-        int STEPS     = 10000000;
-        int ITERATION =   100000;
+        int NUMBER_OF_CUPS  =  1000000;
+        int STEPS           = 10000000;
         List<Integer> cupValues = new StringCollector(file).process()
                 .get(0).chars()
                 .mapToObj(c -> (char)c)
                 .map(c -> Integer.parseInt(c.toString()))
                 .collect(toList());
         //add missing cups
-        for (int i = cupValues.size(); i <= MAX_CUPS; i++) {
-            cupValues.add(i);
+        for (int i = cupValues.size(); i < NUMBER_OF_CUPS; i++) {
+            cupValues.add(i + 1);
         }
-        System.out.println("10M cups generated");
+        System.out.println("1M cups generated");
+        assert cupValues.size() == NUMBER_OF_CUPS;
+
+        //build cup mappings
+        Map<Integer, Node> cupsMapping = new HashMap<>();
 
         // build circle
         Collections.reverse(cupValues);
-        Node circle = buildCircle(cupValues);   // pointer at last for 2nd part
-        Node currentCup = circle.getNext(); // start from first
-        System.out.println("10M cups sorted in circle");
-        CodeTimer ct = new CodeTimer();
+        Node circle = buildCircle(cupValues, cupsMapping);
+        Node currentCup = circle;
         for (int i = 0; i < STEPS; i++) {
-            if (i % ITERATION == 0) {
-                System.out.println("Step " + (i/ITERATION) + "/" + (STEPS/ITERATION));
-                ct.log();
-            }
-            //System.out.println("-- move " + (i+1) + " --");
-            //System.out.println("cups:" + printCups(circle, currentCup));
-            ct.start("switchCircleStart");
             circle = switchCircleStart(circle, currentCup, 3);
-            ct.start("removeCups");
             Node removed = removeCups(currentCup, 3);
-            //System.out.println("pick up: " + printCups(removed));
-            //System.out.println("remaining: " + printCups(circle));
-            //System.out.println("destination: " + (currentCup.getValue() - 1));
 
-            ct.start("findDestination");
-            Node destination = findDestination(circle, currentCup.getValue(), MAX_CUPS);
+            Set<Integer> removedValues = new HashSet<>();
+            Node itRemoved = removed;
+            do {
+                removedValues.add(itRemoved.getValue());
+                itRemoved = itRemoved.getNext();
+            } while (itRemoved != null);
+            int destination = currentCup.getValue();
+            do {
+                destination--;
+                if (destination <= 0) {
+                    destination = NUMBER_OF_CUPS;
+                }
+            } while(removedValues.contains(destination));
 
-            ct.start("addCups");
-            addCups(destination, removed);
-            ct.stop();
+            Node destinationNode = cupsMapping.get(destination);
+
+            addCups(destinationNode, removed);
 
             currentCup = currentCup.getNext();
         }
-        //System.out.println(printCups(circle, currentCup));
-        Node first = findNodeByValue(circle, 1);
+        Node first = cupsMapping.get(1);
 
-        //System.out.println("-- final --\n" + printCups(first));
-
-        int a = first.getNext().getValue();
-        int b = first.getNext().getNext().getValue();
+        long a = first.getNext().getValue();
+        long b = first.getNext().getNext().getValue();
         System.out.println("A: " + a);
         System.out.println("B: " + b);
         return a*b;
@@ -259,11 +290,11 @@ public class Day23 {
 
         count = new Day23(true).solve2("2020/day23_test.txt");
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 149245887792l;
 
         count = new Day23(true).solve2("2020/day23.txt");
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 219634632000l;
         //*/
     }
 }

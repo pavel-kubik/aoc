@@ -1,9 +1,19 @@
 package cz.pk.adventofcode.util;
 
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CodeTimer {
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss.SSSSSS");
+
     Map<String, Long> durations = new HashMap<>();
 
     private long lastStart;
@@ -27,7 +37,9 @@ public class CodeTimer {
 
     public void log() {
         for (Map.Entry<String, Long> entry : durations.entrySet()) {
-            System.out.println("Key " + entry.getKey() + ": " + entry.getValue());
+            System.out.printf("%s %s\n",
+                    Duration.of(entry.getValue(), ChronoUnit.NANOS).toString(),
+                    entry.getKey());
         }
     }
 
