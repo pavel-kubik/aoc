@@ -3,6 +3,7 @@ package cz.pk.adventofcode.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -72,7 +73,21 @@ public class Matrix<TYPE> {
     }
 
     public void set(Vector2<Integer> vector, TYPE value) {
-        set(vector.x, vector.y, value); // TODO x should go to columns
+        set(vector.y, vector.x, value); // TODO x should go to columns
+    }
+
+    public Matrix<TYPE> submatrix(int startRow, int startCol, int height, int width) {
+        List<List<TYPE>> rows = new ArrayList<>();
+        assert this.width >= width;
+        assert this.height >= height;
+        for (int i = startRow; i < height; i++) {
+            List<TYPE> row = new ArrayList<>();
+            for (int j = startCol; j < width; j++) {
+                row.add(this.get(i, j));
+            }
+            rows.add(row);
+        }
+        return instance(rows);
     }
 
     public <T> boolean equals(Matrix<TYPE> matrix) {
@@ -161,6 +176,8 @@ public class Matrix<TYPE> {
     public <TYPE_B, TYPE_O> Matrix<TYPE_O>
     applyMatrix(Matrix<TYPE_B> b,
                 BiFunction<TYPE, TYPE_B, TYPE_O> op) {
+        assert width == b.width;
+        assert height == b.height;
         List<List<TYPE_O>> outRows = new ArrayList<>();
         for (int i = 0; i < rows.size(); i++) {
             List<TYPE_O> outRow = new ArrayList<>();
@@ -247,5 +264,19 @@ public class Matrix<TYPE> {
 
     public int getHeight() {
         return height;
+    }
+
+    public void reverseColumns() {
+        Collections.reverse(rows);
+    }
+
+    public void reverseRows() {
+        for (List<TYPE> row : rows) {
+            Collections.reverse(row);
+        }
+    }
+
+    public Vector2<Integer> getDimension() {
+        return new Vector2<>(getHeight(), getWidth());
     }
 }
