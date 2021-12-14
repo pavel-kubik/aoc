@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day13;
 
 import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.StringCollector;
@@ -124,17 +124,17 @@ public class Day13 {
 //        // add vm option -ea to run configuration to throw exception on assert
 //        assert count == 17;
 
-        count = new Day13(false).solve("day13.txt");
+        count = new Day13(false).solve("2021/day13.txt");
         System.out.println("Result: " + count);
         assert count == 687; //not 835
 
         //*/
 
-        count = new Day13(true).solve2("day13_test.txt");
+        count = new Day13(true).solve2("2021/day13_test.txt");
         System.out.println("Result: " + count);
         assert count == 33;
 
-        count = new Day13(true).solve2("day13.txt");
+        count = new Day13(true).solve2("2021/day13.txt");
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
