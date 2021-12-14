@@ -75,54 +75,37 @@ public class Day13 {
         System.out.println("Folds (" + foldInstructions.size() + ")");
         if (debug) System.out.println(foldInstructions);
 
-        // build field
+        Set<Vector2<Integer>> uniqueDots = new HashSet<>();
+        for (FoldInstruction foldInstruction : foldInstructions) {
+            for (Vector2<Integer> dot : dots) {
+                if (foldInstruction.getAxis() == Axis.VERTICAL) {
+                    if (dot.x > foldInstruction.getSize()) {
+                        dot.x = 2*foldInstruction.getSize() - dot.x;
+                    }
+                } else {
+                    if (dot.y > foldInstruction.getSize()) {
+                        dot.y = 2*foldInstruction.getSize() - dot.y;
+                    }
+                }
+            }
+            System.out.println(dots);
+            uniqueDots.addAll(dots);
+            dots = uniqueDots.stream().toList();
+        }
+
         int maxX = 0;
         int maxY = 0;
         for (Vector2<Integer> dot : dots) {
             if (maxX < dot.x) maxX = dot.x;
             if (maxY < dot.y) maxY = dot.y;
         }
-        Matrix<Integer> field = Matrix.instance(maxX+1, maxY+1, 0);
-        for (Vector2<Integer> dot : dots) {
-            field.set(dot, 1);
+        Matrix<Integer> out = Matrix.instance(maxX+1, maxY+1, 0);
+        for (Vector2<Integer> dot : uniqueDots) {
+            out.set(dot, 1);
         }
+        System.out.println(out);
 
-        System.out.println("Matrix " + maxX + ":" + maxY);
-        System.out.println("Matrix " + field.getDimension());
-        if (debug) System.out.println(field);
-
-        for (FoldInstruction foldInstruction : foldInstructions) {
-            int w = field.getWidth();
-            int h = field.getHeight();
-            Matrix<Integer> partA;
-            Matrix<Integer> partB;
-            int diff = 1;
-            if (foldInstruction.getAxis() == Axis.HORIZONTAL) {
-                if (foldInstruction.getSize()*2 == h) {
-                    diff = 0;
-                }
-                partA = field.submatrix(0, 0, foldInstruction.getSize(), w);
-                partB = field.submatrix(foldInstruction.getSize() + diff, 0, h, w);
-                partB.reverseColumns();
-            } else {
-                if (foldInstruction.getSize()*2 == w) {
-                    diff = 0;
-                }
-                partA = field.submatrix(0, 0, h, foldInstruction.getSize());
-                partB = field.submatrix(0, foldInstruction.getSize() + diff, h, w);
-                partB.reverseRows();
-            }
-            if (debug) System.out.println("A\n" + partA);
-            if (debug) System.out.println("B\n" + partB);
-            System.out.println("A:" + partA.getDimension());
-            System.out.println("B:" + partB.getDimension());
-            field = partA.applyMatrix(partB, (a, b) -> Math.max(a, b));
-            if (debug) System.out.println(field);
-            break;
-        }
-        long count = field.map(0, (sum, value) -> sum + value);
-
-        return count;
+        return uniqueDots.size();
     }
 
     public long solve2(String file) {
@@ -136,14 +119,14 @@ public class Day13 {
         System.out.println(Day13.class);
         long count;
         //*
-        count = new Day13(true).solve("day13_test.txt");
-        System.out.println("Result: " + count);
-        // add vm option -ea to run configuration to throw exception on assert
-        assert count == 17;
+//        count = new Day13(true).solve("day13_test.txt");
+//        System.out.println("Result: " + count);
+//        // add vm option -ea to run configuration to throw exception on assert
+//        assert count == 17;
 
         count = new Day13(false).solve("day13.txt");
         System.out.println("Result: " + count);
-        assert count == 22; //not 835
+        assert count == 687; //not 835
 
         //*/
 

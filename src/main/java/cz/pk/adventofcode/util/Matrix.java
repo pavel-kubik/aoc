@@ -15,6 +15,7 @@ public class Matrix<TYPE> {
     private List<List<TYPE>> rows;
     private int width;
     private int height;
+    private TYPE initialValue;
 
     public Matrix<TYPE> setRows(List<List<TYPE>> rows) {
         this.rows = rows;
@@ -48,7 +49,7 @@ public class Matrix<TYPE> {
             }
             rows.add(row);
         }
-        return Matrix.instance(rows);
+        return Matrix.instance(rows).setInitialValue(initialValue);
     }
 
     public static <T> Matrix<T> instance(List<List<T>> rows) {
@@ -87,7 +88,7 @@ public class Matrix<TYPE> {
             }
             rows.add(row);
         }
-        return instance(rows);
+        return instance(rows).setInitialValue(this.initialValue);
     }
 
     public <T> boolean equals(Matrix<TYPE> matrix) {
@@ -264,6 +265,15 @@ public class Matrix<TYPE> {
 
     public int getHeight() {
         return height;
+    }
+
+    public TYPE getInitialValue() {
+        return initialValue;
+    }
+
+    public Matrix<TYPE> setInitialValue(TYPE initialValue) {
+        this.initialValue = initialValue;
+        return this;
     }
 
     public void reverseColumns() {

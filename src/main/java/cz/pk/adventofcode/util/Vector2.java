@@ -1,7 +1,9 @@
 package cz.pk.adventofcode.util;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
 public class Vector2<T> {
     public T x;
