@@ -18,61 +18,6 @@ public class Day14 {
 
     private final boolean debug;
 
-    @Data
-    @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
-    }
-
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
-
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
-        public String toString() {
-            return value;
-        }
-    }
-
-    class TypeCollector extends DataCollector<Subject> {
-
-        public TypeCollector(String file) {
-            super(file);
-        }
-
-        @Override
-        protected Subject processLine(String line) {
-            // numbers in line without separator - Subject: List<Integer>
-            //return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
-
-            // numbers in line with separator - Subject: List<Integer>
-            // decimal - can be any base - change 2nd argument in parseInt
-            //return stream(line.split(" ")).map(n -> Integer.parseInt(n, 10)).collect(toList());
-
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
-        }
-    }
-
     private static class Key {
         char[] key = new char[2];
 
@@ -118,15 +63,6 @@ public class Day14 {
         }
     }
 
-    private void applyRules(List<Character> template, Map<Key, String> rules) {
-        Key key = new Key("  ");
-        for (int i = template.size() - 2; i >= 0; i--) {
-            key.setKey(template.get(i), template.get(i+1));
-            Character newChar = rules.get(key).charAt(0);
-            template.add(i+1, newChar);
-        }
-    }
-
     private Map<Key, Long> applyRulesToSequences(Map<Key, Long> sequences, Map<Key, String> rules) {
         Map<Key, Long> newGen = new HashMap<>();
         for (Map.Entry<Key, Long> sequence : sequences.entrySet()) {
@@ -164,11 +100,16 @@ public class Day14 {
             System.out.println(sequences);
         }
 
+        // when counting histogram of sequenced pair, each char is counted 2x (except of first and last!)
         Map<Character, Long> histogram = new HashMap<>();
         for (Map.Entry<Key, Long> sequence : sequences.entrySet()) {
             histogram.compute(sequence.getKey().getA(), (key, count) -> count != null ? count + sequence.getValue() : sequence.getValue());
             histogram.compute(sequence.getKey().getB(), (key, count) -> count != null ? count + sequence.getValue() : sequence.getValue());
         }
+
+        // increase first and last as it was not count 2x
+        histogram.compute(template.get(0), (k, c) -> c != null ? c++ : 1);
+        histogram.compute(template.get(template.size() - 1), (k, c) -> c != null ? c + 1 : 1);
 
         long min = Long.MAX_VALUE;
         long max = 0;
@@ -186,7 +127,7 @@ public class Day14 {
         }
         System.out.println("Max (" + maxChar + "): " + max/2);
         System.out.println("Min (" + minChar + "): " + min/2);
-        return max/2-min/2 + 1; //TODO why + 1???
+        return max/2-min/2;
     }
 
     public static void main(String[] args) {

@@ -50,7 +50,8 @@ public class Day13 {
         }
     }
 
-    public long solve(String file) {
+    public long solve(String file, boolean stopAfterFirstFold) {
+        // load data
         List<String> data = new StringCollector(file).process();
         List<Vector2<Integer>> dots = new ArrayList<>();
         List<FoldInstruction> foldInstructions = new ArrayList<>();
@@ -75,6 +76,7 @@ public class Day13 {
         System.out.println("Folds (" + foldInstructions.size() + ")");
         if (debug) System.out.println(foldInstructions);
 
+        // fold field
         Set<Vector2<Integer>> uniqueDots = new HashSet<>();
         for (FoldInstruction foldInstruction : foldInstructions) {
             for (Vector2<Integer> dot : dots) {
@@ -88,9 +90,13 @@ public class Day13 {
                     }
                 }
             }
-            System.out.println(dots);
+            if (debug) System.out.println(dots);
+            uniqueDots.clear();
             uniqueDots.addAll(dots);
             dots = uniqueDots.stream().toList();
+            if (stopAfterFirstFold) {
+                break;
+            }
         }
 
         int maxX = 0;
@@ -99,44 +105,37 @@ public class Day13 {
             if (maxX < dot.x) maxX = dot.x;
             if (maxY < dot.y) maxY = dot.y;
         }
-        Matrix<Integer> out = Matrix.instance(maxX+1, maxY+1, 0);
+        Matrix<String> out = Matrix.instance(maxX+1, maxY+1, ".");
         for (Vector2<Integer> dot : uniqueDots) {
-            out.set(dot, 1);
+            out.set(dot, "#");
         }
         System.out.println(out);
 
         return uniqueDots.size();
     }
 
-    public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
-    }
-
     public static void main(String[] args) {
         System.out.println(Day13.class);
         long count;
         //*
-//        count = new Day13(true).solve("day13_test.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 17;
+        count = new Day13(true).solve("2021/day13_test.txt", true);
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 17;
 
-        count = new Day13(false).solve("2021/day13.txt");
+        count = new Day13(false).solve("2021/day13.txt", true);
         System.out.println("Result: " + count);
         assert count == 687; //not 835
 
         //*/
 
-        count = new Day13(true).solve2("2021/day13_test.txt");
+        count = new Day13(true).solve("2021/day13_test.txt", false);
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 16;
 
-        count = new Day13(true).solve2("2021/day13.txt");
+        count = new Day13(false).solve("2021/day13.txt", false);
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 98;
         //*/
     }
 }
