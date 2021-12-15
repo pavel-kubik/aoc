@@ -1,8 +1,7 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day15;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
-import cz.pk.adventofcode.util.StringCollector;
 import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -128,23 +127,23 @@ public class Day15 {
         System.out.println(Day15.class);
         long count;
         //*
-        count = new Day15(true).solve("day15_test.txt");
+        count = new Day15(true).solve("2021/day15_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 40;
 
-        count = new Day15(false).solve("day15.txt");
+        count = new Day15(false).solve("2021/day15.txt");
         System.out.println("Result: " + count);
         assert count == 403;
         // < 404 - two direction only
 
         //*/
 
-        count = new Day15(false).solve2("day15_test.txt");
+        count = new Day15(false).solve2("2021/day15_test.txt");
         System.out.println("Result: " + count);
         assert count == 315;
 
-        count = new Day15(false).solve2("day15.txt");
+        count = new Day15(false).solve2("2021/day15.txt");
         System.out.println("Result: " + count);
         assert count == 2840;
         //*/
