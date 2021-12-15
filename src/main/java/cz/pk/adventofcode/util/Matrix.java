@@ -66,7 +66,7 @@ public class Matrix<TYPE> {
     }
 
     public TYPE get(Vector2<Integer> vector) {
-        return get(vector.x, vector.y); // TODO x should go to columns
+        return get(vector.y, vector.x); // TODO x should go to columns
     }
 
     public void set(int row, int col, TYPE value) {

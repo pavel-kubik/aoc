@@ -1,14 +1,13 @@
 package cz.pk.adventofcode.current;
 
 import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.StringCollector;
+import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -18,88 +17,111 @@ public class Day15 {
 
     private final boolean debug;
 
-    @Data
-    @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
-    }
+    private final Vector2<Integer>[] topology = new Vector2[]{
+            new Vector2<>(1, 0),
+            new Vector2<>(0, 1),
+            new Vector2<>(-1, 0),
+            new Vector2<>(0, -1)};
 
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
+    class CaveCollector extends DataCollector<List<Integer>> {
 
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
-        public String toString() {
-            return value;
-        }
-    }
-
-    class TypeCollector extends DataCollector<Subject> {
-
-        public TypeCollector(String file) {
+        public CaveCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
+        protected List<Integer> processLine(String line) {
             // numbers in line without separator - Subject: List<Integer>
-            //return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
+            return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
+        }
+    }
 
-            // numbers in line with separator - Subject: List<Integer>
-            // decimal - can be any base - change 2nd argument in parseInt
-            //return stream(line.split(" ")).map(n -> Integer.parseInt(n, 10)).collect(toList());
+    @Data
+    @AllArgsConstructor
+    private static class Step implements Comparable<Step> {
+        private Vector2<Integer> position;
+        private Integer risk;
 
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+        @Override
+        public int compareTo(Step o) {
+            return risk.compareTo(o.getRisk());
+        }
+    }
+
+    private void explorePath(Vector2<Integer> startPosition,
+                             Integer startRisk,
+                             Matrix<Integer> caveRisk,
+                             Matrix<Integer> pathRisk,
+                             Integer bestWay) {
+        Set<Step> steps = new HashSet<>();
+        steps.add(new Step(startPosition, startRisk));
+        while (!steps.isEmpty()) {
+            Step currentStep = Collections.min(steps);
+            steps.remove(currentStep);
+
+            Vector2<Integer> position = currentStep.getPosition();
+            Integer risk = currentStep.getRisk();
+            for (Vector2<Integer> direction : topology) {
+                Vector2<Integer> newPosition = position.plus(direction);
+                Integer riskAtNewPosition = caveRisk.get(position.plus(direction));
+                if (riskAtNewPosition != null) {
+                    if (risk + riskAtNewPosition < pathRisk.get(newPosition)) {
+                        pathRisk.set(newPosition, risk + riskAtNewPosition);
+                        if (risk + riskAtNewPosition < bestWay) {
+                            steps.add(new Step(newPosition, risk + riskAtNewPosition));
+                            //System.out.println("New position " + newPosition);
+                        }
+                    }
+                }
+            }
+            if (pathRisk.get(pathRisk.getWidth() - 1, pathRisk.getHeight() - 1).compareTo(bestWay) < 0) {
+                bestWay = pathRisk.get(pathRisk.getWidth() - 1, pathRisk.getHeight() - 1);
+                System.out.println("Steps: " + steps.size());
+                System.out.println("New best way is " + bestWay);
+            }
         }
     }
 
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<List<Integer>> data = new CaveCollector(file).process();
+        Matrix<Integer> caveRisk = Matrix.instance(data);
 
-        // string lines
-        //List<String> data = new StringCollector(file).process();
+        Matrix<Integer> pathRisk = Matrix.instance(caveRisk.getWidth(), caveRisk.getHeight(), Integer.MAX_VALUE);
+        pathRisk.set(0, 0, 0);
 
-        // 1 line separated by ,
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
+        Integer[][] risks = new Integer[data.size()][data.get(0).size()];
+        explorePath(new Vector2<Integer>(0, 0), 0, caveRisk, pathRisk, Integer.MAX_VALUE);
 
-        // matrix
-        //List<List<Long>> data = collectData(
-        //        file,
-        //        (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        //Matrix<Long> m = Matrix.instance(data);
-        //m.map(0l, (a, b) -> a + b);
+        if (debug) System.out.println(pathRisk);
 
-        System.out.println(data);
-        return data.get(0);
+        return pathRisk.get(pathRisk.getWidth() - 1, pathRisk.getHeight() - 1);
     }
 
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        List<List<Integer>> data = new CaveCollector(file).process();
+        Matrix<Integer> caveTemplateRisk = Matrix.instance(data);
+        Matrix<Integer> caveRisk = Matrix.instance(caveTemplateRisk.getWidth()*5, caveTemplateRisk.getHeight()*5, -1);
+        caveTemplateRisk.applyOperation((m, pos) -> {
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
+                    caveRisk.set(
+                            j*caveTemplateRisk.getHeight()+pos.getY(),
+                            i*caveTemplateRisk.getWidth()+pos.getX(),
+                            m.get(pos) + i + j > 9 ? m.get(pos) + i + j - 9 : m.get(pos) + i + j);
+                }
+            }
+            return null;
+        });
+
+        if (debug) System.out.println(caveRisk);
+        Matrix<Integer> pathRisk = Matrix.instance(caveRisk.getWidth(), caveRisk.getHeight(), 3000);
+        pathRisk.set(0, 0, 0);  // don't go back to [0, 0]
+
+        explorePath(new Vector2<Integer>(0, 0), 0, caveRisk, pathRisk, Integer.MAX_VALUE);
+
+        if (debug) System.out.println(pathRisk);
+
+        return pathRisk.get(pathRisk.getWidth() - 1, pathRisk.getHeight() - 1);
     }
 
     public static void main(String[] args) {
@@ -109,21 +131,22 @@ public class Day15 {
         count = new Day15(true).solve("day15_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 11;
+        assert count == 40;
 
-        count = new Day15(true).solve("day15.txt");
+        count = new Day15(false).solve("day15.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 403;
+        // < 404 - two direction only
 
         //*/
 
-        count = new Day15(true).solve2("day15_test.txt");
+        count = new Day15(false).solve2("day15_test.txt");
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 315;
 
-        count = new Day15(true).solve2("day15.txt");
+        count = new Day15(false).solve2("day15.txt");
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 2840;
         //*/
     }
 }
