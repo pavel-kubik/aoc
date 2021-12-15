@@ -1,11 +1,13 @@
 package cz.pk.adventofcode.y2021.day15;
 
+import cz.pk.adventofcode.util.CodeTimer;
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
 import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.Duration;
 import java.util.*;
 
 import static java.util.Arrays.stream;
@@ -47,16 +49,18 @@ public class Day15 {
         }
     }
 
-    private void explorePath(Vector2<Integer> startPosition,
+    private long explorePath(Vector2<Integer> startPosition,
                              Integer startRisk,
                              Matrix<Integer> caveRisk,
                              Matrix<Integer> pathRisk,
                              Integer bestWay) {
+        long stepsCount = 0;
         Set<Step> steps = new HashSet<>();
         steps.add(new Step(startPosition, startRisk));
         while (!steps.isEmpty()) {
             Step currentStep = Collections.min(steps);
             steps.remove(currentStep);
+            stepsCount++;
 
             Vector2<Integer> position = currentStep.getPosition();
             Integer risk = currentStep.getRisk();
@@ -79,6 +83,7 @@ public class Day15 {
                 System.out.println("New best way is " + bestWay);
             }
         }
+        return stepsCount;
     }
 
     public long solve(String file) {
@@ -97,6 +102,8 @@ public class Day15 {
     }
 
     public long solve2(String file) {
+        CodeTimer ct = new CodeTimer();
+        ct.start("impl");
         List<List<Integer>> data = new CaveCollector(file).process();
         Matrix<Integer> caveTemplateRisk = Matrix.instance(data);
         Matrix<Integer> caveRisk = Matrix.instance(caveTemplateRisk.getWidth()*5, caveTemplateRisk.getHeight()*5, -1);
@@ -116,10 +123,12 @@ public class Day15 {
         Matrix<Integer> pathRisk = Matrix.instance(caveRisk.getWidth(), caveRisk.getHeight(), 3000);
         pathRisk.set(0, 0, 0);  // don't go back to [0, 0]
 
-        explorePath(new Vector2<Integer>(0, 0), 0, caveRisk, pathRisk, Integer.MAX_VALUE);
+        long steps = explorePath(new Vector2<Integer>(0, 0), 0, caveRisk, pathRisk, Integer.MAX_VALUE);
+        System.out.println("Steps: " + steps);
 
         if (debug) System.out.println(pathRisk);
-
+        ct.stop();
+        ct.log();
         return pathRisk.get(pathRisk.getWidth() - 1, pathRisk.getHeight() - 1);
     }
 
