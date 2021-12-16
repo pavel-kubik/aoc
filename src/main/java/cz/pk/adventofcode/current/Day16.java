@@ -21,6 +21,8 @@ public class Day16 {
         private final int version;
         private final int type;
         private List<Packet> subpackets = new ArrayList<>();
+
+        public abstract Long count();
     }
 
     @Getter
@@ -33,6 +35,12 @@ public class Day16 {
             super(version, type);
             this.literalValue = literalValue;
         }
+
+        @Override
+        public Long count() {
+            System.out.print(literalValue + " ");
+            return literalValue;
+        }
     }
 
     @Getter
@@ -44,6 +52,69 @@ public class Day16 {
         public OperatorPacket(int version, int type, int lengthTypeId) {
             super(version, type);
             this.lengthTypeId = lengthTypeId;
+        }
+
+        @Override
+        public Long count() {
+            Long out = 0l;
+            switch (getType()) {
+                case 0:
+                    // sum
+                    System.out.println("SUM");
+                    for (Packet packet : getSubpackets()) {
+                        out += packet.count();
+                    }
+                    break;
+                case 1:
+                    // product
+                    System.out.println("MUL");
+                    out = 1l;
+                    for (Packet packet : getSubpackets()) {
+                        out *= packet.count();
+                    }
+                    break;
+                case 2:
+                    // min
+                    System.out.println("MIN");
+                    out = Long.MAX_VALUE;
+                    for (Packet packet : getSubpackets()) {
+                        if (out > packet.count()) {
+                            out = packet.count();
+                        }
+                    }
+                    break;
+                case 3:
+                    // max
+                    System.out.println("MAX");
+                    out = Long.MIN_VALUE;
+                    for (Packet packet : getSubpackets()) {
+                        if (out < packet.count()) {
+                            out = packet.count();
+                        }
+                    }
+                    break;
+                case 5:
+                    System.out.println(">");
+                    // greater than
+                    assert getSubpackets().size() == 2;
+                    out = getSubpackets().get(0).count().compareTo(getSubpackets().get(1).count()) > 0 ? 1l : 0l;
+                    break;
+                case 6:
+                    System.out.println("<");
+                    // less than
+                    assert getSubpackets().size() == 2;
+                    out = getSubpackets().get(0).count().compareTo(getSubpackets().get(1).count()) < 0 ? 1l : 0l;
+                    break;
+                case 7:
+                    System.out.println("==");
+                    // less than
+                    assert getSubpackets().size() == 2;
+                    out = getSubpackets().get(0).count().compareTo(getSubpackets().get(1).count()) == 0 ? 1l : 0l;
+                    break;
+                default:
+                    throw new RuntimeException("Fuck");
+            }
+            return out;
         }
     }
 
@@ -130,64 +201,105 @@ public class Day16 {
     }
 
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        String inputHex = new StringCollector(file).process().get(0);
+        System.out.println(inputHex);
+
+        StringBuilder inputBin = new StringBuilder();
+        // transform Hex to Bin
+        for (int i = 0; i < inputHex.length(); i++) {
+            Integer decimalDigit = Integer.parseInt(inputHex.substring(i, i+1), 16);
+            inputBin.append(String.format("%4s", Integer.toString(decimalDigit, 2)).replace(' ', '0'));
+        }
+        System.out.println(inputBin.toString());
+
+        List<Packet> packetList = new ArrayList<>();
+        String remainingBits = parsePacket(inputBin.toString(), packetList);
+        System.out.println("Remaining bits: " + remainingBits);
+        System.out.println(packetList.get(0));
+
+        return packetList.get(0).count();
     }
 
     public static void main(String[] args) {
         System.out.println(Day16.class);
         long count;
         //*
-//        count = new Day16(true).solve("day16_test.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 6;
-//
-//        count = new Day16(true).solve("day16_test2.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 9;
-//
-//        count = new Day16(true).solve("day16_test3.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 14;
-//
-//        count = new Day16(true).solve("day16_test4.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 16;
-//
-//        count = new Day16(true).solve("day16_test5.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 12;
-//
-//        count = new Day16(true).solve("day16_test6.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 23;
-//
-//        count = new Day16(true).solve("day16_test7.txt");
-//        System.out.println("Result: " + count);
-//        // add vm option -ea to run configuration to throw exception on assert
-//        assert count == 31;
+        count = new Day16(true).solve("day16_test.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 6;
+
+        count = new Day16(true).solve("day16_test2.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 9;
+
+        count = new Day16(true).solve("day16_test3.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 14;
+
+        count = new Day16(true).solve("day16_test4.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 16;
+
+        count = new Day16(true).solve("day16_test5.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 12;
+
+        count = new Day16(true).solve("day16_test6.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 23;
+
+        count = new Day16(true).solve("day16_test7.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 31;
 
         count = new Day16(true).solve("day16.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 927;
 
         //*/
 
-        count = new Day16(true).solve2("day16_test.txt");
+        count = new Day16(true).solve2("day16_test8.txt");
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 3;
+
+        count = new Day16(true).solve2("day16_test9.txt");
+        System.out.println("Result: " + count);
+        assert count == 1;
+
+        count = new Day16(true).solve2("day16_test10.txt");
+        System.out.println("Result: " + count);
+        assert count == 0;
+
+        count = new Day16(true).solve2("day16_test11.txt");
+        System.out.println("Result: " + count);
+        assert count == 0;
+
+        count = new Day16(true).solve2("day16_test12.txt");
+        System.out.println("Result: " + count);
+        assert count == 1;
+
+        count = new Day16(true).solve2("day16_test13.txt");
+        System.out.println("Result: " + count);
+        assert count == 9;
+
+        count = new Day16(true).solve2("day16_test14.txt");
+        System.out.println("Result: " + count);
+        assert count == 7;
+
+        count = new Day16(true).solve2("day16_test15.txt");
+        System.out.println("Result: " + count);
+        assert count == 54;
 
         count = new Day16(true).solve2("day16.txt");
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 1725277876501l; // -9223370315264430709
         //*/
     }
 }
