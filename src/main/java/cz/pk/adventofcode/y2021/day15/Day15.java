@@ -55,7 +55,7 @@ public class Day15 {
                              Matrix<Integer> pathRisk,
                              Integer bestWay) {
         long stepsCount = 0;
-        Set<Step> steps = new HashSet<>();
+        Set<Step> steps = new HashSet<>();  // TODO SortedSet
         steps.add(new Step(startPosition, startRisk));
         while (!steps.isEmpty()) {
             Step currentStep = Collections.min(steps);
