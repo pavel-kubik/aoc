@@ -71,45 +71,93 @@ public class Day22 {
         return countDeckValue(winningDeck);
     }
 
-    private boolean determineOneGame(Deck deck1, Deck deck2) {
+
+    Map<String, Boolean> playedGames = new HashMap<>();
+
+    private boolean determineOneGame(Deck deck1, Deck deck2, int gameNumber) {
+        String gameKey = deck1.getCards().toString() + "|" + deck2.getCards().toString();
+        if (playedGames.containsKey(gameKey)) {
+            return playedGames.get(gameKey);
+        }
         Queue<Integer> cards1 = new LinkedList<>(deck1.getCards());
         Queue<Integer> cards2 = new LinkedList<>(deck2.getCards());
+        int round = 1;
+        Set<String> playedRounds = new HashSet<>();
         while (!cards1.isEmpty() && !cards2.isEmpty()) {
+
+            String deckKey = cards1.toString() + "|" + cards2.toString();
+            if (playedRounds.contains(deckKey)) {
+                return true;
+            }
+
+            playedRounds.add(deckKey);            System.out.println("-- Round " + round + " (Game " + gameNumber +") --");
+            System.out.println("Player 1's dec: " + cards1);
+            System.out.println("Player 2's dec: " + cards2);
             Integer card1 = cards1.poll();
             Integer card2 = cards2.poll();
-            if (card1.compareTo(card2) < 0) {
-                cards2.add(card2);
-                cards2.add(card1);
+            if (deck1.getCards().size() >= card1 && deck2.getCards().size() >= card2) {
+                // recursive combat
+                System.out.println("\n=== Game " + gameNumber + " ===");
+                if (determineOneGame(new Deck("Player 1:", cards1), new Deck("Player 2:", cards2), gameNumber + 1)) {
+                    System.out.println("Player 1 wins round " + round + ".\n");
+                    cards1.add(card1);
+                    cards1.add(card2);
+                } else {
+                    System.out.println("Player 2 wins round " + round + ".\n");
+                    cards2.add(card2);
+                    cards2.add(card1);
+                }
             } else {
-                cards1.add(card1);
-                cards1.add(card2);
+                if (card1.compareTo(card2) < 0) {
+                    System.out.println("Player 2 wins round " + round + ".\n");
+                    cards2.add(card2);
+                    cards2.add(card1);
+                } else {
+                    System.out.println("Player 1 wins round " + round + ".\n");
+                    cards1.add(card1);
+                    cards1.add(card2);
+                }
             }
+            round++;
         }
+        playedGames.put(gameKey, cards2.isEmpty());
         return cards2.isEmpty();
     }
 
     private Deck playRecursiveGame(Deck deck1, Deck deck2) {
+        int game = 1;
+        int round = 1;
         while (!deck1.getCards().isEmpty() && !deck2.getCards().isEmpty()) {
+            System.out.println("-- Round " + round + " (Game 1) --");
+            System.out.println("Player 1's dec: " + deck1.getCards());
+            System.out.println("Player 2's dec: " + deck2.getCards());
             Integer card1 = deck1.getCards().poll();
             Integer card2 = deck2.getCards().poll();
             if (deck1.getCards().size() >= card1 && deck2.getCards().size() >= card2) {
                 // recursive combat
-                if (determineOneGame(deck1, deck2)) {
+                game++;
+                System.out.println("\n=== Game " + game + " ===");
+                if (determineOneGame(deck1, deck2, game)) {
+                    System.out.println("Player 1 wins round " + round + ".\n");
                     deck1.getCards().add(card1);
                     deck1.getCards().add(card2);
                 } else {
+                    System.out.println("Player 2 wins round " + round + ".\n");
                     deck2.getCards().add(card2);
                     deck2.getCards().add(card1);
                 }
             } else {
                 if (card1.compareTo(card2) < 0) {
+                    System.out.println("Player 2 wins round " + round + ".\n");
                     deck2.getCards().add(card2);
                     deck2.getCards().add(card1);
                 } else {
+                    System.out.println("Player 1 wins round " + round + ".\n");
                     deck1.getCards().add(card1);
                     deck1.getCards().add(card2);
                 }
             }
+            round++;
         }
         if (deck1.getCards().isEmpty()) {
             return deck2;
@@ -142,9 +190,9 @@ public class Day22 {
         System.out.println("Result: " + count);
         assert count == 291;  //TODO finish part 2 :)
 
-        count = new Day22(true).solve2("2020/day22.txt");
-        System.out.println("Result: " + count);
-        assert count == 33559;  //32516
+//        count = new Day22(true).solve2("2020/day22.txt");
+//        System.out.println("Result: " + count);
+//        assert count == 33559;  //32516
         //*/
     }
 }
