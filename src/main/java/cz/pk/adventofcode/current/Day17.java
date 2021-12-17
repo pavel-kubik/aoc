@@ -105,10 +105,10 @@ public class Day17 {
         int guessDiffYMax = -y1;
         for (int x = guessDiffXMin; x <= guessDiffXMax; x++) {
             for (int y = guessDiffYMin; y <= guessDiffYMax; y++) {
-                //Matrix<String> field = Matrix.instance(x2+1, -2*y1+70, ".");
-                //int offset = field.getHeight()+y1-1;
-                //field.set(offset, 0, "S");
-                //markTarget(field, offset, x1, y1, x2, y2);
+//                Matrix<String> field = Matrix.instance(x2+1, -2*y1+70, ".");
+//                int offset = field.getHeight()+y1-1;
+//                field.set(offset, 0, "S");
+//                markTarget(field, offset, x1, y1, x2, y2);
                 Vector2<Integer> currentPosition = new Vector2<>(0, 0);
                 Vector2<Integer> diff = new Vector2<>(x, y);
                 System.out.printf("Check step (%d, %d)\n", x, y);
@@ -122,7 +122,46 @@ public class Day17 {
                             maxY = localMaxY2;
                         }
                         System.out.printf("IT WORKS FOR step (%d, %d) - max y was %d\n", x, y, localMaxY2);
+//                        System.out.println(field.toShortString());
+                        break;
+                    }
+                    currentPosition = moveProbe(currentPosition, diff);
+                    diff = updateDiff(diff);
+//                    field.set(offset - currentPosition.getY(), currentPosition.getX(), "#");
+                }
+//                if (inOver(currentPosition, diff, x1, y1, x2, y2)) {
+//                    System.out.println(field.toShortString());
+//                }
+            }
+        }
+
+        return maxY;
+    }
+
+    public long solve2(int x1, int y1, int x2, int y2) {
+        int guessDiffXMin = (int) Math.floor(Math.sqrt(2*x1));
+        int guessDiffXMax = x2;
+        int guessDiffYMin = y1;
+        int guessDiffYMax = -y1;
+        long counts = 0;
+        for (int x = guessDiffXMin; x <= guessDiffXMax; x++) {
+            for (int y = guessDiffYMin; y <= guessDiffYMax; y++) {
+                //Matrix<String> field = Matrix.instance(x2+1, -2*y1+70, ".");
+                //int offset = field.getHeight()+y1-1;
+                //field.set(offset, 0, "S");
+                //markTarget(field, offset, x1, y1, x2, y2);
+                Vector2<Integer> currentPosition = new Vector2<>(0, 0);
+                Vector2<Integer> diff = new Vector2<>(x, y);
+                //System.out.printf("Check step (%d, %d)\n", x, y);
+                int localMaxY2 = 0;
+                while (!inOver(currentPosition, diff, x1, y1, x2, y2)) {
+                    if (localMaxY2 < currentPosition.getY()) {
+                        localMaxY2 = currentPosition.getY();
+                    }
+                    if (inTarget(currentPosition, x1, y1, x2, y2)) {
+                        System.out.printf("IT WORKS FOR step (%d, %d) - max y was %d\n", x, y, localMaxY2);
                         //System.out.println(field.toShortString());
+                        counts++;
                         break;
                     }
                     currentPosition = moveProbe(currentPosition, diff);
@@ -135,11 +174,7 @@ public class Day17 {
             }
         }
 
-        return maxY;
-    }
-
-    public long solve2(int x1, int y1, int x2, int y2) {
-        return 0;
+        return counts;
     }
 
     public static void main(String[] args) {
@@ -153,17 +188,17 @@ public class Day17 {
 
         count = new Day17(true).solve(135, -102,155, -78);
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 5151;
 
         //*/
 
         count = new Day17(true).solve2(20, -10,30, -5);
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 112;
 
         count = new Day17(true).solve2(135, -102,155, -78);
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 968;
         //*/
     }
 }
