@@ -1,5 +1,13 @@
 package cz.pk.adventofcode;
 
+import cz.pk.adventofcode.y2020.day17.Day17;
+import cz.pk.adventofcode.y2021.day10.Day10;
+import cz.pk.adventofcode.y2021.day11.Day11;
+import cz.pk.adventofcode.y2021.day12.Day12;
+import cz.pk.adventofcode.y2021.day13.Day13;
+import cz.pk.adventofcode.y2021.day14.Day14;
+import cz.pk.adventofcode.y2021.day15.Day15;
+import cz.pk.adventofcode.y2021.day16.Day16;
 import cz.pk.adventofcode.y2021.day7.Day7;
 import cz.pk.adventofcode.y2021.day8.Day8;
 import cz.pk.adventofcode.y2021.day9.Day9;
@@ -60,6 +68,14 @@ public class AdventOfCodeApplication {
             Day7.main(args);
             Day8.main(args);
             Day9.main(args);
+            Day10.main(args);
+            Day11.main(args);
+            Day12.main(args);
+            Day13.main(args);
+            Day14.main(args);
+            Day15.main(args);
+            Day16.main(args);
+            Day17.main(args);
             System.out.println("All works!");
         };
     }

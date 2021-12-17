@@ -66,7 +66,7 @@ public class Matrix<TYPE> {
     }
 
     public TYPE get(Vector2<Integer> vector) {
-        return get(vector.y, vector.x); // TODO x should go to columns
+        return get(vector.y, vector.x);
     }
 
     public void set(int row, int col, TYPE value) {
@@ -105,10 +105,10 @@ public class Matrix<TYPE> {
     public Matrix<TYPE>
     applyOperation(BiFunction<Matrix<TYPE>, Vector2<Integer>, TYPE> op) {
         List<List<TYPE>> out = new ArrayList<>();
-        for (int i = 0; i < rows.size(); i++) {
+        for (int row = 0; row < rows.size(); row++) {
             List<TYPE> d2 = new ArrayList<>();
-            for (int j = 0; j < rows.get(i).size(); j++) {
-                d2.add(op.apply(this, new Vector2<>(i, j)));
+            for (int col = 0; col < rows.get(row).size(); col++) {
+                d2.add(op.apply(this, new Vector2<>(col, row)));
             }
             out.add(d2);
         }

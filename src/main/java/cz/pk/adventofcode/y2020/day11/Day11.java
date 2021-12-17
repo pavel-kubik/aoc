@@ -7,7 +7,6 @@ import java.util.Map;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
-import cz.pk.adventofcode.util.MatrixUtil;
 import cz.pk.adventofcode.util.PuzzleSolver2D;
 import lombok.Data;
 
@@ -18,7 +17,6 @@ import static java.util.stream.Collectors.toList;
 public class Day11 {
     private final boolean debug;
 
-    MatrixUtil<Place> matrixUtil = new MatrixUtil<>(Place.class);
     private Place[][] places;
 
     private static Place switchPlace(Place place) {
