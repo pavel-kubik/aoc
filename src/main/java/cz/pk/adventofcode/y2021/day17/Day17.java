@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day17;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
