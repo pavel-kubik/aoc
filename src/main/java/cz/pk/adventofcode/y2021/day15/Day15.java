@@ -55,10 +55,10 @@ public class Day15 {
                              Matrix<Integer> pathRisk,
                              Integer bestWay) {
         long stepsCount = 0;
-        Set<Step> steps = new HashSet<>();  // TODO SortedSet
+        PriorityQueue<Step> steps = new PriorityQueue<>();
         steps.add(new Step(startPosition, startRisk));
         while (!steps.isEmpty()) {
-            Step currentStep = Collections.min(steps);
+            Step currentStep = steps.poll();
             steps.remove(currentStep);
             stepsCount++;
 
