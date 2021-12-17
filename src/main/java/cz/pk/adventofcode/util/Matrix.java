@@ -259,6 +259,20 @@ public class Matrix<TYPE> {
         return sb.toString();
     }
 
+    /**
+     * Print without field separator. Save space when field is just one digit.
+     */
+    public String toShortString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.rows.size(); i++) {
+            for (int j = 0; j < this.rows.get(i).size(); j++) {
+                sb.append(this.get(i, j));
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     public int getWidth() {
         return width;
     }

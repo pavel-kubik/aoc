@@ -1,17 +1,14 @@
 package cz.pk.adventofcode.current;
 
 import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.StringCollector;
+import cz.pk.adventofcode.util.Matrix;
+import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day17 {
@@ -73,55 +70,98 @@ public class Day17 {
         }
     }
 
-    public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
-
-        // string lines
-        //List<String> data = new StringCollector(file).process();
-
-        // 1 line separated by ,
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-
-        // matrix
-        //List<List<Long>> data = collectData(
-        //        file,
-        //        (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        //Matrix<Long> m = Matrix.instance(data);
-        //m.map(0l, (a, b) -> a + b);
-
-        System.out.println(data);
-        return data.get(0);
+    private Vector2<Integer> moveProbe(Vector2<Integer> initialPosition, Vector2<Integer> diff) {
+        Vector2<Integer> newPosition = initialPosition.plus(diff);
+        return newPosition;
     }
 
-    public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+    private Vector2<Integer> updateDiff(Vector2<Integer> diff) {
+        return new Vector2<>(diff.getX() > 0 ? diff.getX() - 1 : diff.getX(), diff.getY() - 1);
+    }
+
+    private boolean inTarget(Vector2<Integer> position, int x1, int y1, int x2, int y2) {
+        return position.getX() >= x1 && position.getX() <= x2 &&
+                position.getY() >= y1 && position.getY() <= y2;
+    }
+
+    private boolean inOver(Vector2<Integer> position, Vector2<Integer> diff, int x1, int y1, int x2, int y2) {
+        return position.getX() > x2 ||
+                position.getY() < y1 && diff.getY() < 0;
+    }
+
+    private void markTarget(Matrix<String> field, int offset, int x1, int y1, int x2, int y2) {
+        for (int x = x1; x <= x2; x++) {
+            for (int y = y1; y <= y2; y++) {
+                field.set(offset - y, x, "T");
+            }
+        }
+    }
+
+    public long solve(int x1, int y1, int x2, int y2) {
+        int maxY = Integer.MIN_VALUE;
+        int guessDiffXMin = (int) Math.floor(Math.sqrt(2*x1));
+        int guessDiffXMax = (int) Math.ceil(Math.sqrt(2*x2));
+        int guessDiffYMin = 0;
+        int guessDiffYMax = -y1;
+        for (int x = guessDiffXMin; x <= guessDiffXMax; x++) {
+            for (int y = guessDiffYMin; y <= guessDiffYMax; y++) {
+                //Matrix<String> field = Matrix.instance(x2+1, -2*y1+70, ".");
+                //int offset = field.getHeight()+y1-1;
+                //field.set(offset, 0, "S");
+                //markTarget(field, offset, x1, y1, x2, y2);
+                Vector2<Integer> currentPosition = new Vector2<>(0, 0);
+                Vector2<Integer> diff = new Vector2<>(x, y);
+                System.out.printf("Check step (%d, %d)\n", x, y);
+                int localMaxY2 = 0;
+                while (!inOver(currentPosition, diff, x1, y1, x2, y2)) {
+                    if (localMaxY2 < currentPosition.getY()) {
+                        localMaxY2 = currentPosition.getY();
+                    }
+                    if (inTarget(currentPosition, x1, y1, x2, y2)) {
+                        if (maxY < localMaxY2) {
+                            maxY = localMaxY2;
+                        }
+                        System.out.printf("IT WORKS FOR step (%d, %d) - max y was %d\n", x, y, localMaxY2);
+                        //System.out.println(field.toShortString());
+                        break;
+                    }
+                    currentPosition = moveProbe(currentPosition, diff);
+                    diff = updateDiff(diff);
+                    //field.set(offset - currentPosition.getY(), currentPosition.getX(), "#");
+                }
+//                if (inOver(currentPosition, diff, x1, y1, x2, y2)) {
+//                    System.out.println(field.toShortString());
+//                }
+            }
+        }
+
+        return maxY;
+    }
+
+    public long solve2(int x1, int y1, int x2, int y2) {
+        return 0;
     }
 
     public static void main(String[] args) {
         System.out.println(Day17.class);
         long count;
         //*
-        count = new Day17(true).solve("day17_test.txt");
+        count = new Day17(true).solve(20, -10,30, -5);
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 11;
+        assert count == 45;
 
-        count = new Day17(true).solve("day17.txt");
+        count = new Day17(true).solve(135, -102,155, -78);
         System.out.println("Result: " + count);
         assert count == 22;
 
         //*/
 
-        count = new Day17(true).solve2("day17_test.txt");
+        count = new Day17(true).solve2(20, -10,30, -5);
         System.out.println("Result: " + count);
         assert count == 33;
 
-        count = new Day17(true).solve2("day17.txt");
+        count = new Day17(true).solve2(135, -102,155, -78);
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
