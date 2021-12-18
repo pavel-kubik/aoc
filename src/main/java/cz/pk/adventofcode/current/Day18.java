@@ -18,9 +18,6 @@ import cz.pk.adventofcode.current.parser.GTOutParser;
 import cz.pk.adventofcode.util.StringCollector;
 import lombok.Data;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
-
 @Data
 public class Day18 implements ANTLRErrorListener {
 
@@ -255,10 +252,32 @@ public class Day18 implements ANTLRErrorListener {
     }
 
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        List<String> lines = new StringCollector(file).process();
+        SnailfishNumber[] numbers = new SnailfishNumber[lines.size()];
+        for (int line = 0; line < lines.size(); line++) {
+            numbers[line] = parseLine(lines.get(line));
+        }
+
+        System.out.println(numbers[8]);
+        System.out.println(numbers[0]);
+        System.out.println(add(numbers[8], numbers[0]));
+        System.out.println(reduce(add(numbers[8], numbers[0])));
+        System.out.println(reduce(add(numbers[8], numbers[0])).getMagnitude());
+        long highestMagnitude = 0;
+        for (int i = 0; i < numbers.length; i++) {
+            for (int j = 0; j < numbers.length; j++) {
+                if (i == j) {
+                    continue;
+                }
+                long currentMag = reduce(add(reduce(numbers[i]), reduce(numbers[j]))).getMagnitude();
+                if (currentMag > highestMagnitude) {
+                    highestMagnitude = currentMag;
+                    System.out.println("Mag " + highestMagnitude + " for " + i + ", " + j);
+                }
+            }
+        }
+
+        return highestMagnitude;
     }
 
     public static void main(String[] args) {
@@ -278,11 +297,11 @@ public class Day18 implements ANTLRErrorListener {
 
         count = new Day18(true).solve2("day18_test.txt");
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 3993;
 
         count = new Day18(true).solve2("day18.txt");
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 44; // < 4796
         //*/
     }
 
