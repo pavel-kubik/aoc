@@ -252,27 +252,23 @@ public class Day18 implements ANTLRErrorListener {
     }
 
     public long solve2(String file) {
+        assert parseLine("[[1,2],[[3,4],5]]").getMagnitude() == 143;
+        assert parseLine("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]").getMagnitude() == 1384;
+        assert parseLine("[[[[1,1],[2,2]],[3,3]],[4,4]]").getMagnitude() == 445;
+        assert parseLine("[[[[3,0],[5,3]],[4,4]],[5,5]]").getMagnitude() == 791;
+        assert parseLine("[[[[5,0],[7,4]],[5,5]],[6,6]]").getMagnitude() == 1137;
+        assert parseLine("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]").getMagnitude() == 3488;
         List<String> lines = new StringCollector(file).process();
-        SnailfishNumber[] numbers = new SnailfishNumber[lines.size()];
-        for (int line = 0; line < lines.size(); line++) {
-            numbers[line] = parseLine(lines.get(line));
-        }
 
-        System.out.println(numbers[8]);
-        System.out.println(numbers[0]);
-        System.out.println(add(numbers[8], numbers[0]));
-        System.out.println(reduce(add(numbers[8], numbers[0])));
-        System.out.println(reduce(add(numbers[8], numbers[0])).getMagnitude());
         long highestMagnitude = 0;
-        for (int i = 0; i < numbers.length; i++) {
-            for (int j = 0; j < numbers.length; j++) {
+        for (int i = 0; i < lines.size(); i++) {
+            for (int j = 0; j < lines.size(); j++) {
                 if (i == j) {
                     continue;
                 }
-                long currentMag = reduce(add(reduce(numbers[i]), reduce(numbers[j]))).getMagnitude();
+                long currentMag = reduce(add(parseLine(lines.get(i)), parseLine(lines.get(j)))).getMagnitude();
                 if (currentMag > highestMagnitude) {
                     highestMagnitude = currentMag;
-                    System.out.println("Mag " + highestMagnitude + " for " + i + ", " + j);
                 }
             }
         }
@@ -289,6 +285,11 @@ public class Day18 implements ANTLRErrorListener {
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 4140;
 
+        count = new Day18(true).solve("day18_test2.txt");
+        System.out.println("Result: " + count);
+        // add vm option -ea to run configuration to throw exception on assert
+        assert count == 3488;
+
         count = new Day18(true).solve("day18.txt");
         System.out.println("Result: " + count);
         assert count == 3806;
@@ -301,7 +302,7 @@ public class Day18 implements ANTLRErrorListener {
 
         count = new Day18(true).solve2("day18.txt");
         System.out.println("Result: " + count);
-        assert count == 44; // < 4796
+        assert count == 4727; // < 4796
         //*/
     }
 
