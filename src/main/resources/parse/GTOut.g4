@@ -1,139 +1,26 @@
 grammar GTOut;
 
-rule101:  rule64 rule33 | rule14 rule121 ;
-rule130:  rule14 rule96 ;
-rule117:  rule64 rule14 | rule14 rule14 ;
-rule48:  rule78 rule14 | rule102 rule64 ;
-rule107:  rule14 rule14 | rule64 rule64 ;
-rule56:  rule14 rule43 | rule64 rule104 ;
-rule5:  rule107 rule14 | rule106 rule64 ;
-rule67:  rule14 rule44 | rule64 rule94 ;
-rule100:  rule14 rule39 | rule64 rule103 ;
-rule32:  rule14 rule96 | rule64 rule16 ;
-rule25:  rule64 rule107 | rule14 rule96 ;
-rule37:  rule64 rule108 | rule14 rule30 ;
-rule42:  rule95 rule14 | rule27 rule64 ;
-rule113:  rule14 rule79 ;
-rule13:  rule14 rule136 | rule64 rule116 ;
-rule83:  rule64 rule62 | rule14 rule2 ;
-rule105:  rule14 rule108 | rule64 rule117 ;
-rule28:  rule14 rule133 | rule64 rule35 ;
-rule66:  rule64 rule106 | rule14 rule96 ;
-rule41:  rule64 rule85 | rule14 rule60 ;
-rule88:  rule16 rule64 | rule108 rule14 ;
-rule49:  rule58 rule64 | rule14 rule14 ;
-rule111:  rule52 rule64 | rule114 rule14 ;
-rule3:  rule14 rule124 | rule64 rule119 ;
-rule82:  rule14 rule17 | rule64 rule47 ;
-rule116:  rule49 rule14 | rule98 rule64 ;
-rule91:  rule58 rule6 ;
-rule127:  rule106 rule64 | rule30 rule14 ;
-rule125:  rule56 rule14 | rule100 rule64 ;
-rule23:  rule64 rule61 | rule14 rule5 ;
-rule31:  rule64 rule9 | rule14 rule109 ;
-rule86:  rule125 rule14 | rule99 rule64 ;
-rule35:  rule64 rule49 | rule14 rule106 ;
-rule10:  rule64 rule25 | rule14 rule84 ;
-rule85:  rule92 rule64 | rule132 rule14 ;
-rule46:  rule14 rule18 | rule64 rule82 ;
-rule128:  rule78 rule14 | rule79 rule64 ;
-rule79:  rule64 rule64 | rule14 rule64 ;
-rule29:  rule135 rule14 | rule68 rule64 ;
-rule87:  rule106 rule14 | rule79 rule64 ;
-rule96:  rule64 rule14 | rule64 rule64 ;
-rule27:  rule134 rule14 | rule51 rule64 ;
-rule109:  rule76 rule64 | rule86 rule14 ;
-rule9:  rule64 rule120 | rule14 rule74 ;
-rule81:  rule64 rule131 | rule14 rule93 ;
-rule12:  rule118 rule64 | rule37 rule14 ;
-rule11:  rule42 rule31 ;
-rule108:  rule64 rule14 | rule14 rule64 ;
-rule16:  rule64 rule14 | rule14 rule58 ;
-rule63:  rule117 rule64 | rule16 rule14 ;
-rule126:  rule64 rule129 | rule14 rule15 ;
-rule53:  rule64 rule79 | rule14 rule16 ;
-rule75:  rule105 rule14 | rule88 rule64 ;
-rule93:  rule127 rule14 | rule73 rule64 ;
-rule26:  rule36 rule14 | rule97 rule64 ;
-rule124:  rule30 rule58 ;
-rule36:  rule106 rule14 | rule117 rule64 ;
-rule21:  rule25 rule14 | rule119 rule64 ;
-rule92:  rule64 rule96 | rule14 rule102 ;
-rule131:  rule64 rule59 | rule14 rule66 ;
-rule4:  rule64 rule108 | rule14 rule106 ;
-rule44:  rule32 rule64 | rule71 rule14 ;
-rule45:  rule41 rule14 | rule67 rule64 ;
-rule94:  rule119 rule14 | rule110 rule64 ;
-rule58:  rule14 | rule64 ;
-rule38:  rule14 rule14 ;
-rule112:  rule75 rule14 | rule21 rule64 ;
-rule104:  rule58 rule79 ;
-rule59:  rule14 rule16 | rule64 rule98 ;
-rule114:  rule14 rule30 | rule64 rule102 ;
-rule65:  rule96 rule14 | rule6 rule64 ;
-rule68:  rule30 rule14 | rule79 rule64 ;
-rule129:  rule29 rule14 | rule12 rule64 ;
-rule39:  rule14 rule6 | rule64 rule117 ;
-rule78:  rule14 rule14 | rule64 rule58 ;
-rule115:  rule14 rule72 | rule64 rule24 ;
-rule57:  rule64 rule122 | rule14 rule22 ;
-rule71:  rule107 rule14 | rule96 rule64 ;
-rule30:  rule14 rule14 | rule14 rule64 ;
-rule64: 'a' ;
-rule106:  rule14 rule64 ;
-rule89:  rule28 rule64 | rule80 rule14 ;
-rule20:  rule64 rule70 | rule14 rule19 ;
-rule133:  rule107 rule14 | rule34 rule64 ;
-rule34:  rule64 rule64 ;
-rule22:  rule96 rule58 ;
-rule90:  rule16 rule14 | rule96 rule64 ;
-rule51:  rule14 rule46 | rule64 rule112 ;
-rule69:  rule23 rule14 | rule13 rule64 ;
-rule15:  rule14 rule55 | rule64 rule3 ;
-rule123:  rule30 rule14 | rule108 rule64 ;
-rule17:  rule117 rule64 | rule78 rule14 ;
-rule40:  rule49 rule64 | rule117 rule14 ;
-rule135:  rule64 rule34 | rule14 rule108 ;
-rule47:  rule64 rule102 | rule14 rule78 ;
-rule97:  rule14 rule34 | rule64 rule117 ;
-rule2:  rule64 rule63 | rule14 rule88 ;
-rule54:  rule14 rule26 | rule64 rule77 ;
-rule118:  rule98 rule14 | rule96 rule64 ;
-rule76:  rule69 rule14 | rule54 rule64 ;
-rule102:  rule64 rule14 ;
-rule121:  rule114 rule14 | rule130 rule64 ;
-rule99:  rule64 rule57 | rule14 rule10 ;
-rule60:  rule130 rule64 | rule65 rule14 ;
-rule98:  rule58 rule58 ;
-rule132:  rule64 rule117 | rule14 rule30 ;
-rule74:  rule89 rule14 | rule50 rule64 ;
-rule19:  rule78 rule64 | rule6 rule14 ;
-rule1:  rule115 rule64 | rule20 rule14 ;
-rule18:  rule53 rule64 | rule128 rule14 ;
-rule72:  rule14 rule78 | rule64 rule30 ;
-rule103:  rule34 rule64 | rule38 rule14 ;
-rule52:  rule30 rule14 | rule49 rule64 ;
-rule120:  rule83 rule14 | rule81 rule64 ;
-rule70:  rule79 rule14 | rule108 rule64 ;
-rule7:  rule64 rule113 | rule14 rule40 ;
-rule24:  rule49 rule14 | rule16 rule64 ;
-rule84:  rule30 rule64 | rule34 rule14 ;
-rule110:  rule64 rule30 | rule14 rule96 ;
-rule55:  rule14 rule90 | rule64 rule37 ;
-rule62:  rule14 rule4 | rule64 rule47 ;
-rule80:  rule64 rule48 | rule14 rule91 ;
-rule95:  rule126 rule64 | rule45 rule14 ;
-rule77:  rule14 rule87 | rule64 rule35 ;
-rule14: 'b' ;
-rule134:  rule101 rule64 | rule1 rule14 ;
-rule119:  rule14 rule102 | rule64 rule102 ;
-rule0:  rule8 rule11 ;
-rule33:  rule14 rule92 | rule64 rule123 ;
-rule6:  rule58 rule64 | rule64 rule14 ;
-rule50:  rule111 rule64 | rule7 rule14 ;
-rule43:  rule14 rule98 | rule64 rule38 ;
-rule73:  rule102 rule14 | rule6 rule64 ;
-rule61:  rule96 rule64 ;
-rule8:  rule42 ;
-rule136:  rule30 rule64 | rule96 rule14 ;
-rule122:  rule58 rule49 ;
+snailfishNumber
+    : open_bracket node comma node close_bracket EOF
+    ;
+
+node
+    : open_bracket node comma node close_bracket
+    | NUMBER
+    ;
+
+open_bracket
+    : '['
+    ;
+
+comma
+    : ','
+    ;
+
+close_bracket
+    : ']'
+    ;
+
+NUMBER
+    : ('0'..'9')
+    ;

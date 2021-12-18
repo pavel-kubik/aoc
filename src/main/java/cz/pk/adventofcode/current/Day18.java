@@ -1,98 +1,59 @@
 package cz.pk.adventofcode.current;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.current.parser.GTOutLexer;
+import cz.pk.adventofcode.current.parser.GTOutParser;
 import cz.pk.adventofcode.util.StringCollector;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 @Data
-public class Day18 {
+public class Day18 implements ANTLRErrorListener {
 
     private final boolean debug;
 
     @Data
-    @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
+    @NoArgsConstructor
+    private static class SnailfishNumber {
+        private SnailfishNumber left;
+        private SnailfishNumber right;
+
+        private Integer value;
     }
 
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
-        ;
+    private SnailfishNumber parseLine(String line) {
+        ANTLRInputStream input = new ANTLRInputStream(line);
 
-        private static final Map<String, Type> values;
-
-        static {
-            values = new HashMap<>();
-            Arrays.stream(values()).forEach(p -> values.put(p.value, p));
-        }
-
-        private final String value;
-
-        Type(String place) {
-            this.value = place;
-        }
-
-        public static Type get(String value) {
-            return values.get(value);
-        }
-
-        public String toString() {
-            return value;
-        }
-    }
-
-    class TypeCollector extends DataCollector<Subject> {
-
-        public TypeCollector(String file) {
-            super(file);
-        }
-
-        @Override
-        protected Subject processLine(String line) {
-            // numbers in line without separator - Subject: List<Integer>
-            //return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
-
-            // numbers in line with separator - Subject: List<Integer>
-            // decimal - can be any base - change 2nd argument in parseInt
-            //return stream(line.split(" ")).map(n -> Integer.parseInt(n, 10)).collect(toList());
-
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
-        }
+        GTOutLexer lexer = new GTOutLexer(input);
+        //lexer.removeErrorListeners();
+        lexer.addErrorListener(this);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        //tokens.fill();
+        GTOutParser parser = new GTOutParser(tokens);
+        //parser.removeErrorListeners();
+        parser.addErrorListener(this);
+        ParseTree tree = parser.snailfishNumber();
+        return null;
     }
 
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<String> lines = new StringCollector(file).process();
 
-        // string lines
-        //List<String> data = new StringCollector(file).process();
+        for (String line : lines) {
+            parseLine(line);
+        }
 
-        // 1 line separated by ,
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
 
-        // matrix
-        //List<List<Long>> data = collectData(
-        //        file,
-        //        (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        //Matrix<Long> m = Matrix.instance(data);
-        //m.map(0l, (a, b) -> a + b);
-
-        System.out.println(data);
-        return data.get(0);
+        System.out.println(lines);
+        return lines.size();
     }
 
     public long solve2(String file) {
@@ -126,4 +87,25 @@ public class Day18 {
         assert count == 44;
         //*/
     }
+
+    @Override
+    public void syntaxError(Recognizer<?, ?> recognizer, Object o, int i, int i1, String s, RecognitionException e) {
+        throw new RuntimeException("syntaxError", e);
+    }
+
+    @Override
+    public void reportAmbiguity(Parser parser, DFA dfa, int i, int i1, BitSet bitSet, ATNConfigSet atnConfigSet) {
+        throw new RuntimeException("reportAmbiguity");
+    }
+
+    @Override
+    public void reportAttemptingFullContext(Parser parser, DFA dfa, int i, int i1, ATNConfigSet atnConfigSet) {
+        throw new RuntimeException("reportAttemptingFullContext");
+    }
+
+    @Override
+    public void reportContextSensitivity(Parser parser, DFA dfa, int i, int i1, ATNConfigSet atnConfigSet) {
+        throw new RuntimeException("reportContextSensitivity");
+    }
+
 }
