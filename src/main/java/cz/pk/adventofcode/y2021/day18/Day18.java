@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day18;
 
 import java.util.BitSet;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import cz.pk.adventofcode.current.parser.GTOutLexer;
-import cz.pk.adventofcode.current.parser.GTOutParser;
+import cz.pk.adventofcode.y2021.day18.parser.GTOutLexer;
+import cz.pk.adventofcode.y2021.day18.parser.GTOutParser;
 import cz.pk.adventofcode.util.StringCollector;
 import lombok.Data;
 
@@ -280,27 +280,27 @@ public class Day18 implements ANTLRErrorListener {
         System.out.println(Day18.class);
         long count;
         //*
-        count = new Day18(true).solve("day18_test.txt");
+        count = new Day18(true).solve("2021/day18_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 4140;
 
-        count = new Day18(true).solve("day18_test2.txt");
+        count = new Day18(true).solve("2021/day18_test2.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 3488;
 
-        count = new Day18(true).solve("day18.txt");
+        count = new Day18(true).solve("2021/day18.txt");
         System.out.println("Result: " + count);
         assert count == 3806;
 
         //*/
 
-        count = new Day18(true).solve2("day18_test.txt");
+        count = new Day18(true).solve2("2021/day18_test.txt");
         System.out.println("Result: " + count);
         assert count == 3993;
 
-        count = new Day18(true).solve2("day18.txt");
+        count = new Day18(true).solve2("2021/day18.txt");
         System.out.println("Result: " + count);
         assert count == 4727; // < 4796
         //*/

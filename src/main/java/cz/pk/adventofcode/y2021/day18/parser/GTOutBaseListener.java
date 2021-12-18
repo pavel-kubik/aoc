@@ -1,8 +1,7 @@
 // Generated from GTOut.g4 by ANTLR 4.0
-package cz.pk.adventofcode.current.parser;
+package cz.pk.adventofcode.y2021.day18.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.ErrorNode;
 
