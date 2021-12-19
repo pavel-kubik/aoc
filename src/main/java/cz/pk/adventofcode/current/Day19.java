@@ -7,13 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import cz.pk.adventofcode.util.GroupCollector;
 import cz.pk.adventofcode.util.StringCollector;
+import cz.pk.adventofcode.util.Vector2;
 import cz.pk.adventofcode.util.Vector3;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.nd4j.autodiff.listeners.profiler.data.Phase;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -85,65 +87,129 @@ public class Day19 {
         return null;
     }
 
-    private List<int[]> rotate(List<int[]> vectors, int[] sign, BiFunction<int[], int[], int[]> rotationFunction) {
-        return vectors.stream().map(v -> rotationFunction.apply(sign, v)).collect(toList());
+    private int[] remapAxes(int[] a, int[] remapAxes, int[] axesSignum) {
+        int[] out = new int[3];
+        out[remapAxes[0]] = axesSignum[0]*a[0];
+        out[remapAxes[1]] = axesSignum[1]*a[1];
+        out[remapAxes[2]] = axesSignum[2]*a[2];
+        return out;
+    }
+
+    private int[] translate(int[] a, int[] translation) {
+        return new int[] {
+                a[0] + translation[0],
+                a[1] + translation[1],
+                a[2] + translation[2]};
+    }
+
+    private List<int[]> rotate(List<int[]> vectors, int[] map, int[] signum) {
+        return vectors.stream().map(v -> remapAxes(v, map, signum)).collect(toList());
     }
 
     private int[] compareScansWithRotations(int scanA, int scanB, List<int[]> a, List<int[]> b) {
-        int[] diff = null;
-
-        List<BiFunction<int[], int[], int[]>> rotations = new ArrayList<>();
-        rotations.add((sign, v) -> new int[] {v[0]*sign[0], v[1]*sign[1], v[2]*sign[2]});
-        rotations.add((sign, v) -> new int[] {v[0]*sign[0], v[2]*sign[1], v[1]*sign[2]});
-        rotations.add((sign, v) -> new int[] {v[1]*sign[0], v[0]*sign[1], v[2]*sign[2]});
-        rotations.add((sign, v) -> new int[] {v[1]*sign[0], v[2]*sign[1], v[0]*sign[2]});
-        rotations.add((sign, v) -> new int[] {v[2]*sign[0], v[0]*sign[1], v[1]*sign[2]});
-        rotations.add((sign, v) -> new int[] {v[2]*sign[0], v[1]*sign[1], v[0]*sign[2]});
-
-        for (BiFunction<int[], int[], int[]> rotation : rotations) {
-            for (int i = -1; i < 2; i++) {
-                for (int j = -1; j < 2; j++) {
-                    for (int k = -1; k < 2; k++) {
-                        if (i == 0 || j == 0 || k == 0) {
-                            continue;
-                        }
-                        int[] sign = new int[] {i, j, k};
-                        diff = compareScans(a, rotate(b, sign, rotation));
-                        if (diff != null) {
-                            probesRelations.put(100 * scanA + scanB, new ProbeRelation(diff, sign, rotation));
-                            return diff;
-                        }
+        List<Vector2<int[]>> remaps = new ArrayList<>();
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                for (int k = -1; k < 2; k++) {
+                    if (i == 0 || j == 0 || k == 0) {
+                        continue;
                     }
+                    remaps.add(new Vector2<>(new int[] {0, 1, 2}, new int[] {i, j, k}));
+                    remaps.add(new Vector2<>(new int[] {0, 2, 1}, new int[] {i, j, k}));
+                    remaps.add(new Vector2<>(new int[] {1, 0, 2}, new int[] {i, j, k}));
+                    remaps.add(new Vector2<>(new int[] {1, 2, 0}, new int[] {i, j, k}));
+                    remaps.add(new Vector2<>(new int[] {2, 0, 1}, new int[] {i, j, k}));
+                    remaps.add(new Vector2<>(new int[] {2, 1, 0}, new int[] {i, j, k}));
                 }
+            }
+        }
+
+        for (Vector2<int[]> remap : remaps) {
+            int[] diff = compareScans(a, rotate(b, remap.x, remap.y));    //remap = axes, signum
+            if (diff != null) {
+                probesRelations.put(100 * scanB + scanA, new Transformation(diff, remap.x, remap.y));
+                return diff;
             }
         }
         return null;
     }
 
     @Data
+    @RequiredArgsConstructor
     @AllArgsConstructor
-    private class ProbeRelation {
+    private class Transformation {
         private final int[] translation;
-        private final int[] sign;
-        private final BiFunction<int[], int[], int[]> rotationFunction;
+        private final int[] remap;
+        private final int[] signum;
+        boolean translateFirst;
 
-        public ProbeRelation add(ProbeRelation that) {
-            return new ProbeRelation(
-                    new int[] {
-                            this.translation[0] + that.translation[0],
-                            this.translation[1] + that.translation[1],
-                            this.translation[2] + that.translation[2]},
-                    new int[] {
-                            this.sign[0] * that.sign[0],
-                            this.sign[1] * that.sign[1],
-                            this.sign[2] * that.sign[2]},
-                    this.rotationFunction.andThen(that.rotationFunction));
+        List<Transformation> chain;
+
+        public int[] transform(int [] a) {
+            if (chain != null) {
+                int[] out = a;
+                for (Transformation transformation : chain) {
+                    out = transformation.transform(out);
+                }
+                return out;
+            } else {
+                return translateFirst ?
+                        remapAxes(translate(a, translation), remap, signum) :
+                        translate(remapAxes(a, remap, signum), translation);
+            }
+        }
+
+        public Transformation inverse() {
+            if (chain != null) {
+                List<Transformation> inverseChain = new ArrayList<>();
+                for (int i = 0; i < chain.size(); i++) {
+                    inverseChain.add(chain.get(chain.size() - i - 1).inverse());
+                }
+                return new Transformation(null, null, null, true, inverseChain);
+            } else {
+                int[] newRemap = new int[3];
+                newRemap[remap[0]] = 0;
+                newRemap[remap[1]] = 1;
+                newRemap[remap[2]] = 2;
+                return new Transformation(
+                        new int[]{-translation[0], -translation[1], -translation[2]},
+                        newRemap,
+                        new int[]{signum[remap[0]], signum[remap[1]], signum[remap[2]]},
+                        !translateFirst,
+                        null);
+            }
+        }
+
+        public Transformation add(Transformation that) {
+            List<Transformation> newChain = new ArrayList<>();
+            newChain.add(this);
+            newChain.add(that);
+            return new Transformation(null, null, null, true, newChain);
         }
     }
 
-    private Map<Integer, ProbeRelation> probesRelations = new HashMap<>();
+    private Map<Integer, Transformation> probesRelations = new HashMap<>();
 
     public long solve(String file) {
+        int[] a = {1, 2, 3};
+        Transformation t = new Transformation(new int[] {-10, 20, 30}, new int[] {2, 1, 0}, new int[] {-1, -1, 1});
+        System.out.println(Arrays.toString(a));
+        System.out.println(t);
+        int[] b = t.transform(a);
+        System.out.println(Arrays.toString(b));
+        System.out.println(t.inverse());
+        int[] c = t.inverse().transform(b);
+        System.out.println(Arrays.toString(c));
+        assert Arrays.equals(a, c);
+
+        Transformation t2 = new Transformation(new int[] {20, -10, 50}, new int[] {1, 0, 2}, new int[] {-1, 1, -1});
+        Transformation t3 = new Transformation(new int[] {-100, -200, -300}, new int[] {0, 1, 2}, new int[] {-1, 1, 1});
+        Transformation ch = t.add(t2.inverse()).add(t3);
+        //b = ch.transform(a);
+        b = t3.transform(t2.inverse().transform(t.transform(a)));
+        c = ch.inverse().transform(b);
+        assert Arrays.equals(a, c);
+
         List<List<int[]>> scannersData = new ScanCollector(file).processGroups();
         // find subset with offset and changed orientation
         for (int i = 0; i < scannersData.size(); i++) {
@@ -153,41 +219,76 @@ public class Day19 {
 
                 int[] diff = compareScansWithRotations(i, j, scanI, scanJ);
                 if (diff != null) {
-                    System.out.printf("Scan %d match %d with translation %s\n", i, j, Arrays.toString(diff));
+                    System.out.printf("Scan %d match %d with translation %s\n", i, j, probesRelations.get(100*j + i));
                 }
             }
         }
 
+        System.out.println(probesRelations);
+
         // expand probe relations
-        probesRelations = new HashMap<>();
-        for (int j = 0; j < scannersData.size(); j++) {
-            if (probesRelations.containsKey(j)) {
-                // expand mapping `0 -> j` to `0 -> j -> i`
-                for (Map.Entry<Integer, ProbeRelation> entry : probesRelations.entrySet()) {
-                    int fromProbe = entry.getKey() / 100;
-                    int toProbe = entry.getKey() % 100;
-                    if (fromProbe == j) {
-                        probesRelations.put(toProbe, probesRelations.get(j).add(entry.getValue()));
+        for (int z = 0; z < 2; z++) {
+            for (int i = 0; i < scannersData.size(); i++) {
+                for (int j = 0; j < scannersData.size(); j++) {
+                    if (i == j) {
+                        continue;
+                    }
+                    if (probesRelations.containsKey(100 * i + j)) {
+                        System.out.println("Extend mapping " + i + " to " + j);
+                        Map<Integer, Transformation> newGen = new HashMap<>();
+                        for (Map.Entry<Integer, Transformation> entry : probesRelations.entrySet()) {
+                            int fromProbe = entry.getKey() / 100;
+                            int toProbe = entry.getKey() % 100;
+                            Transformation transformationIJ = probesRelations.get(100 * i + j);
+
+                            if (fromProbe == j && toProbe != i) {
+                                int k = toProbe;
+                                // i -> j extend to i -> j -> k
+                                if (!probesRelations.containsKey(100 * i + k)) {
+                                    System.out.println("Add transformation from " + i + " to " + k);
+                                    newGen.put(100 * i + k, transformationIJ.add(entry.getValue()));
+                                }
+                                // i -> j extend to k ->' j ->' i
+                                if (!probesRelations.containsKey(100 * k + i)) {
+                                    System.out.println("Add transformation from " + k + " to " + i);
+                                    newGen.put(100 * k + i, entry.getValue().inverse().add(transformationIJ.inverse()));
+                                }
+                            }
+                            if (fromProbe == i && toProbe != j) {
+                                // i -> j extend to j ->' i -> k
+                                int k = toProbe;
+                                if (!probesRelations.containsKey(100 * j + k)) {
+                                    System.out.println("Add transformation from " + j + " to " + k);
+                                    newGen.put(100 * j + k, transformationIJ.inverse().add(entry.getValue()));
+                                }
+                                // i -> j extend to k ->' i -> j
+                                if (!probesRelations.containsKey(100 * k + j)) {
+                                    System.out.println("Add transformation from " + k + " to " + j);
+                                    newGen.put(100 * k + j, entry.getValue().inverse().add(transformationIJ));
+                                }
+                            }
+                        }
+                        probesRelations.putAll(newGen);
                     }
                 }
             }
         }
 
         Set<Vector3<Integer>> beacons = new HashSet<>();
-        for (int scan = 0; scan < scannersData.size(); scan++) {
-            ProbeRelation transformation = probesRelations.get(scan);
+        for (int measure = 0; measure < scannersData.get(0).size(); measure++) {
+            beacons.add(new Vector3<>(Arrays.stream(scannersData.get(0).get(measure)).boxed().toArray(Integer[]::new)));
+        }
+        for (int scan = 1; scan < scannersData.size(); scan++) {
+            Transformation transformation = probesRelations.get(100*scan);
+            if (transformation == null) {
+                System.out.println("Missing transformation " + scan + " to 0");
+            }
             for (int measure = 0; measure < scannersData.get(scan).size(); measure++) {
                 beacons.add(new Vector3<>(
-                        Arrays.stream(
-                        transformation.getRotationFunction().apply(transformation.getSign(), new int[] {
-                                scannersData.get(scan).get(measure)[0] + transformation.getTranslation()[0],
-                                scannersData.get(scan).get(measure)[1] + transformation.getTranslation()[1],
-                                scannersData.get(scan).get(measure)[2] + transformation.getTranslation()[2]}
-                                )).boxed().toArray(Integer[]::new)));
+                        Arrays.stream(transformation.transform(scannersData.get(scan).get(measure)))
+                        .boxed().toArray(Integer[]::new)));
             }
         }
-
-        System.out.println(probesRelations);
 
         return beacons.size();
     }
@@ -210,7 +311,8 @@ public class Day19 {
 
         count = new Day19(true).solve("day19.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 22; //< 405
+        // not 404, not just +/1 issue :-)
 
         //*/
 
