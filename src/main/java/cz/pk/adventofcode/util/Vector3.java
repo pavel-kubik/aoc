@@ -16,6 +16,13 @@ public class Vector3<T> {
                 .append("[").append(x).append(",").append(y).append(",").append(z).append("]").toString();
     }
 
+    public Vector3(T[] v3) {
+        assert v3.length == 3;
+        this.x = v3[0];
+        this.y = v3[1];
+        this.z = v3[2];
+    }
+
     public <TYPE> Vector3<TYPE> plus(Vector3<TYPE> vectorUnknown) {
         if (Integer.class.isAssignableFrom(vectorUnknown.x.getClass())) {
             Vector3<Integer> vectorInt = (Vector3<Integer>) vectorUnknown;
