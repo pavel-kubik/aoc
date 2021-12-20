@@ -128,7 +128,10 @@ public class Day19 {
         for (Vector2<int[]> remap : remaps) {
             int[] diff = compareScans(a, rotate(b, remap.x, remap.y));    //remap = axes, signum
             if (diff != null) {
-                probesRelations.put(SEP * scanB + scanA, new Transformation(diff, remap.x, remap.y));
+                probesRelations.put(
+                        SEP * scanB + scanA,
+                        new Transformation(null, remap.x, remap.y).add(
+                            new Transformation(diff, null, null)));
                 return diff;
             }
         }
@@ -148,8 +151,10 @@ public class Day19 {
         public int[] transform(int [] a) {
             if (chain != null) {
                 int[] out = a;
+                int i = 0;
                 for (Transformation transformation : chain) {
                     out = transformation.transform(out);
+                    System.out.println("Chain " + i++ + ": " + Arrays.toString(out));
                 }
                 return out;
             } else {
@@ -170,15 +175,20 @@ public class Day19 {
                 return new Transformation(null, null, null, inverseChain);
             } else {
                 int[] newRemap = new int[3];
+                int[] newSignum = new int[3];
                 if (remap != null) {
                     newRemap[remap[0]] = 0;
                     newRemap[remap[1]] = 1;
                     newRemap[remap[2]] = 2;
+
+                    newSignum[remap[0]] = signum[0];
+                    newSignum[remap[1]] = signum[1];
+                    newSignum[remap[2]] = signum[2];
                 }
                 return new Transformation(
                         translation != null ? new int[]{-translation[0], -translation[1], -translation[2]} : null,
                         remap != null ? newRemap : null,
-                        remap != null ? new int[]{signum[remap[0]], signum[remap[1]], signum[remap[2]]} : null,
+                        remap != null ? newSignum : null,
                         null);
             }
         }
@@ -206,31 +216,50 @@ public class Day19 {
     private Map<Integer, Transformation> probesRelations = new HashMap<>();
 
     public long solve(String file) {
-        int[] a = {1, 2, 3};
-        Transformation t = new Transformation(new int[] {-10, 20, 30}, new int[] {2, 1, 0}, new int[] {-1, -1, 1});
-        System.out.println(Arrays.toString(a));
-        System.out.println(t);
-        int[] b = t.transform(a);
-        System.out.println(Arrays.toString(b));
-        System.out.println(t.inverse());
-        int[] c = t.inverse().transform(b);
-        System.out.println(Arrays.toString(c));
-        assert Arrays.equals(a, c);
+//        int[] a = {1, 2, 3};
+//        Transformation t = new Transformation(new int[] {-10, 20, 30}, new int[] {2, 1, 0}, new int[] {-1, -1, 1});
+//        System.out.println(Arrays.toString(a));
+//        System.out.println(t);
+//        int[] b = t.transform(a);
+//        System.out.println(Arrays.toString(b));
+//        System.out.println(t.inverse());
+//        int[] c = t.inverse().transform(b);
+//        System.out.println(Arrays.toString(c));
+//        assert Arrays.equals(a, c);
+//
+//        Transformation t2 = new Transformation(new int[] {20, -10, 50}, new int[] {1, 0, 2}, new int[] {-1, 1, -1});
+//        Transformation t3 = new Transformation(new int[] {-100, -200, -300}, new int[] {0, 1, 2}, new int[] {-1, 1, 1});
+//        Transformation ch = t.add(t2).add(t3.inverse());
+//        b = ch.transform(a);
+//        c = ch.inverse().transform(b);
+//        assert Arrays.equals(a, c);
+//
+//        Transformation t12 = t.add(t2);
+//        Transformation t23 = t2.add(t3);
+//        Transformation t123 = t12.add(t23);
+//
+//        b = t123.transform(a);
+//        c = t123.inverse().transform(b);
+//        assert Arrays.equals(a, c);
 
-        Transformation t2 = new Transformation(new int[] {20, -10, 50}, new int[] {1, 0, 2}, new int[] {-1, 1, -1});
-        Transformation t3 = new Transformation(new int[] {-100, -200, -300}, new int[] {0, 1, 2}, new int[] {-1, 1, 1});
-        Transformation ch = t.add(t2).add(t3.inverse());
-        b = ch.transform(a);
-        c = ch.inverse().transform(b);
-        assert Arrays.equals(a, c);
-
-        Transformation t12 = t.add(t2);
-        Transformation t23 = t2.add(t3);
-        Transformation t123 = t12.add(t23);
-
-        b = t123.transform(a);
-        c = t123.inverse().transform(b);
-        assert Arrays.equals(a, c);
+        //int[] v = new int[] { 649, 640, 665 };
+        int[] v = new int[] { 1, 2, 3 };
+//        Transformation trError = new Transformation(new int[] {-68, 1246, 43}, null, null)
+//                .add(new Transformation(null, new int[] {0, 1, 2}, new int[] {-1, 1, -1}))
+//                .add(new Transformation(new int[] {-88, -113, 1104}, null, null))
+//                .add(new Transformation(null, new int[] {1, 2, 0}, new int[] {-1, -1, 1}))
+//                .add(new Transformation(null, new int[] {1, 0, 2}, new int[] {1, 1, -1}))
+//                .add(new Transformation(new int[] {1125, -168, 72}, null, null))
+//                ;
+        Transformation trError = new Transformation(null, new int[] {1, 2, 0}, new int[] {-1, -1, 1})
+                .add(new Transformation(null, new int[] {1, 0, 2}, new int[] {1, 1, -1}))
+                ;
+        System.out.println(Arrays.toString(v));
+        int[] vT = trError.transform(v);
+        System.out.println(Arrays.toString(vT));
+        int[] vTT = trError.inverse().transform(vT);
+        System.out.println(Arrays.toString(vTT));
+        assert Arrays.equals(v, vTT);
 
         List<List<int[]>> scannersData = new ScanCollector(file).processGroups();
         // find subset with offset and changed orientation
@@ -257,18 +286,18 @@ public class Day19 {
                     }
                     if (probesRelations.containsKey(SEP * i + j)) {
                         Transformation transformationIJ = probesRelations.get(SEP * i + j);
-                        if (transformationIJ.getChain() != null && z < 2) {
-                            continue; // don't use chain so much
-                        }
+//                        if (transformationIJ.getChain() != null && z < 2) {
+//                            continue; // don't use chain so much
+//                        }
                         System.out.println("Extend mapping " + i + " to " + j);
                         Map<Integer, Transformation> newGen = new HashMap<>();
                         for (Map.Entry<Integer, Transformation> entry : probesRelations.entrySet()) {
                             int fromProbe = entry.getKey() / SEP;
                             int toProbe = entry.getKey() % SEP;
 
-                            if (entry.getValue().getChain() != null && z < 2) {
-                                continue; // don't use chain so much
-                            }
+//                            if (entry.getValue().getChain() != null && z < 2) {
+//                                continue; // don't use chain so much
+//                            }
 
                             if (fromProbe == j && toProbe != i) {
                                 int k = toProbe;    // j -> k
@@ -278,9 +307,7 @@ public class Day19 {
                                     newGen.put(SEP * i + k, transformationIJ.add(entry.getValue()));
                                 }
                                 // i -> j extend to k ->' j ->' i
-                                if (!probesRelations.containsKey(SEP * k + i)
-                                        && !entry.getValue().containInverse()
-                                        && !transformationIJ.containInverse()) {
+                                if (!probesRelations.containsKey(SEP * k + i)) {
                                     System.out.println("Add transformation from " + k + " to " + i);
                                     newGen.put(SEP * k + i, entry.getValue().inverse().add(transformationIJ.inverse()));
                                 }
@@ -289,27 +316,25 @@ public class Day19 {
                                 int k = toProbe;    // i -> k
                                 // i -> j extend to j ->' i -> k
                                 // 447 when commented out
-                                if (!probesRelations.containsKey(SEP * j + k)
-                                        && !transformationIJ.containInverse()) {
+                                if (!probesRelations.containsKey(SEP * j + k)) {
                                     System.out.println("Add transformation from " + j + " to " + k);
                                     newGen.put(SEP * j + k, transformationIJ.inverse().add(entry.getValue()));
                                 }
                                 // i -> j extend to k ->' i -> j
-                                if (!probesRelations.containsKey(SEP * k + j)
-                                        && !entry.getValue().containInverse()) {
+                                if (!probesRelations.containsKey(SEP * k + j)) {
                                     System.out.println("Add transformation from " + k + " to " + j);
                                     newGen.put(SEP * k + j, entry.getValue().inverse().add(transformationIJ));
                                 }
                             }
                             // new - changed to 483 - WHY???
-                            if (fromProbe != j && toProbe == i) {
-                                int k = fromProbe;  // k -> i
-                                // i -> j extend to k -> i -> j
-                                if (!probesRelations.containsKey(SEP * k + j)) {
-                                    System.out.println("Add transformation from " + k + " to " + j);
-                                    newGen.put(SEP * k + j, entry.getValue().add(transformationIJ));
-                                }
-                            }
+//                            if (fromProbe != j && toProbe == i) {
+//                                int k = fromProbe;  // k -> i
+//                                // i -> j extend to k -> i -> j
+//                                if (!probesRelations.containsKey(SEP * k + j)) {
+//                                    System.out.println("Add transformation from " + k + " to " + j);
+//                                    newGen.put(SEP * k + j, entry.getValue().add(transformationIJ));
+//                                }
+//                            }
                         }
                         probesRelations.putAll(newGen);
                     }
@@ -327,15 +352,6 @@ public class Day19 {
                 System.out.println("Missing transformation " + scan + " to 0");
             }
             for (int measure = 0; measure < scannersData.get(scan).size(); measure++) {
-
-                int[] v = scannersData.get(scan).get(measure);
-                int[] vT = transformation.transform(v);
-                int[] vTT = transformation.inverse().transform(vT);
-                if (!Arrays.equals(v, vTT)) {
-                    int checkBug = 0;
-                }
-                //assert Arrays.equals(v, vTT);
-
                 beacons.add(new Vector3<>(
                         Arrays.stream(transformation.transform(scannersData.get(scan).get(measure)))
                         .boxed().toArray(Integer[]::new)));
@@ -363,8 +379,7 @@ public class Day19 {
 
         count = new Day19(true).solve("day19.txt");
         System.out.println("Result: " + count);
-        assert count == 22; //< 405
-        // not 404, not just +/1 issue :-)
+        assert count == 342;
 
         //*/
 
