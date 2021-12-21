@@ -56,7 +56,7 @@ public class Day21 {
         return Math.min(score1, score2) * diceTotal;
     }
 
-    private Vector2<Long> evalGame(int p1, int p2, int s1, int s2, boolean p1p, long times) {
+    private Vector2<Long> evalStep(int p1, int p2, int s1, int s2, boolean p1p, long times) {
         // 3 time roll  => 27x copy (but just 7 combinations)
         if (s1 >= 21) {
             return new Vector2<>(times, 0l);
@@ -65,15 +65,17 @@ public class Day21 {
             return new Vector2<>(0l, times);
         }
         Vector2<Long> wins = new Vector2<>(0l, 0l);
-        for (int i = 3; i <= 9; i++) {
-            if (p1p) {
+        if (p1p) {
+            for (int i = 3; i <= 9; i++) {
                 p1 = move(i, p1);
-                Vector2<Long> c = evalGame(p1, p2, s1 + p1 + 1, s2, !p1p, times*quantumRollsSum.get(i));
+                Vector2<Long> c = evalStep(p1, p2, s1 + p1 + 1, s2, !p1p, times * quantumRollsSum.get(i));
                 wins.x += c.x;
                 wins.y += c.y;
-            } else {
+            }
+        } else {
+            for (int i = 3; i <= 9; i++) {
                 p2 = move(i, p2);
-                Vector2<Long> c = evalGame(p1, p2, s1, s2 + p2 + 1, !p1p,  times*quantumRollsSum.get(i));
+                Vector2<Long> c = evalStep(p1, p2, s1, s2 + p2 + 1, !p1p, times * quantumRollsSum.get(i));
                 wins.x += c.x;
                 wins.y += c.y;
             }
@@ -94,14 +96,12 @@ public class Day21 {
         }
         System.out.println(quantumRollsSum);
         // play
-        Vector2<Long> wins = evalGame(player1 - 1, player2 - 2, 0, 0, true, 1);
-        long player1Win = wins.x;
-        long player2Win = wins.y;
-
+        Vector2<Long> wins = evalStep(player1 - 1, player2 - 1, 0, 0, true, 1);
+        System.out.println(wins);
         //444356092776315
         //341960390180808
 
-        return Math.max(player1Win, player2Win);
+        return Math.max(wins.x, wins.y);
     }
 
     public static void main(String[] args) {
@@ -124,6 +124,13 @@ public class Day21 {
         assert count == 444356092776315l;
         // not       241134303846676915
         // not                165005868
+        //           458211097301930072
+        //               14620433737017
+        //           241134303846676915
+        //          2589520037372828816
+        //          2589520037372828816
+        //               38701439607707
+        //                    134696108
 
         count = new Day21(true).solve2(9, 4);
         System.out.println("Result: " + count);
