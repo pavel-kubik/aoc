@@ -4,8 +4,14 @@ import cz.pk.adventofcode.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.*;
+import java.util.List;
 
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -105,6 +111,21 @@ public class Day20 {
             // cut evil corners
             current = current.submatrix(2, 2, current.getHeight(), current.getWidth());
         }
+
+        try {
+            BufferedImage image = new BufferedImage(current.getWidth(), current.getHeight(), TYPE_INT_RGB);
+            for(int i=0; i<current.getWidth(); i++) {
+                for(int j=0; j<current.getHeight(); j++) {
+                    int a = current.get(i,j);
+                    Color newColor = new Color(10*a,20*a,255*a);
+                    image.setRGB(j,i,newColor.getRGB());
+                }
+            }
+            File output = new File("Day20.png");
+            ImageIO.write(image, "png", output);
+        }
+
+        catch(Exception e) {}
 
         return current.map(0, (sum, v) -> sum + v);
     }
