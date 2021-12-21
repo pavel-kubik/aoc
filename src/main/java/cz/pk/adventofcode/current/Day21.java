@@ -1,17 +1,10 @@
 package cz.pk.adventofcode.current;
 
-import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.StringCollector;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
+import cz.pk.adventofcode.util.Vector2;
+import lombok.Data;
 
 @Data
 public class Day21 {
@@ -63,11 +56,52 @@ public class Day21 {
         return Math.min(score1, score2) * diceTotal;
     }
 
-    public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+    private Vector2<Long> evalGame(int p1, int p2, int s1, int s2, boolean p1p, long times) {
+        // 3 time roll  => 27x copy (but just 7 combinations)
+        if (s1 >= 21) {
+            return new Vector2<>(times, 0l);
+        }
+        if (s2 >= 21) {
+            return new Vector2<>(0l, times);
+        }
+        Vector2<Long> wins = new Vector2<>(0l, 0l);
+        for (int i = 3; i <= 9; i++) {
+            if (p1p) {
+                p1 = move(i, p1);
+                Vector2<Long> c = evalGame(p1, p2, s1 + p1 + 1, s2, !p1p, times*quantumRollsSum.get(i));
+                wins.x += c.x;
+                wins.y += c.y;
+            } else {
+                p2 = move(i, p2);
+                Vector2<Long> c = evalGame(p1, p2, s1, s2 + p2 + 1, !p1p,  times*quantumRollsSum.get(i));
+                wins.x += c.x;
+                wins.y += c.y;
+            }
+        }
+        return wins;
+    }
+
+    Map<Integer, Integer> quantumRollsSum = new HashMap<>();
+
+    public long solve2(int player1, int player2) {
+        // quantum simulator
+        for (int i = 1; i <= 3; i++) {
+            for (int j = 1; j <= 3; j++) {
+                for (int k = 1; k <= 3; k++) {
+                    quantumRollsSum.compute(i + j + k, (key, v) -> v != null ? v + 1 : 1);
+                }
+            }
+        }
+        System.out.println(quantumRollsSum);
+        // play
+        Vector2<Long> wins = evalGame(player1 - 1, player2 - 2, 0, 0, true, 1);
+        long player1Win = wins.x;
+        long player2Win = wins.y;
+
+        //444356092776315
+        //341960390180808
+
+        return Math.max(player1Win, player2Win);
     }
 
     public static void main(String[] args) {
@@ -81,15 +115,17 @@ public class Day21 {
 
         count = new Day21(true).solve(9, 4);
         System.out.println("Result: " + count);
-        assert count == 22; //not 65260
+        assert count == 998088; //not 65260
 
         //*/
 
-        count = new Day21(true).solve2("day_test.txt");
+        count = new Day21(true).solve2(4, 8);
         System.out.println("Result: " + count);
-        assert count == 33;
+        assert count == 444356092776315l;
+        // not       241134303846676915
+        // not                165005868
 
-        count = new Day21(true).solve2("day.txt");
+        count = new Day21(true).solve2(9, 4);
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
@@ -98,3 +134,33 @@ public class Day21 {
         throw new RuntimeException("Don't forgot to set vm option -ea");
     }
 }
+
+    /*
+    1 1 1
+        2
+        3
+      2 1
+        2
+        3
+      3 1
+        2
+        3
+    2 1 1
+        2
+        3
+      2 1
+        2
+        3
+      3 1
+        2
+        3
+    3 1 1
+        2
+        3
+      2 1
+        2
+        3
+      3 1
+        2
+        3
+     */
