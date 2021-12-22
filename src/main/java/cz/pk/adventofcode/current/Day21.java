@@ -56,28 +56,28 @@ public class Day21 {
         return Math.min(score1, score2) * diceTotal;
     }
 
-    private Vector2<Long> evalStep(int p1, int p2, int s1, int s2, boolean p1p, long times) {
+    private Vector2<Long> evalStep(int p1, int p2, int s1, int s2, boolean p1p) {
         // 3 time roll  => 27x copy (but just 7 combinations)
         if (s1 >= 21) {
-            return new Vector2<>(times, 0l);
+            return new Vector2<>(1L, 0L);
         }
         if (s2 >= 21) {
-            return new Vector2<>(0l, times);
+            return new Vector2<>(0L, 1L);
         }
-        Vector2<Long> wins = new Vector2<>(0l, 0l);
+        Vector2<Long> wins = new Vector2<>(0L, 0L);
         if (p1p) {
             for (int i = 3; i <= 9; i++) {
-                p1 = move(i, p1);
-                Vector2<Long> c = evalStep(p1, p2, s1 + p1 + 1, s2, !p1p, times * quantumRollsSum.get(i));
-                wins.x += c.x;
-                wins.y += c.y;
+                int newP1 = move(i, p1);
+                Vector2<Long> c = evalStep(newP1, p2, s1 + newP1 + 1, s2, false);
+                wins.x += quantumRollsSum.get(i) * c.x;
+                wins.y += quantumRollsSum.get(i) * c.y;
             }
         } else {
             for (int i = 3; i <= 9; i++) {
-                p2 = move(i, p2);
-                Vector2<Long> c = evalStep(p1, p2, s1, s2 + p2 + 1, !p1p, times * quantumRollsSum.get(i));
-                wins.x += c.x;
-                wins.y += c.y;
+                int newP2 = move(i, p2);
+                Vector2<Long> c = evalStep(p1, newP2, s1, s2 + newP2 + 1, true);
+                wins.x += quantumRollsSum.get(i) * c.x;
+                wins.y += quantumRollsSum.get(i) * c.y;
             }
         }
         return wins;
@@ -90,13 +90,14 @@ public class Day21 {
         for (int i = 1; i <= 3; i++) {
             for (int j = 1; j <= 3; j++) {
                 for (int k = 1; k <= 3; k++) {
+                    System.out.printf("%d %d %d => %d\n", i, j, k, i + j + k);
                     quantumRollsSum.compute(i + j + k, (key, v) -> v != null ? v + 1 : 1);
                 }
             }
         }
         System.out.println(quantumRollsSum);
         // play
-        Vector2<Long> wins = evalStep(player1 - 1, player2 - 1, 0, 0, true, 1);
+        Vector2<Long> wins = evalStep(player1 - 1, player2 - 1, 0, 0, true);
         System.out.println(wins);
         //444356092776315
         //341960390180808
@@ -107,7 +108,7 @@ public class Day21 {
     public static void main(String[] args) {
         System.out.println(Day21.class);
         long count;
-        //*
+        /*
         count = new Day21(true).solve(4, 8);
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
@@ -121,24 +122,12 @@ public class Day21 {
 
         count = new Day21(true).solve2(4, 8);
         System.out.println("Result: " + count);
-        assert count == 444356092776315l;
-        // not       241134303846676915
-        // not                165005868
-        //           458211097301930072
-        //               14620433737017
-        //           241134303846676915
-        //          2589520037372828816
-        //          2589520037372828816
-        //               38701439607707
-        //                    134696108
+        assert count == 444356092776315L;
 
         count = new Day21(true).solve2(9, 4);
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 44; //< 306621346123766
         //*/
-
-        assert "VM options -ea set. You can delete this.".isEmpty();
-        throw new RuntimeException("Don't forgot to set vm option -ea");
     }
 }
 
