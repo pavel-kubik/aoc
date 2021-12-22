@@ -56,28 +56,28 @@ public class Day21 {
         return Math.min(score1, score2) * diceTotal;
     }
 
-    private Vector2<Long> evalStep(int p1, int p2, int s1, int s2, boolean p1p) {
+    private Vector2<Long> evalStep(int p1, int p2, int s1, int s2, boolean p1p, long times) {
         // 3 time roll  => 27x copy (but just 7 combinations)
         if (s1 >= 21) {
-            return new Vector2<>(1L, 0L);
+            return new Vector2<>(times, 0L);
         }
         if (s2 >= 21) {
-            return new Vector2<>(0L, 1L);
+            return new Vector2<>(0L, times);
         }
         Vector2<Long> wins = new Vector2<>(0L, 0L);
         if (p1p) {
             for (int i = 3; i <= 9; i++) {
                 int newP1 = move(i, p1);
-                Vector2<Long> c = evalStep(newP1, p2, s1 + newP1 + 1, s2, false);
-                wins.x += quantumRollsSum.get(i) * c.x;
-                wins.y += quantumRollsSum.get(i) * c.y;
+                Vector2<Long> c = evalStep(newP1, p2, s1 + newP1 + 1, s2, false, times*quantumRollsSum.get(i));
+                wins.x += c.x;
+                wins.y += c.y;
             }
         } else {
             for (int i = 3; i <= 9; i++) {
                 int newP2 = move(i, p2);
-                Vector2<Long> c = evalStep(p1, newP2, s1, s2 + newP2 + 1, true);
-                wins.x += quantumRollsSum.get(i) * c.x;
-                wins.y += quantumRollsSum.get(i) * c.y;
+                Vector2<Long> c = evalStep(p1, newP2, s1, s2 + newP2 + 1, true, times*quantumRollsSum.get(i));
+                wins.x += c.x;
+                wins.y += c.y;
             }
         }
         return wins;
@@ -97,7 +97,7 @@ public class Day21 {
         }
         System.out.println(quantumRollsSum);
         // play
-        Vector2<Long> wins = evalStep(player1 - 1, player2 - 1, 0, 0, true);
+        Vector2<Long> wins = evalStep(player1 - 1, player2 - 1, 0, 0, true, 1);
         System.out.println(wins);
         //444356092776315
         //341960390180808
@@ -126,7 +126,7 @@ public class Day21 {
 
         count = new Day21(true).solve2(9, 4);
         System.out.println("Result: " + count);
-        assert count == 44; //< 306621346123766
+        assert count == 306621346123766L; //< 306621346123766   WTF why it say for first time it is wrong?! BAD puzzle :-)
         //*/
     }
 }
