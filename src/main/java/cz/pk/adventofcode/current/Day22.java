@@ -1,7 +1,9 @@
 package cz.pk.adventofcode.current;
 
+import cz.pk.adventofcode.util.Cube;
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.StringCollector;
+import cz.pk.adventofcode.util.Vector3;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cz.pk.adventofcode.current.Day22.State.OFF;
+import static cz.pk.adventofcode.current.Day22.State.ON;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -20,17 +24,27 @@ public class Day22 {
 
     @Data
     @AllArgsConstructor
-    class Subject {
-        Type type;
-        int size;
+    class ReactorCube {
+        private State state;
+        private Vector3<Integer> from;
+        private Vector3<Integer> to;
+
+        @Override
+        public String toString() {
+            return "\nReactorCube{" +
+                    "state=" + state +
+                    ", from=" + from +
+                    ", to=" + to +
+                    '}';
+        }
     }
 
-    enum Type {
-        PLACEHOLDER("p"),
-        PLACEHOLDER2("q"),
+    enum State {
+        ON("on"),
+        OFF("off"),
         ;
 
-        private static final Map<String, Type> values;
+        private static final Map<String, State> values;
 
         static {
             values = new HashMap<>();
@@ -39,11 +53,11 @@ public class Day22 {
 
         private final String value;
 
-        Type(String place) {
+        State(String place) {
             this.value = place;
         }
 
-        public static Type get(String value) {
+        public static State get(String value) {
             return values.get(value);
         }
 
@@ -52,47 +66,59 @@ public class Day22 {
         }
     }
 
-    class TypeCollector extends DataCollector<Subject> {
+    class CubeCollector extends DataCollector<ReactorCube> {
 
-        public TypeCollector(String file) {
+        public CubeCollector(String file) {
             super(file);
         }
 
         @Override
-        protected Subject processLine(String line) {
-            // numbers in line without separator - Subject: List<Integer>
-            //return line.chars().mapToObj(c -> (char)c).map(c -> Integer.parseInt(c.toString())).collect(toList());
+        protected ReactorCube processLine(String line) {
+            //on x=-20..26,y=-36..17,z=-47..7
+            String[] parts = line.split(" ");
+            State state = State.get(parts[0]);
+            String[] coordinates = parts[1].split(",");
 
-            // numbers in line with separator - Subject: List<Integer>
-            // decimal - can be any base - change 2nd argument in parseInt
-            //return stream(line.split(" ")).map(n -> Integer.parseInt(n, 10)).collect(toList());
+            String[] x = coordinates[0].substring(2).split("\\.\\.");
+            String[] y = coordinates[1].substring(2).split("\\.\\.");
+            String[] z = coordinates[2].substring(2).split("\\.\\.");
 
-            Type type = Type.get(String.valueOf(line.charAt(0)));
-            Integer size = Integer.valueOf(line.substring(1));
-            return new Subject(type, size);
+            Vector3<Integer> from = new Vector3<>(
+                    Integer.parseInt(x[0]),
+                    Integer.parseInt(y[0]),
+                    Integer.parseInt(z[0]));
+            Vector3<Integer> to = new Vector3<>(
+                    Integer.parseInt(x[1]),
+                    Integer.parseInt(y[1]),
+                    Integer.parseInt(z[1]));
+            return new ReactorCube(state, from, to);
+        }
+    }
+
+    private void fillCube(ReactorCube reactorCube, Cube<Integer> reactor, int OFFSET) {
+        for (int i = reactorCube.getFrom().getX(); i <= reactorCube.getTo().getX(); i++) {
+            for (int j = reactorCube.getFrom().getY(); j <= reactorCube.getTo().getY(); j++) {
+                for (int k = reactorCube.getFrom().getZ(); k <= reactorCube.getTo().getZ(); k++) {
+                    try {
+                        reactor.set(i + OFFSET, j + OFFSET, k + OFFSET, reactorCube.getState().equals(ON) ? 1 : 0);
+                    } catch (IndexOutOfBoundsException e) {
+                        return;
+                    }
+                }
+            }
         }
     }
 
     public long solve(String file) {
-        // general data structure
-        //Subject[] data = new TypeCollector(file).process().toArray(new Subject[1]);
+        List<ReactorCube> cubes = new CubeCollector(file).process();
+        System.out.println(cubes);
 
-        // string lines
-        //List<String> data = new StringCollector(file).process();
-
-        // 1 line separated by ,
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-
-        // matrix
-        //List<List<Long>> data = collectData(
-        //        file,
-        //        (line) -> stream(line.split(" ")).map(Long::parseLong).collect(toList()));
-        //Matrix<Long> m = Matrix.instance(data);
-        //m.map(0l, (a, b) -> a + b);
-
-        System.out.println(data);
-        return data.get(0);
+        int OFFSET = 50;
+        Cube<Integer> reactor = Cube.instance(110, 110, 110, 0);
+        for (ReactorCube reactorCube : cubes) {
+            fillCube(reactorCube, reactor, OFFSET);
+        }
+        return reactor.map(0, (s, v) -> s + v);
     }
 
     public long solve2(String file) {
@@ -106,22 +132,22 @@ public class Day22 {
         System.out.println(Day22.class);
         long count;
         //*
-        count = new Day22(true).solve("day_test.txt");
+        count = new Day22(true).solve("day22_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
-        assert count == 11;
+        assert count == 590784;
 
-        count = new Day22(true).solve("day.txt");
+        count = new Day22(true).solve("day22.txt");
         System.out.println("Result: " + count);
         assert count == 22;
 
         //*/
 
-        count = new Day22(true).solve2("day_test.txt");
+        count = new Day22(true).solve2("day22_test.txt");
         System.out.println("Result: " + count);
         assert count == 33;
 
-        count = new Day22(true).solve2("day.txt");
+        count = new Day22(true).solve2("day22.txt");
         System.out.println("Result: " + count);
         assert count == 44;
         //*/
