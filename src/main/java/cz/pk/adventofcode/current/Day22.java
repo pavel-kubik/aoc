@@ -1,21 +1,18 @@
 package cz.pk.adventofcode.current;
 
-import cz.pk.adventofcode.util.Cube;
-import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.StringCollector;
-import cz.pk.adventofcode.util.Vector3;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static cz.pk.adventofcode.current.Day22.State.OFF;
+import cz.pk.adventofcode.util.Cube;
+import cz.pk.adventofcode.util.DataCollector;
+import cz.pk.adventofcode.util.Vector3;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import static cz.pk.adventofcode.current.Day22.State.ON;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day22 {
@@ -28,6 +25,26 @@ public class Day22 {
         private State state;
         private Vector3<Integer> from;
         private Vector3<Integer> to;
+
+        public boolean intersect(ReactorCube another) {
+            if (from.x <= another.from.x && another.from.x <= to.x &&
+                from.y <= another.from.y && another.from.y <= to.y &&
+                from.z <= another.from.z && another.from.z <= to.z ||
+                from.x <= another.to.x && another.to.x <= to.x &&
+                from.y <= another.to.y && another.to.y <= to.y &&
+                from.z <= another.to.z && another.to.z <= to.z
+            ) {
+                return true;
+            }
+            return false;
+        }
+
+        public ReactorCube copy() {
+            return new ReactorCube(
+                    state,
+                    new Vector3<>(from.x, from.y, from.z),
+                    new Vector3<>(to.x, to.y, to.z));
+        }
 
         @Override
         public String toString() {
@@ -111,7 +128,7 @@ public class Day22 {
 
     public long solve(String file) {
         List<ReactorCube> cubes = new CubeCollector(file).process();
-        System.out.println(cubes);
+        //System.out.println(cubes);
 
         int OFFSET = 50;
         Cube<Integer> reactor = Cube.instance(110, 110, 110, 0);
@@ -121,17 +138,61 @@ public class Day22 {
         return reactor.map(0, (s, v) -> s + v);
     }
 
+    private Vector3<Integer> min(Vector3<Integer> v1, Vector3<Integer> v2) {
+        return new Vector3<>(Math.min(v1.x, v2.x), Math.min(v1.y, v2.y), Math.min(v1.z, v2.z));
+    }
+
+    private Vector3<Integer> max(Vector3<Integer> v1, Vector3<Integer> v2) {
+        return new Vector3<>(Math.max(v1.x, v2.x), Math.max(v1.y, v2.y), Math.max(v1.z, v2.z));
+    }
+
+    private long size(Vector3<Integer> v1, Vector3<Integer> v2) {
+        return Math.abs(v1.x - v2.x) * Math.abs(v1.y - v2.y) * Math.abs(v1.z - v2.z);
+    }
+
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        List<ReactorCube> cubes = new CubeCollector(file).process();
+        //System.out.println(cubes);
+
+        int OFFSET = 50;
+        Cube<Integer> reactor = Cube.instance(110, 110, 110, 0);
+        Map<ReactorCube, List<ReactorCube>> rcGroups = new HashMap<>();
+        for (ReactorCube reactorCube : cubes) {
+            // find matching group
+            boolean found = false;
+            for (ReactorCube groupKey : rcGroups.keySet()) {
+                if (reactorCube.intersect(groupKey)) {
+                    List<ReactorCube> rcGroup = rcGroups.get(groupKey);
+                    rcGroups.remove(groupKey);
+                    rcGroup.add(reactorCube);
+                    groupKey.from = min(groupKey.from, reactorCube.from);
+                    groupKey.to = max(groupKey.to, reactorCube.to);
+                    rcGroups.put(groupKey, rcGroup);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                rcGroups.put(reactorCube.copy(), new ArrayList<>(List.of(reactorCube)));
+            }
+        }
+        System.out.println(rcGroups);
+        //
+        long size = 0;
+        for (ReactorCube groupKey : rcGroups.keySet()) {
+            long groupSize = size(groupKey.from, groupKey.to);
+            System.out.println("Group " + groupKey + " size " + groupSize);
+            size += groupSize;
+        }
+        System.out.println(size);
+
+        return reactor.map(0, (s, v) -> s + v);
     }
 
     public static void main(String[] args) {
         System.out.println(Day22.class);
         long count;
-        //*
+        /*
         count = new Day22(true).solve("day22_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
@@ -139,13 +200,13 @@ public class Day22 {
 
         count = new Day22(true).solve("day22.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 568000;
 
         //*/
 
-        count = new Day22(true).solve2("day22_test.txt");
-        System.out.println("Result: " + count);
-        assert count == 33;
+//        count = new Day22(true).solve2("day22_test2.txt");
+//        System.out.println("Result: " + count);
+//        assert count == 33;
 
         count = new Day22(true).solve2("day22.txt");
         System.out.println("Result: " + count);
