@@ -26,17 +26,35 @@ public class Day22 {
         private Vector3<Integer> from;
         private Vector3<Integer> to;
 
+        public boolean intersectFrom(ReactorCube another) {
+            return from.x <= another.from.x && another.from.x <= to.x &&
+                    from.y <= another.from.y && another.from.y <= to.y &&
+                    from.z <= another.from.z && another.from.z <= to.z;
+        }
+
+        public boolean intersectTo(ReactorCube another) {
+            return from.x <= another.to.x && another.to.x <= to.x &&
+                    from.y <= another.to.y && another.to.y <= to.y &&
+                    from.z <= another.to.z && another.to.z <= to.z;
+        }
+
         public boolean intersect(ReactorCube another) {
-            if (from.x <= another.from.x && another.from.x <= to.x &&
-                from.y <= another.from.y && another.from.y <= to.y &&
-                from.z <= another.from.z && another.from.z <= to.z ||
-                from.x <= another.to.x && another.to.x <= to.x &&
-                from.y <= another.to.y && another.to.y <= to.y &&
-                from.z <= another.to.z && another.to.z <= to.z
-            ) {
-                return true;
-            }
-            return false;
+            return intersectFrom(another) || intersectTo(another);
+        }
+
+        public List<ReactorCube> split(Vector3<Integer> p) {
+            return List.of(
+                    // bottom part
+                    new ReactorCube(this.getState(), from, p), // left-front
+                    new ReactorCube(this.getState(), from.setX(p.x), p.setX(to.x)),  // right-front
+                    new ReactorCube(this.getState(), from.setZ(p.z), p.setZ(to.z)),  // left-back
+                    new ReactorCube(this.getState(), p.setY(from.y), to.setY(p.y)),  // right-back
+                    // up part
+                    new ReactorCube(this.getState(), p, to),    // right-back
+                    new ReactorCube(this.getState(), from.setY(p.y), p.setY(to.y)),    // left-front
+                    new ReactorCube(this.getState(), p.setZ(from.z), new Vector3<>(p.x, to.y, from.z)),    // right-front
+                    new ReactorCube(this.getState(), p.setX(from.x), to.setX(p.x))    // left-back
+            );
         }
 
         public ReactorCube copy() {
@@ -147,7 +165,25 @@ public class Day22 {
     }
 
     private long size(Vector3<Integer> v1, Vector3<Integer> v2) {
-        return Math.abs(v1.x - v2.x) * Math.abs(v1.y - v2.y) * Math.abs(v1.z - v2.z);
+        return Math.abs((long)v1.x - v2.x) * Math.abs((long)v1.y - v2.y) * Math.abs((long)v1.z - v2.z);
+    }
+
+    private boolean joinGroups(Map<ReactorCube, List<ReactorCube>> rcGroups) {
+        for (ReactorCube groupKey : rcGroups.keySet()) {
+            for (ReactorCube groupKey2 : rcGroups.keySet()) {
+                if (groupKey.equals(groupKey2)) continue;
+                if (groupKey.intersect(groupKey2)) {
+                    List<ReactorCube> rc = rcGroups.remove(groupKey);
+                    List<ReactorCube> rc2 = rcGroups.remove(groupKey2);
+                    groupKey.from = min(groupKey.from, groupKey2.from);
+                    groupKey.to = max(groupKey.to, groupKey2.to);
+                    rc.addAll(rc2);
+                    rcGroups.put(groupKey, rc);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public long solve2(String file) {
@@ -178,13 +214,13 @@ public class Day22 {
         }
         System.out.println(rcGroups);
         //
-        long size = 0;
-        for (ReactorCube groupKey : rcGroups.keySet()) {
-            long groupSize = size(groupKey.from, groupKey.to);
-            System.out.println("Group " + groupKey + " size " + groupSize);
-            size += groupSize;
+        System.out.print("Joining");
+        while (joinGroups(rcGroups)) {
+            System.out.print(".");
         }
-        System.out.println(size);
+        System.out.println("Done");
+
+        System.out.println(rcGroups);
 
         return reactor.map(0, (s, v) -> s + v);
     }
