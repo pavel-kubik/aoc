@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day21;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +108,7 @@ public class Day21 {
     public static void main(String[] args) {
         System.out.println(Day21.class);
         long count;
-        /*
+        //*
         count = new Day21(true).solve(4, 8);
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert

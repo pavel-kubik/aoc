@@ -1,7 +1,6 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day20;
 
 import cz.pk.adventofcode.util.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.imageio.ImageIO;
@@ -134,22 +133,22 @@ public class Day20 {
         System.out.println(Day20.class);
         long count;
         //*
-        count = new Day20(true).solve("day20_test.txt");
+        count = new Day20(true).solve("2021/day20_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 35;
 
-        count = new Day20(true).solve("day20.txt");
+        count = new Day20(true).solve("2021/day20.txt");
         System.out.println("Result: " + count);
         assert count == 5347;
 
         //*/
 
-        count = new Day20(true).solve2("day20_test.txt");
+        count = new Day20(true).solve2("2021/day20_test.txt");
         System.out.println("Result: " + count);
         assert count == 3351;
 
-        count = new Day20(true).solve2("day20.txt");
+        count = new Day20(true).solve2("2021/day20.txt");
         System.out.println("Result: " + count);
         assert count == 44; // 22652
         //*/

@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day19;
 
 import java.util.*;
 
@@ -431,22 +431,22 @@ public class Day19 {
         System.out.println(Day19.class);
         long count;
         //*
-        count = new Day19(true).solve("day19_test.txt");
+        count = new Day19(true).solve("2021/day19_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 79;
 
-        count = new Day19(true).solve("day19.txt");
+        count = new Day19(true).solve("2021/day19.txt");
         System.out.println("Result: " + count);
         assert count == 342;
 
         //*/
 
-        count = new Day19(true).solve2("day19_test.txt");
+        count = new Day19(true).solve2("2021/day19_test.txt");
         System.out.println("Result: " + count);
         assert count == 3621;
 
-        count = new Day19(true).solve2("day19.txt");
+        count = new Day19(true).solve2("2021/day19.txt");
         System.out.println("Result: " + count);
         assert count == 9668; // > 9561
         //*/
