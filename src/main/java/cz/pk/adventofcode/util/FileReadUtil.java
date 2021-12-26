@@ -23,6 +23,8 @@ public class FileReadUtil {
         try {
             File fileDescription = new File(resource.toURI());
             return Files.readAllLines(Path.of(fileDescription.getPath()));
+        } catch (NullPointerException e) {
+            throw new RuntimeException(format("File [ %s ] not found.", file), e);
         } catch (URISyntaxException e) {
             throw new RuntimeException(format("File [ %s ] not found.", file), e);
         } catch (IOException e) {
