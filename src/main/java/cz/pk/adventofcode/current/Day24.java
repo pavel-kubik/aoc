@@ -129,21 +129,6 @@ public class Day24 {
         }
     }
 
-    /*
-     * w = 1..9
-     * dz = 1, 26
-     * az = 13, -11, 12, 12, 14, -5, 10, 0, -13, -11
-     * ay = 8, 1, 0, 16, 13, 10, 4, 5, 7, 2, 15, 9, 13, 14
-     */
-    public long processNative(long w, long z, long dz, long ax, long ay) {
-        long x;
-        long y;
-
-        x = z % 26 + ax == w ? 0 : 1;
-        y = 25*x + 1;
-        return z / dz * y + (w + ay)*x;
-    }
-
     Map<Integer, List<Instruction>> programs = new HashMap<>();
     Map<Integer, Set<Long>> programOutputs = new HashMap<>();
     Map<String, Set<Vector2<Long>>> programWZOutputs = new HashMap<>();
@@ -161,47 +146,20 @@ public class Day24 {
         return variables.get("z");
     }
 
-    public long solveFromBack(String file) {
-        List<Instruction> instructions = new InstructionCollector(file).process();
-
-        int programId = 0;
-        for (Instruction instruction : instructions) {
-            if (instruction.getOperation() == INP) {
-                programId++;
-            }
-            programs.compute(programId, (k, v) -> {
-                if (v == null) {
-                    v = new ArrayList<>();
-                }
-                v.add(instruction);
-                return v;
-            });
-        }
-
-        programOutputs.put(14, Set.of(0L));
-        for (int i = 14; i >= 1; i--) {
-            System.out.println("Program " + i);
+    private void testProgramNative() {
+        for (int prgId = 1; prgId <= 14; prgId++) {
+            System.out.println("Test program " + prgId);
             for (int w = 1; w <= 9; w++) {
-                long zMax = i >= 5 && i <= 12 ? 260000L : 10000L;
-                for (long z = 0; z < zMax; z++) {
-                    long out = runProgram(i, w, z);
-                    if (programOutputs.get(i).contains(out)) {
-                        long finalZ = z;
-                        programOutputs.compute(i-1, (k, v) -> {
-                            if (v == null) {
-                                v = new HashSet<>();
-                            }
-                            v.add(finalZ);
-                            return v;
-                        });
-//                        System.out.println("For number " + w + " and z=" + z + " got " + out);
-                        //break;
-                    }
+                //System.out.println("Input number " + w);
+                for (long z = 0; z <= 26 * 100; z++) {
+                    long outZ = runProgram(prgId, w, z);
+                    long outNativeZ = prgNative(prgId, w, z);
+                    //System.out.println(w + " " + z + " " + outZ + "          " + outNativeZ);
+                    assert outZ == outNativeZ;
                 }
             }
-            System.out.println("Outputs: " + programOutputs.get(i-1).size());
         }
-        return 0;
+        System.out.println("Test program OK");
     }
 
     public long solve(String file) {
@@ -222,128 +180,91 @@ public class Day24 {
         }
 
         programOutputs.put(0, Set.of(0L));
-        programOutputs.put(14, Set.of(0L));
 
-        for (int i = 14; i >= 7; i--) {
-            System.out.println("Program " + i);
-            for (int w = 1; w <= 9; w++) {
-                long zMax = i >= 5 && i <= 12 ? 260000L : 10000L;
-                for (long z = 0; z < zMax; z++) {
-                    long out = runProgram(i, w, z);
-                    if (programOutputs.get(i).contains(out)) {
-                        long finalZ = z;
-                        programOutputs.compute(i-1, (k, v) -> {
-                            if (v == null) {
-                                v = new HashSet<>();
-                            }
-                            v.add(finalZ);
-                            return v;
-                        });
-                        programWZOutputs.compute((i-1) + ":" + w, (k, v) -> {
-                            if (v == null) {
-                                v = new HashSet<>();
-                            }
-                            v.add(new Vector2<>(finalZ, out));
-                            return v;
-                        });
-                    }
-                }
-            }
-            System.out.println("Outputs: " + programOutputs.get(i-1).size());
-        }
+        //testProgramNative();
 
-        for (int i = 1; i <= 7; i++) {
-            System.out.println("Program " + i);
-            for (int w = 1; w <= 9; w++) {
-                for (Long z : programOutputs.get(i-1)) {
-                    long outZ = runProgram(i, w, z);
-                    programOutputs.compute(i, (k, v) -> {
+        for (int prgId = 1; prgId <= 14; prgId++) {
+            System.out.println("Program " + prgId);
+            for (long w = 1; w <= 9; w++) {
+                for (Long z : programOutputs.get(prgId-1)) {
+                    long outZ = prgNative(prgId, w, z);
+                    programOutputs.compute(prgId, (k, v) -> {
                         if (v == null) {
                             v = new HashSet<>();
                         }
                         v.add(outZ);
                         return v;
                     });
-                    programWZOutputs.compute(i + ":" + w, (k, v) -> {
-                        if (v == null) {
-                            v = new HashSet<>();
-                        }
-                        v.add(new Vector2<>(z, outZ));
-                        return v;
-                    });
                 }
             }
-            System.out.println("Outputs: " + programOutputs.get(i).size());
+            System.out.println(programOutputs.get(prgId-1).size());
         }
 
-        long lastZ = 0;
-        String outputNumber = "";
-        for (int i = 1; i <= 13; i++) {
-            for (int w = 9; w >= 1; w--) {
-                long finalLastZ = lastZ;
-                List<Vector2<Long>> matches = programWZOutputs
-                        .get(i + ":" + w)
-                        .stream()
-                        .filter(v -> v.x == finalLastZ)
-                        .toList();
-                if (!matches.isEmpty()) {
-                    outputNumber += w;
-                    lastZ = matches.get(0).y;
-                    break;
-                };
+        assert programOutputs.get(14).contains(0L) == true;
+        System.out.println("Phase II - program 14 out z=0 exists!");
+        programOutputs.put(14, Set.of(0L));
+
+        for (int prgId = 14; prgId >= 1; prgId--) {
+            System.out.println("Program " + prgId);
+            Set<Long> cutInputs = new HashSet<>();
+            for (long w = 1; w <= 9; w++) {
+                //System.out.println("Number " + w);
+                for (Long z : programOutputs.get(prgId-1)) {
+                    long outZ = prgNative(prgId, w, z);
+                    if (programOutputs.get(prgId).contains(outZ)) {
+                        //System.out.println("Prog " + prgId + " has inZ=" + z+ " outZ=" + outZ + " for w=" + w);
+                        cutInputs.add(z);
+                    }
+                }
             }
-        }
-        System.out.println(outputNumber);
-
-        for (int i = 1111; i <= 9999; i++) {
-            //if ()
-
+            programOutputs.put(prgId-1, cutInputs);
+            System.out.println(programOutputs.get(prgId-1).size());
         }
 
-        return 0;
+        System.out.println("Phase III");
+        long out = 0;
+        for (int prgId = 1; prgId <= 14; prgId++) {
+            boolean found = false;
+            for (long w = 9; w >= 1; w--) {
+                for (Long z : programOutputs.get(prgId-1)) {
+                    long outZ = prgNative(prgId, w, z);
+                    if (programOutputs.get(prgId).contains(outZ)) {
+                        out += w;
+                        found = true;
+                        System.out.println("Prg " + prgId + " w=" + w);
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+            assert found == true;
+            out *= 10;
+            System.out.println(out);
+        }
+
+        return out;
     }
 
-    private long solveBF(String file) {
-        List<Instruction> instructions = new InstructionCollector(file).process();
-
-        //input = "13579246899999";
-        //input = "99999999999999";
-        //input = "11111111111111";
-        //input = "123456789123456789";
-        //input = "99999999999999";
-        long minZ = Long.MAX_VALUE;
-        for (long i = 99999999999999L; i > 0; i--) {
-            // 99996539300000
-            input = Long.toString(i);
-            if (input.indexOf('0') == -1) {
-
-                variables.put("w", 0L);
-                variables.put("x", 0L);
-                variables.put("y", 0L);
-                variables.put("z", 0L);
-
-                inputIndex = 0;
-
-                for (Instruction instruction : instructions) {
-                    //System.out.println(instruction);
-                    processInstruction(instruction);
-                    //System.out.println(variables);
-                }
-                if (variables.get("z") == 0) {
-                    System.out.println("ZERO for " + input);
-                    break;
-                }
-                //System.out.println("Min z for " + input + " z=" + minZ);
-                if (variables.get("z") < minZ) {
-                    minZ = variables.get("z");
-                    System.out.println("New min z for " + input + " z=" + minZ);
-                }
-            }
-            if (i % 100000 == 0) {
-                System.out.println("Iteration " + i);
-            }
-        }
-        return Long.parseLong(input);
+    public long prgNative(int prgId, long inputNumber, long z) {
+        return switch (prgId) {
+            case 1 -> 8 + inputNumber + z*26;   // zOut=w+8 (zOut=9..17)
+            case 2 -> 16 + inputNumber + z*26;  // zIn=9..17 / zOut=16+w+zIn*26
+            case 3 -> 4 + inputNumber + z*26;   // zIn=?..?  / zOut=4+w+zIn*26
+            case 4 -> ((z - 11 - inputNumber) % 26) == 0 ? z/26 : 1 + inputNumber + z/26*26;
+            case 5 -> 13 + inputNumber + z*26;
+            case 6 -> 5 + inputNumber + z*26;
+            case 7 -> inputNumber + z*26;
+            case 8 -> ((z - 5 - inputNumber) % 26) == 0 ? z/26 : 10 + inputNumber + z/26*26;
+            case 9 -> 7 + inputNumber + z*26;
+            case 10 -> ((z - inputNumber) % 26) == 0 ? z/26 : 2 + inputNumber + z/26*26;
+            case 11 -> ((z - 11 - inputNumber) % 26) == 0 ? z/26 : 13 + inputNumber + z/26*26;
+            case 12 -> ((z - 13 - inputNumber) % 26) == 0 ? z/26 : 15 + inputNumber + z/26*26;
+            case 13 -> ((z - 13 - inputNumber) % 26) == 0 ? z/26 : 14 + inputNumber + z/26*26;  // zIn = w_13 + ?        / zOut = 12..20
+            case 14 -> ((z - 11 - inputNumber) % 26) == 0 ? z/26 : 9 + inputNumber + z/26*26;   // zIn = w_14 + 11 && zIn < 26 (zIn=12..20) / zOut = 0
+            default -> throw new RuntimeException("Unknown program");
+        };
     }
 
     public long solve2(String file) {
