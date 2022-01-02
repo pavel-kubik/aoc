@@ -1,17 +1,14 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021;
 
 import cz.pk.adventofcode.util.DataCollector;
-import cz.pk.adventofcode.util.StringCollector;
 import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static cz.pk.adventofcode.current.Day24.Operation.INP;
+import static cz.pk.adventofcode.y2021.Day24.Operation.INP;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Day24 {
@@ -362,7 +359,7 @@ public class Day24 {
 //        // add vm option -ea to run configuration to throw exception on assert
 //        assert count == 11;
 
-        count = new Day24(true).solve("day24.txt");
+        count = new Day24(true).solve("2021/day24.txt");
         System.out.println("Result: " + count);
         assert count == 96929994293996L;
 
@@ -372,7 +369,7 @@ public class Day24 {
 //        System.out.println("Result: " + count);
 //        assert count == 33;
 
-        count = new Day24(true).solve2("day24.txt");
+        count = new Day24(true).solve2("2021/day24.txt");
         System.out.println("Result: " + count);
         assert count == 41811761181141L;
         //*/

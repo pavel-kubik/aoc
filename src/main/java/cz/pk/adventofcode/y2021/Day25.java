@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.Matrix;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static cz.pk.adventofcode.current.Day25.Cucumber.*;
+import static cz.pk.adventofcode.y2021.Day25.Cucumber.*;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -141,12 +141,12 @@ public class Day25 {
         System.out.println(Day25.class);
         long count;
         //*
-        count = new Day25(true).solve("day25_test.txt");
+        count = new Day25(true).solve("2021/day25_test.txt");
         System.out.println("Result: " + count);
         // add vm option -ea to run configuration to throw exception on assert
         assert count == 58;
 
-        count = new Day25(false).solve("day25.txt");
+        count = new Day25(false).solve("2021/day25.txt");
         System.out.println("Result: " + count);
         assert count == 406;
 
