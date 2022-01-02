@@ -244,7 +244,7 @@ public class Day24 {
             System.out.println(out);
         }
 
-        return out;
+        return out/10;
     }
 
     public long prgNative(int prgId, long inputNumber, long z) {
@@ -268,10 +268,89 @@ public class Day24 {
     }
 
     public long solve2(String file) {
-        List<Integer> data = stream(new StringCollector(file)
-                .process().get(0).split(",")).map(Integer::valueOf).collect(toList());
-        System.out.println(data);
-        return data.get(0)+22;
+        List<Instruction> instructions = new InstructionCollector(file).process();
+
+        int programId = 0;
+        for (Instruction instruction : instructions) {
+            if (instruction.getOperation() == INP) {
+                programId++;
+            }
+            programs.compute(programId, (k, v) -> {
+                if (v == null) {
+                    v = new ArrayList<>();
+                }
+                v.add(instruction);
+                return v;
+            });
+        }
+
+        programOutputs.put(0, Set.of(0L));
+
+        //testProgramNative();
+
+        for (int prgId = 1; prgId <= 14; prgId++) {
+            System.out.println("Program " + prgId);
+            for (long w = 1; w <= 9; w++) {
+                for (Long z : programOutputs.get(prgId-1)) {
+                    long outZ = prgNative(prgId, w, z);
+                    programOutputs.compute(prgId, (k, v) -> {
+                        if (v == null) {
+                            v = new HashSet<>();
+                        }
+                        v.add(outZ);
+                        return v;
+                    });
+                }
+            }
+            System.out.println(programOutputs.get(prgId-1).size());
+        }
+
+        assert programOutputs.get(14).contains(0L) == true;
+        System.out.println("Phase II - program 14 out z=0 exists!");
+        programOutputs.put(14, Set.of(0L));
+
+        for (int prgId = 14; prgId >= 1; prgId--) {
+            System.out.println("Program " + prgId);
+            Set<Long> cutInputs = new HashSet<>();
+            for (long w = 1; w <= 9; w++) {
+                //System.out.println("Number " + w);
+                for (Long z : programOutputs.get(prgId-1)) {
+                    long outZ = prgNative(prgId, w, z);
+                    if (programOutputs.get(prgId).contains(outZ)) {
+                        //System.out.println("Prog " + prgId + " has inZ=" + z+ " outZ=" + outZ + " for w=" + w);
+                        cutInputs.add(z);
+                    }
+                }
+            }
+            programOutputs.put(prgId-1, cutInputs);
+            System.out.println(programOutputs.get(prgId-1).size());
+        }
+
+        System.out.println("Phase III");
+        long out = 0;
+        for (int prgId = 1; prgId <= 14; prgId++) {
+            boolean found = false;
+            for (long w = 1; w <= 9; w++) {
+                for (Long z : programOutputs.get(prgId-1)) {
+                    long outZ = prgNative(prgId, w, z);
+                    if (programOutputs.get(prgId).contains(outZ)) {
+                        out += w;
+                        found = true;
+                        System.out.println("Prg " + prgId + " w=" + w);
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+            assert found == true;
+            out *= 10;
+            System.out.println(out);
+        }
+
+        return out/10;
+
     }
 
     public static void main(String[] args) {
@@ -285,21 +364,18 @@ public class Day24 {
 
         count = new Day24(true).solve("day24.txt");
         System.out.println("Result: " + count);
-        assert count == 22;
+        assert count == 96929994293996L;
 
         //*/
 
-        count = new Day24(true).solve2("day24_test.txt");
-        System.out.println("Result: " + count);
-        assert count == 33;
+//        count = new Day24(true).solve2("day24_test.txt");
+//        System.out.println("Result: " + count);
+//        assert count == 33;
 
         count = new Day24(true).solve2("day24.txt");
         System.out.println("Result: " + count);
-        assert count == 44;
+        assert count == 41811761181141L;
         //*/
-
-        assert "VM options -ea set. You can delete this.".isEmpty();
-        throw new RuntimeException("Don't forgot to set vm option -ea");
     }
 }
 
