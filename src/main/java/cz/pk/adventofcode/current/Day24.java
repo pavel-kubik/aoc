@@ -2,14 +2,14 @@ package cz.pk.adventofcode.current;
 
 import cz.pk.adventofcode.util.DataCollector;
 import cz.pk.adventofcode.util.StringCollector;
+import cz.pk.adventofcode.util.Vector2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static cz.pk.adventofcode.current.Day24.Operation.INP;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -129,290 +129,181 @@ public class Day24 {
         }
     }
 
-    public long processNative() {
-        long w = 0;
-        long x = 0;
-        long y = 0;
-        long z = 0;
+    /*
+     * w = 1..9
+     * dz = 1, 26
+     * az = 13, -11, 12, 12, 14, -5, 10, 0, -13, -11
+     * ay = 8, 1, 0, 16, 13, 10, 4, 5, 7, 2, 15, 9, 13, 14
+     */
+    public long processNative(long w, long z, long dz, long ax, long ay) {
+        long x;
+        long y;
 
-        w = getNextInput(); //        inp w
-        x *= 0;             //        mul x 0
-        x += z;             //        add x z
-        x += 26;            //        mod x 26
-        z /= 1;             //        div z 1
-        x += 13;            //        add x 13
-        x = x == w ? 1 : 0; //        eql x w
-        x = x == 0 ? 1 : 0; //        eql x 0
-        y *= 0;             //        mul y 0
-        y += 25;            //        add y 25
-        y *= x;             //        mul y x
-        y += 1;             //        add y 1
-        z *= y;             //        mul z y
-        y *= 0;             //        mul y 0
-        y += w;             //        add y w
-        y += 8;             //        add y 8
-        y *= x;             //        mul y x
-        z += y;             //        add z y
-        /*
-        (w, x, y, z) -> (
-            x': z + 29 == w ? 0 : 1,
-            y': (w + 8)*x'
-            z': z * (25 * x' + 1) + (w + 8)*x'
-            )
-        */
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 1
-//        add x 12  // 13
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 16  // 8
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 1
-//        add x 10
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 4
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 26
-//        add x -11
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 1
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 1
-//        add x 14
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 13
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 1
-//        add x 13
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 5
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 1
-//        add x 12
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 0
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 26
-//        add x -5
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 10
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 1
-//        add x 10
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 7
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 26
-//        add x 0
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 2
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 26
-//        add x -11
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 13
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 26
-//        add x -13
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 15
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 26
-//        add x -13
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 14
-//        mul y x
-//        add z y
-
-//        inp w
-//        mul x 0
-//        add x z
-//        mod x 26
-//        div z 26
-//        add x -11
-//        eql x w
-//        eql x 0
-//        mul y 0
-//        add y 25
-//        mul y x
-//        add y 1
-//        mul z y
-//        mul y 0
-//        add y w
-//        add y 9
-//        mul y x
-//        add z y
-        return z;
+        x = z % 26 + ax == w ? 0 : 1;
+        y = 25*x + 1;
+        return z / dz * y + (w + ay)*x;
     }
 
     Map<Integer, List<Instruction>> programs = new HashMap<>();
+    Map<Integer, Set<Long>> programOutputs = new HashMap<>();
+    Map<String, Set<Vector2<Long>>> programWZOutputs = new HashMap<>();
 
+    private long runProgram(int prgId, int inputNumber, long z) {
+        variables.put("w", 0L);
+        variables.put("x", 0L);
+        variables.put("y", 0L);
+        variables.put("z", z);
+        inputIndex = 0;
+        input = Integer.toString(inputNumber);
+        for (Instruction instruction : programs.get(prgId)) {
+            processInstruction(instruction);
+        }
+        return variables.get("z");
+    }
+
+    public long solveFromBack(String file) {
+        List<Instruction> instructions = new InstructionCollector(file).process();
+
+        int programId = 0;
+        for (Instruction instruction : instructions) {
+            if (instruction.getOperation() == INP) {
+                programId++;
+            }
+            programs.compute(programId, (k, v) -> {
+                if (v == null) {
+                    v = new ArrayList<>();
+                }
+                v.add(instruction);
+                return v;
+            });
+        }
+
+        programOutputs.put(14, Set.of(0L));
+        for (int i = 14; i >= 1; i--) {
+            System.out.println("Program " + i);
+            for (int w = 1; w <= 9; w++) {
+                long zMax = i >= 5 && i <= 12 ? 260000L : 10000L;
+                for (long z = 0; z < zMax; z++) {
+                    long out = runProgram(i, w, z);
+                    if (programOutputs.get(i).contains(out)) {
+                        long finalZ = z;
+                        programOutputs.compute(i-1, (k, v) -> {
+                            if (v == null) {
+                                v = new HashSet<>();
+                            }
+                            v.add(finalZ);
+                            return v;
+                        });
+//                        System.out.println("For number " + w + " and z=" + z + " got " + out);
+                        //break;
+                    }
+                }
+            }
+            System.out.println("Outputs: " + programOutputs.get(i-1).size());
+        }
+        return 0;
+    }
 
     public long solve(String file) {
+        List<Instruction> instructions = new InstructionCollector(file).process();
+
+        int programId = 0;
+        for (Instruction instruction : instructions) {
+            if (instruction.getOperation() == INP) {
+                programId++;
+            }
+            programs.compute(programId, (k, v) -> {
+                if (v == null) {
+                    v = new ArrayList<>();
+                }
+                v.add(instruction);
+                return v;
+            });
+        }
+
+        programOutputs.put(0, Set.of(0L));
+        programOutputs.put(14, Set.of(0L));
+
+        for (int i = 14; i >= 7; i--) {
+            System.out.println("Program " + i);
+            for (int w = 1; w <= 9; w++) {
+                long zMax = i >= 5 && i <= 12 ? 260000L : 10000L;
+                for (long z = 0; z < zMax; z++) {
+                    long out = runProgram(i, w, z);
+                    if (programOutputs.get(i).contains(out)) {
+                        long finalZ = z;
+                        programOutputs.compute(i-1, (k, v) -> {
+                            if (v == null) {
+                                v = new HashSet<>();
+                            }
+                            v.add(finalZ);
+                            return v;
+                        });
+                        programWZOutputs.compute((i-1) + ":" + w, (k, v) -> {
+                            if (v == null) {
+                                v = new HashSet<>();
+                            }
+                            v.add(new Vector2<>(finalZ, out));
+                            return v;
+                        });
+                    }
+                }
+            }
+            System.out.println("Outputs: " + programOutputs.get(i-1).size());
+        }
+
+        for (int i = 1; i <= 7; i++) {
+            System.out.println("Program " + i);
+            for (int w = 1; w <= 9; w++) {
+                for (Long z : programOutputs.get(i-1)) {
+                    long outZ = runProgram(i, w, z);
+                    programOutputs.compute(i, (k, v) -> {
+                        if (v == null) {
+                            v = new HashSet<>();
+                        }
+                        v.add(outZ);
+                        return v;
+                    });
+                    programWZOutputs.compute(i + ":" + w, (k, v) -> {
+                        if (v == null) {
+                            v = new HashSet<>();
+                        }
+                        v.add(new Vector2<>(z, outZ));
+                        return v;
+                    });
+                }
+            }
+            System.out.println("Outputs: " + programOutputs.get(i).size());
+        }
+
+        long lastZ = 0;
+        String outputNumber = "";
+        for (int i = 1; i <= 13; i++) {
+            for (int w = 9; w >= 1; w--) {
+                long finalLastZ = lastZ;
+                List<Vector2<Long>> matches = programWZOutputs
+                        .get(i + ":" + w)
+                        .stream()
+                        .filter(v -> v.x == finalLastZ)
+                        .toList();
+                if (!matches.isEmpty()) {
+                    outputNumber += w;
+                    lastZ = matches.get(0).y;
+                    break;
+                };
+            }
+        }
+        System.out.println(outputNumber);
+
+        for (int i = 1111; i <= 9999; i++) {
+            //if ()
+
+        }
+
+        return 0;
+    }
+
+    private long solveBF(String file) {
         List<Instruction> instructions = new InstructionCollector(file).process();
 
         //input = "13579246899999";
@@ -421,43 +312,29 @@ public class Day24 {
         //input = "123456789123456789";
         //input = "99999999999999";
         long minZ = Long.MAX_VALUE;
-        for (long i = 19929994293969L; i > 0; i--) {
+        for (long i = 99999999999999L; i > 0; i--) {
+            // 99996539300000
             input = Long.toString(i);
-        //for (long i = 42939694293969L; i > 0; i--) {
-        //for (long i = 9999999L; i > 0; i--) {
-        //for (long i = 1000000L; i <= 9999999L; i++) {
-
-        //String base = "19929994293969";
-        //for (int i = 0; i < 14; i++) {
-
-//            char[] number = base.toCharArray();
-//            number[i] = String.valueOf(Integer.valueOf(Character.toString(number[i])) - 1).charAt(0);
-//            input = new String(number);
-
-            variables.put("w", 0L);
-            variables.put("x", 0L);
-            variables.put("y", 0L);
-            variables.put("z", 0L);
-
-            inputIndex = 0;
-
-            //input = Long.toString(i) + "4293969";
-            //input = Long.toString(i) + "4183914";
-
-            //input = "5992999" + Long.toString(i);
-            //input = "1182999" + Long.toString(i);
             if (input.indexOf('0') == -1) {
+
+                variables.put("w", 0L);
+                variables.put("x", 0L);
+                variables.put("y", 0L);
+                variables.put("z", 0L);
+
+                inputIndex = 0;
+
                 for (Instruction instruction : instructions) {
-                    System.out.println(instruction);
+                    //System.out.println(instruction);
                     processInstruction(instruction);
-                    System.out.println(variables);
+                    //System.out.println(variables);
                 }
                 if (variables.get("z") == 0) {
                     System.out.println("ZERO for " + input);
                     break;
                 }
                 //System.out.println("Min z for " + input + " z=" + minZ);
-                if (variables.get("z") <= minZ) {
+                if (variables.get("z") < minZ) {
                     minZ = variables.get("z");
                     System.out.println("New min z for " + input + " z=" + minZ);
                 }
@@ -466,7 +343,6 @@ public class Day24 {
                 System.out.println("Iteration " + i);
             }
         }
-
         return Long.parseLong(input);
     }
 

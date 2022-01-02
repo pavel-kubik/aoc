@@ -1,0 +1,150 @@
+P14 (out z=0):
+
+Program 14
+Number 1
+For number 1 and z=12 got 0
+Number 2
+For number 2 and z=13 got 0
+Number 3
+For number 3 and z=14 got 0
+Number 4
+For number 4 and z=15 got 0
+Number 5
+For number 5 and z=16 got 0
+Number 6
+For number 6 and z=17 got 0
+Number 7
+For number 7 and z=18 got 0
+Number 8
+For number 8 and z=19 got 0
+Number 9
+For number 9 and z=20 got 0
+Outputs: [16, 17, 18, 19, 20, 12, 13, 14, 15]
+Program 13
+Number 1
+For number 1 and z=0 got 15
+Number 2
+For number 2 and z=0 got 16
+Number 3
+For number 3 and z=0 got 17
+Number 4
+For number 4 and z=0 got 18
+Number 5
+For number 5 and z=0 got 19
+Number 6
+For number 6 and z=0 got 20
+Number 7
+For number 7 and z=332 got 12
+Number 8
+For number 8 and z=333 got 12
+Number 9
+For number 9 and z=334 got 12
+Outputs: [0, 332, 333, 334]
+Program 12
+Number 1
+For number 1 and z=14 got 0
+Number 2
+For number 2 and z=15 got 0
+Number 3
+For number 3 and z=16 got 0
+Number 4
+For number 4 and z=17 got 0
+Number 5
+For number 5 and z=18 got 0
+Number 6
+For number 6 and z=19 got 0
+Number 7
+For number 7 and z=20 got 0
+Number 8
+For number 8 and z=21 got 0
+Number 9
+For number 9 and z=22 got 0
+Outputs: [16, 17, 18, 19, 20, 21, 22, 14, 15]
+Program 11
+Number 1
+For number 1 and z=0 got 14
+Number 2
+For number 2 and z=0 got 15
+Number 3
+For number 3 and z=0 got 16
+Number 4
+For number 4 and z=0 got 17
+Number 5
+For number 5 and z=0 got 18
+Number 6
+For number 6 and z=0 got 19
+Number 7
+For number 7 and z=0 got 20
+Number 8
+For number 8 and z=0 got 21
+Number 9
+For number 9 and z=0 got 22
+Outputs: [0]
+Program 10
+Number 1
+For number 1 and z=1 got 0
+Number 2
+For number 2 and z=2 got 0
+Number 3
+For number 3 and z=3 got 0
+Number 4
+For number 4 and z=4 got 0
+Number 5
+For number 5 and z=5 got 0
+Number 6
+For number 6 and z=6 got 0
+Number 7
+For number 7 and z=7 got 0
+Number 8
+For number 8 and z=8 got 0
+Number 9
+For number 9 and z=9 got 0
+Outputs: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Program 9
+Number 1
+For number 1 and z=0 got 8
+Number 2
+For number 2 and z=0 got 9
+Number 3
+Number 4
+Number 5
+Number 6
+Number 7
+Number 8
+Number 9
+Outputs: [0]
+Program 8
+Number 1
+For number 1 and z=6 got 0
+Number 2
+For number 2 and z=7 got 0
+Number 3
+For number 3 and z=8 got 0
+Number 4
+For number 4 and z=9 got 0
+Number 5
+For number 5 and z=10 got 0
+Number 6
+For number 6 and z=11 got 0
+Number 7
+For number 7 and z=12 got 0
+Number 8
+For number 8 and z=13 got 0
+Number 9
+For number 9 and z=14 got 0
+Outputs: [6, 7, 8, 9, 10, 11, 12, 13, 14]
+Program 7
+Number 1
+Number 2
+Number 3
+Number 4
+Number 5
+Number 6
+For number 6 and z=0 got 6
+Number 7
+For number 7 and z=0 got 7
+Number 8
+For number 8 and z=0 got 8
+Number 9
+For number 9 and z=0 got 9
+Outputs: [0]
