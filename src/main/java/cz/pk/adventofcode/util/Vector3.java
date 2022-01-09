@@ -3,6 +3,8 @@ package cz.pk.adventofcode.util;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class Vector3<T> {
@@ -21,6 +23,17 @@ public class Vector3<T> {
         this.x = v3[0];
         this.y = v3[1];
         this.z = v3[2];
+    }
+
+    public Vector3(List<T> v3) {
+        assert v3.size() == 3;
+        this.x = v3.get(0);
+        this.y = v3.get(1);
+        this.z = v3.get(2);
+    }
+
+    public Vector3<T> copy() {
+        return new Vector3<>(List.of(x, y, z));
     }
 
     public <TYPE> Vector3<TYPE> plus(Vector3<TYPE> vectorUnknown) {

@@ -36,11 +36,16 @@ public class CodeTimer {
     }
 
     public void log() {
+        long total = 0;
         for (Map.Entry<String, Long> entry : durations.entrySet()) {
+            total += entry.getValue();
             System.out.printf("%s %s\n",
                     Duration.of(entry.getValue(), ChronoUnit.NANOS).toString(),
                     entry.getKey());
         }
+        System.out.printf("================\n%s %s\n",
+                Duration.of(total, ChronoUnit.NANOS).toString(),
+                "TOTAL");
     }
 
 }
