@@ -1,4 +1,4 @@
-package cz.pk.adventofcode.current;
+package cz.pk.adventofcode.y2021.day22;
 
 import java.util.*;
 
@@ -6,7 +6,7 @@ import cz.pk.adventofcode.util.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import static cz.pk.adventofcode.current.Day22.State.ON;
+import static cz.pk.adventofcode.y2021.day22.Day22.State.ON;
 
 @Data
 public class Day22 {
@@ -459,7 +459,7 @@ public class Day22 {
 //        System.out.println("Result: " + count);
 //        assert count == 2758514936282235L;
 
-        count = new Day22(false).solve2("day22.txt");       // 420 cuboid
+        count = new Day22(false).solve2("2021/day22.txt");       // 420 cuboid
         System.out.println("Result: " + count);
         assert count == 1177411289280259L;
         // low          1177411289280098L
