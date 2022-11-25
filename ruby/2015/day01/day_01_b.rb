@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-
-file_path = File.expand_path("../day_01.txt", __FILE__)
+file_path = File.expand_path('day_01.txt', __dir__)
 input = File.read(file_path)
 
 # this code not work for example string - condition in break is not processed for last item

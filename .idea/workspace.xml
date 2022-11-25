@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4514e697-844f-4f98-8c64-0a238f312b19" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ruby/2015/day1/day_01.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ruby/y2015d01a.rb" beforeDir="false" afterPath="$PROJECT_DIR$/ruby/2015/day1/day_01_a.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ruby/y2015d01b.rb" beforeDir="false" afterPath="$PROJECT_DIR$/ruby/2015/day1/day_01_b.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruby/2015/day1/day_01.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruby/2015/day1/day_01_a.rb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ruby/2015/day1/day_01_b.rb" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,11 +59,11 @@
       <recent name="D:\Prog\aoc\ruby\2015" />
     </key>
   </component>
-  <component name="RunManager" selected="Ruby.day_01_a">
+  <component name="RunManager" selected="Ruby.day_02_b">
     <configuration name="day_01_a" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
       <module name="ruby" />
       <RUBY_RUN_CONFIG NAME="RUBY_ARGS" VALUE="" />
-      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/ruby" />
+      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/ruby/2015/day01" />
       <RUBY_RUN_CONFIG NAME="SHOULD_USE_SDK" VALUE="false" />
       <RUBY_RUN_CONFIG NAME="ALTERN_SDK_NAME" VALUE="" />
       <RUBY_RUN_CONFIG NAME="myPassParentEnvs" VALUE="true" />
@@ -71,16 +71,16 @@
       <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
       <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" IGNORE_RCOVRT="true" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true" />
       <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
-      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/ruby/2015/day1/day_01_a.rb" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/ruby/2015/day01/day_01_a.rb" />
       <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="day_01_b" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
+    <configuration name="day_02_a" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
       <module name="ruby" />
       <RUBY_RUN_CONFIG NAME="RUBY_ARGS" VALUE="" />
-      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/ruby" />
+      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/ruby/2015/day02" />
       <RUBY_RUN_CONFIG NAME="SHOULD_USE_SDK" VALUE="false" />
       <RUBY_RUN_CONFIG NAME="ALTERN_SDK_NAME" VALUE="" />
       <RUBY_RUN_CONFIG NAME="myPassParentEnvs" VALUE="true" />
@@ -88,20 +88,34 @@
       <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
       <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" IGNORE_RCOVRT="true" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true" />
       <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
-      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/ruby/2015/day1/day_01_b.rb" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/ruby/2015/day02/day_02_a.rb" />
       <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Ruby.day_01_a" />
-      <item itemvalue="Ruby.day_01_b" />
-    </list>
+    <configuration name="day_02_b" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
+      <module name="ruby" />
+      <RUBY_RUN_CONFIG NAME="RUBY_ARGS" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/ruby/2015/day02" />
+      <RUBY_RUN_CONFIG NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RUBY_RUN_CONFIG NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="myPassParentEnvs" VALUE="true" />
+      <EXTENSION ID="BundlerRunConfigurationExtension" bundleExecEnabled="false" />
+      <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
+      <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" IGNORE_RCOVRT="true" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true" />
+      <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/ruby/2015/day02/day_02_b.rb" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Ruby.day_02_b" />
+        <item itemvalue="Ruby.day_02_a" />
         <item itemvalue="Ruby.day_01_a" />
-        <item itemvalue="Ruby.day_01_b" />
       </list>
     </recent_temporary>
   </component>
@@ -114,7 +128,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1669405514786</updated>
-      <workItem from="1669405518659" duration="5030000" />
+      <workItem from="1669405518659" duration="5142000" />
+      <workItem from="1669412084921" duration="1527000" />
     </task>
     <servers />
   </component>
@@ -131,6 +146,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
@@ -138,6 +154,9 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/adventofcode@y2015d1.rcov" NAME="day_01_a Coverage Results" MODIFIED="1669410551629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruby" MODULE_NAME="ruby" />
+    <SUITE FILE_PATH="coverage/adventofcode@day_02_a.rcov" NAME="day_02_a Coverage Results" MODIFIED="1669413483192" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruby/2015/day02" MODULE_NAME="ruby" />
+    <SUITE FILE_PATH="coverage/adventofcode@day_01_a.rcov" NAME="day_01_a Coverage Results" MODIFIED="1669412178467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruby/2015/day01" MODULE_NAME="ruby" />
+    <SUITE FILE_PATH="coverage/adventofcode@day_02_b.rcov" NAME="day_02_b Coverage Results" MODIFIED="1669413608100" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruby/2015/day02" MODULE_NAME="ruby" />
     <SUITE FILE_PATH="coverage/adventofcode@y2015d01b.rcov" NAME="day_01_b Coverage Results" MODIFIED="1669410275149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruby" MODULE_NAME="ruby" />
   </component>
 </project>
