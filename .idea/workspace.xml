@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4514e697-844f-4f98-8c64-0a238f312b19" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/ruby/y2015d01a.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ruby/y2015d01b.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/MavenWrapperDownloader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Day20.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lombok.config" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/AdventOfCodeApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/current/Template.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/BinaryUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/CodeTimer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/Cube.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/DataCollector.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/DataCollectorFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/FileReadUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/GroupCollector.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/GroupProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/HexagonUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/LongCollector.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/Matrix.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/MatrixUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/PKMath.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/PuzzleSolver2D.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/StringCollector.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/StringUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/Vector2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/util/Vector3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2019/day1/Day1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2019/day25/Day25.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day1/DataDay1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day1/Day1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day10/Day10.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day11/Day11.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day12/Day12.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day13/Day13.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day14/Day14.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day15/Day15.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day16/Day16.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day17/Day17.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day18/Day18.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/Day19.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/Day19ANTLR.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/PrepareGrammar.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/genTest/GTOut.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/genTest/GTOutBaseListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/genTest/GTOutLexer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/genTest/GTOutLexer.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/genTest/GTOutListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day19/genTest/GTOutParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day2/Day2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day20/Day20.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day21/Day21.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day22/Day22.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day23/Day23.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day24/Day24.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day25/Day25.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day3/Day3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day4/Day4.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day5/Day5.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day6/Day6.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day7/Day7.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day8/Day8.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2020/day9/Day9.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/Day24.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/Day25.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day1/Day1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day10/Day10.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day11/Day11.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day12/Day12.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day13/Day13.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day14/Day14.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day15/Day15.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day16/Day16.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day17/Day17.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day18/Day18.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day18/parser/GTOut.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day18/parser/GTOutBaseListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day18/parser/GTOutLexer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day18/parser/GTOutLexer.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day18/parser/GTOutListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day18/parser/GTOutParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day19/Day19.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day2/Day2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day20/Day20.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day21/Day21.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day22/Day22.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day23/Day23.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day3/Day3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day4/Day4.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day5/Day5.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day6/Day6.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day7/Day7.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day8/Day8.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cz/pk/adventofcode/y2021/day9/Day9.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2019/day1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2019/day25.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day10.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day10_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day10_test0.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day10_test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day11.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day11_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day12.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day12_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day13.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day13_sheet.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day13_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day14.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day14_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day14_test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day16.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day16_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day16_test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day17.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day17_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day18.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day18_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day19.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day19_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day20.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day20_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day21.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day21_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day22.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day22_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day23.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day23_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day24.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day24_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day4_invalid.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day4_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day4_valid.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day5_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day6_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day7_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day8_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/day9_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/grammar.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2020/grammar_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day10.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day10_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day11.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day11_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day12.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day12_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day12_test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day12_test3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day13.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day13_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day14.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day14_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day15.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day15_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test10.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test11.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test12.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test13.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test14.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test15.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day16_test9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day18.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day18_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day18_test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day19.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day19_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day1_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day20.output" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day20.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day20_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day22.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day22_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day22_test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day23.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day23_manual.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day23_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day23b.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day23b_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day24.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day24_outputs.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day24_outputs2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day24_outputs26.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day24_outputs500tis.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day24_outputsDyn.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day24_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day25.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day25_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day2_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day3_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day4_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day5_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day6_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day7_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day8_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/2021/day9_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/parse/2020/day19/GTOut.g4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/parse/2020/day19/TestInput.g4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/parse/2021/day18/GTOut.g4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/parse/antlr-4.0-complete.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/parse/parse.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/cz/pk/adventofcode/AdventofcodeApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/cz/pk/adventofcode/util/HexagonUtilTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/cz/pk/adventofcode/util/MatrixTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/cz/pk/adventofcode/util/PKMathTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/cz/pk/adventofcode/y2021/Day23Test.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Ruby File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="2I3LqCL0W2XBF60sx7iAAH3ILsP" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="jdk.selected.RUBY_MODULE" value="ruby-3.1.2-p20" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ruby" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.3117506" />
+    <property name="settings.editor.selected.configurable" value="ruby.docker.id" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Prog\aoc\ruby" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Ruby.y2015d01b">
+    <configuration name="y2015d01a" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
+      <module name="ruby" />
+      <RUBY_RUN_CONFIG NAME="RUBY_ARGS" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/ruby" />
+      <RUBY_RUN_CONFIG NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RUBY_RUN_CONFIG NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="myPassParentEnvs" VALUE="true" />
+      <EXTENSION ID="BundlerRunConfigurationExtension" bundleExecEnabled="false" />
+      <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
+      <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" IGNORE_RCOVRT="true" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true" />
+      <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/ruby/y2015d01a.rb" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="y2015d01b" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
+      <module name="ruby" />
+      <RUBY_RUN_CONFIG NAME="RUBY_ARGS" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/ruby" />
+      <RUBY_RUN_CONFIG NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RUBY_RUN_CONFIG NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="myPassParentEnvs" VALUE="true" />
+      <EXTENSION ID="BundlerRunConfigurationExtension" bundleExecEnabled="false" />
+      <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
+      <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" IGNORE_RCOVRT="true" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true" />
+      <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/ruby/y2015d01b.rb" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Ruby.y2015d01b" />
+        <item itemvalue="Ruby.y2015d01a" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpringUtil" SPRING_PRE_LOADER_OPTION="true" RAKE_SPRING_PRE_LOADER_OPTION="true" RAILS_SPRING_PRE_LOADER_OPTION="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4514e697-844f-4f98-8c64-0a238f312b19" name="Default Changelist" comment="" />
+      <created>1669405514786</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1669405514786</updated>
+      <workItem from="1669405518659" duration="4382000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/adventofcode@y2015d1.rcov" NAME="y2015d01a Coverage Results" MODIFIED="1669407946729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruby" MODULE_NAME="ruby" />
+    <SUITE FILE_PATH="coverage/adventofcode@y2015d01b.rcov" NAME="y2015d01b Coverage Results" MODIFIED="1669409880519" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ruby" MODULE_NAME="ruby" />
+  </component>
+</project>

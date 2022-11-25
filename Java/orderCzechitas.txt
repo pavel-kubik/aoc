@@ -1,0 +1,41 @@
+11.12. 6:51
+ 1) 721 ***********  Kate Miháliková (AoC++)
+ 2) 716 ***********  trohat (+51)
+ 3) 665 ***********  pavel-kubik
+ 4) 571 **********   Petr Los (AoC++)
+ 5) 550 **********   Jan Beran
+ 6) 545 **********   messa
+ 7) 539 **********   SveterCZE
+ 8) 535 *********    JakubDotPy
+ 9) 526 **********   Lubos Kolouch (AoC++)
+10) 516 **********   mantomas
+11) 505 **********   thejoeejoee
+12) 414 ********-*  Zblunk10
+
+9.12. 5:56
+ 1) 522 ********  trohat (+49)
+ 2) 517 ********  Kate Miháliková (AoC++)
+ 3) 481 ********  JakubDotPy
+ 4) 473 ********  pavel-kubik
+ 5) 463 ********  Petr Los (AoC++)
+ 6) 440 ********  Jan Beran
+ 7) 440 ********  SveterCZE
+ 8) 423 ********  messa
+ 9) 413 ********  Lubos Kolouch (AoC++)
+10) 408 ********  mantomas
+11) 387 ********  thejoeejoee
+12) 356 ***** **  tephigue
+13) 287 *** -***  Zblunk10
+
+7.12.21 6:32
+ 1) 442 *******  trohat
+ 2) 435 *******  Kate Miháliková (AoC++)
+ 3) 414 *******  JakubDotPy
+ 4) 396 *******  pavel-kubik
+ 5) 386 *******  Petr Los
+ 6) 331 ******   SveterCZE
+ 7) 319 ******   Jan Beran
+ 8) 315 ******   messa
+ 9) 296 ******   mantomas
+10) 294 ******   Lubos Kolouch (AoC++)
+11) 264 ******   thejoeejoee
