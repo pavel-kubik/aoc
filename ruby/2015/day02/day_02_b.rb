@@ -1,4 +1,4 @@
-file_path = File.expand_path('day_02.txt', __dir__)
+file_path = File.expand_path('day_03.txt', __dir__)
 input = File.read(file_path)
 #input = '2x3x4'
 #input = '1x1x10'
