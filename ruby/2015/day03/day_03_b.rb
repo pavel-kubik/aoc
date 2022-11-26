@@ -6,6 +6,8 @@ input = File.read(file_path)
 #input = '^v^v^v^v^v'
 
 class Santa
+  attr_reader :houses
+
   def initialize
     @houses = Set.new
     @x, @y = 0, 0
@@ -23,13 +25,9 @@ class Santa
     when '>'
       @x += 1
     else
-      throw 'Unknown character ' + c
+      throw 'Unknown character ${c}'
     end
     @houses.add([@x, @y])
-  end
-
-  def getHouses
-    @houses
   end
 end
 
@@ -43,4 +41,6 @@ input.chars.select.each_with_index { |_, i| i.even? }.each do |c|
   roboS.step(c)
 end
 
-puts santa.getHouses.merge(roboS.getHouses).size
+puts santa.houses.merge(roboS.houses).size
+
+#2341
