@@ -25,7 +25,7 @@ class Santa
     when '>'
       @x += 1
     else
-      throw 'Unknown character ${c}'
+      throw "Unknown character #{c}"
     end
     @houses.add([@x, @y])
   end
