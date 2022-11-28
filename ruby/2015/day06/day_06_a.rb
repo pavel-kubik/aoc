@@ -47,7 +47,7 @@ input.each_line do |line|
   end
 end
 
-puts $lights.each.inject(0) { |sum, row| sum += row.each.inject(0, :+) }
+puts $lights.flatten.inject(0, :+)
 
 # 905970 high
 # 458330 low
