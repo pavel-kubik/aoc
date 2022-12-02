@@ -1,8 +1,10 @@
 file_path = File.expand_path('day_02.txt', __dir__)
 input = File.read(file_path)
-#input = 'A Y
-#B X
-#C Z'
+=begin
+input = 'A Y
+B X
+C Z'
+=end
 
 def game(player1, player2)
   # player1 rock
@@ -48,12 +50,10 @@ end
 
 puts input.each_line.reduce(0) { |sum, line|
   game_rec = line.split(' ')
-  #puts "Strategy " + game_rec.to_s
   move = suggest(game_rec[0], game_rec[1])
-  #puts "Game " + move.to_s + ", " + game_rec[0]
   result = game(move, game_rec[0])
-  #puts "Result " + result.to_s
   score = score_choice(move) + score_result(result)
-  #puts "Score: " + score.to_s
   sum + score
 }
+
+# 11696
