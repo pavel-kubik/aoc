@@ -12,14 +12,11 @@ let mapValves = new Map()
 data.forEach(v => mapValves.set(v.valve, v))
 const notNullValves = [...mapValves.values()].filter(v => v.rate > 0)
 
-let max=1000;
+let max=0;
 let i=0
 const processValves = (path, node, time, preasure, maxTime, opened) => {
-    if (i++ % 20000000 === 0) {
-        console.log('Path ' + path + ' @' + i)
-    }
-    //const possibleGain = notNullValves.filter(v => !opened.has(v.valve)).reduce((o, v)=>o+v.rate, 0)*(maxTime - time - 1);
-    const remainngValves = notNullValves.filter(v => !opened.has(v.valve)).sort().reverse();
+    i++;
+    const remainngValves = notNullValves.filter(v => !opened.has(v.valve)).sort((a,b)=>b.rate-a.rate);
     let timeout = maxTime - time - 1;
     const possibleGain = remainngValves.reduce((o, v)=> {
         timeout -= 2
@@ -36,32 +33,20 @@ const processValves = (path, node, time, preasure, maxTime, opened) => {
         return preasure
     }
     const newPreasure = preasure + node.rate*(Math.max(0,maxTime - time - 1)); // minus open time
-    //const visitedValves = node.valves.map(v => mapValves.get(v)).filter(v => visited.has(v.valve))
-    //const unvisitedValves = node.valves.map(v => mapValves.get(v)).filter(v => !visited.has(v.valve))
-    //const visited = new Set()
-    //path.split(',').map(v => v.substring(0, 2)).forEach(v => visited.add(v));
-    
+
+    const pathOpen = []
+    if (newPreasure > preasure && !opened.has(node.valve)) {
+        // open valve
+        opened.add(node.valve);
+        pathOpen.push(processValves(path + '+,', node, time + 1, newPreasure, maxTime, opened));
+        opened.delete(node.valve);
+    }
+
     const paths = node.valves.map(v => mapValves.get(v)).sort((a,b) => a.visited-b.visited).map(v => {
-        // open and move
-        let outPreasure
-        if (newPreasure > preasure && !opened.has(node.valve)) {
-            // open valve
-            node.visited += 1
-            opened.add(node.valve);
-            const presureOpenA = processValves(path + '+,' + v.valve, v, time + 2, newPreasure, maxTime, opened)
-            opened.delete(node.valve);
-            const presureOpenB = processValves(path + ',' + v.valve, v, time + 1, preasure, maxTime, opened)
-            node.visited -= 1
-            outPreasure = Math.max(presureOpenA, presureOpenB)
-        } else {
-            outPreasure = processValves(path + ',' + v.valve, v, time + 1, preasure, maxTime, opened);
-        }
-        return outPreasure;
+        return processValves(path + ',' + v.valve, v, time + 1, preasure, maxTime, opened);
     })
-    //console.log('Path ' + path + ' node ' + JSON.stringify(node) + ' @' + time + " paths " + paths)
-    return Math.max(...paths);
+    return Math.max(...paths, pathOpen);
 }
 
 let out = processValves('AA', mapValves.get('AA'), 0, 0, 30, new Set())
-console.log('Iterations ' + i)
-out
+out + ' @Iterations ' + i // 1651 @36314 | 1915 @Iterations 422186
