@@ -13,13 +13,9 @@ public class Day1 {
     public static long countFuelWithFuelWeight(long mass) {
         long out = 0;
         long lastFuel = mass;
-        do {
-            lastFuel = countFuel(lastFuel);
-            if (lastFuel <= 0) {
-                break;
-            }
+        while ((lastFuel = countFuel(lastFuel)) > 0) {
             out += lastFuel;
-        } while (true);
+        }
         return out;
     }
 
