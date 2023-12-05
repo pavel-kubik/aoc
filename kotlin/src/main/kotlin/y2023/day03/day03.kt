@@ -6,8 +6,8 @@ import utils.FileReader.Companion.readResourceFile
 fun main() {
     val testLines = readResourceFile("/day03/test_data.txt")
     val lines = readResourceFile("/day03/data.txt")
-    //part1(testLines)
-    //part1(lines)
+    part1(testLines)
+    part1(lines)
     part2(testLines)
     part2(lines)
 }
