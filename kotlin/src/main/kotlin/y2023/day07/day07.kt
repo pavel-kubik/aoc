@@ -6,21 +6,13 @@ import utils.runWrapper
 fun main() {
     val testLines = readResourceFile("/day07/test_data.txt")
     val lines = readResourceFile("/day07/data.txt")
-    runWrapper(6440) {
-        part1(testLines)
-    }
-    runWrapper(253910319) {
-        part1(lines)
-    }
-    runWrapper(5905) {
-        part2(testLines)
-    }
-    runWrapper(254083736) {
-        part2(lines)
-    }
+    runWrapper(6440) { part1(testLines) }
+    runWrapper(253910319) { part1(lines) }
+    runWrapper(5905) { part2(testLines) }
+    runWrapper(254083736) { part2(lines) }
 }
 
-fun compareHands(a: String, b: String, withJoker: Boolean = false): Int {
+fun compareHands(a: String, b: String, withJoker: Boolean): Int {
     val aValue = parseHand(a, withJoker)
     val bValue = parseHand(b, withJoker)
     return if (aValue == bValue) {  // same type
@@ -55,25 +47,20 @@ fun cardLabelToNumber(card: Char, withJoker: Boolean): Int {
     }
 }
 
-fun parseHand(a: String, withJoker: Boolean = false): Int {
+fun parseHand(cards: String, withJoker: Boolean = false): Int {
     val charByTypes = mutableMapOf<Char, Int>()
-    a.forEach {
-        val count = charByTypes.computeIfAbsent(it) { 0 }
-        charByTypes[it] = count + 1
-    }
-    var max = 0
-    charByTypes.forEach {
-        if (it.value > max) max = it.value
+    cards.forEach {
+        charByTypes.compute(it) { _, v -> if (v == null) 1 else v + 1 }
     }
     if (withJoker) {
-        if (!a.contains('J')) {
-            parseHand(a, false)
+        if (!cards.contains('J')) {
+            parseHand(cards, false)
         } else {
             // find best usage of joker
             //   it make sense replace more joker only for same card
             var bestHand = 0
             ((2..9) + listOf('A', 'K', 'Q', 'T')).forEach {
-                val value = parseHand(a.replace('J', it.toString()[0]))
+                val value = parseHand(cards.replace('J', it.toString()[0]))
                 if (value > bestHand) {
                     bestHand = value
                 }
@@ -81,6 +68,7 @@ fun parseHand(a: String, withJoker: Boolean = false): Int {
             return bestHand
         }
     }
+    var max = charByTypes.maxOf { it.value }
     return when (max) {
         5 -> 6  // five of a kind
         4 -> 5  // four of the kind
@@ -96,7 +84,7 @@ fun parseHand(a: String, withJoker: Boolean = false): Int {
     }
 }
 
-fun solution(lines: List<String>, withJoker: Boolean): Int =
+fun solution(lines: List<String>, withJoker: Boolean = false): Int =
     lines.map {
         val (hand, bid) = it.split(" ")
         Pair(hand, bid.toInt())
@@ -106,6 +94,6 @@ fun solution(lines: List<String>, withJoker: Boolean): Int =
         (index+1)*pair.second
     }.sum()
 
-fun part1(lines: List<String>): Int = solution(lines, false)
+fun part1(lines: List<String>): Int = solution(lines)
 
-fun part2(lines: List<String>): Int = solution(lines, true)
+fun part2(lines: List<String>): Int = solution(lines, withJoker = true)
