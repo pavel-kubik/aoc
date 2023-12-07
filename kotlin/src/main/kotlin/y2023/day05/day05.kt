@@ -1,28 +1,26 @@
 package y2023.day05
 
 import utils.FileReader.Companion.readResourceFile
+import utils.runWrapper
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.system.measureTimeMillis
 
 fun main() {
     val testLines = readResourceFile("/day05/test_data.txt")
     val lines = readResourceFile("/day05/data.txt")
-    val timeInMillis = measureTimeMillis {
-        //part1(testLines)
-        //part1(lines)
-        //part2(testLines)
-        part2(lines)
-    }
-    println("Duration $timeInMillis ms")
+    runWrapper(35) { part1(testLines) }
+    runWrapper(157211394) { part1(lines) }
+    runWrapper(46) { part2(testLines) }
+    runWrapper(50855035) { part2(lines) }
 }
 
 val path = listOf("seed-to-soil", "soil-to-fertilizer", "fertilizer-to-water", "water-to-light", "light-to-temperature", "temperature-to-humidity", "humidity-to-location")
 
+var maps = mutableMapOf<String, MutableList<Range>>()
+
 fun part1(lines: List<String>) {
     maps = mutableMapOf()
     val seeds = lines[0].split(": ")[1].split(" ").map { it.toLong() }
-    println(seeds)
     var idx = 2
     do {
         val mapName = lines[idx++].split(" map:")[0]
@@ -32,15 +30,11 @@ fun part1(lines: List<String>) {
         }
         idx++
     } while (idx < lines.size)
-    println(maps)
     val locations = seeds.map { seed ->
         var i = seed
-        print("$i -> ")
         path.forEach { mapName ->
             i = findMap(mapName, i)
-            print("$i -> ")
         }
-        println()
         return@map i
     }
     println(locations.minByOrNull { it })
@@ -52,7 +46,6 @@ fun part2(lines: List<String>) {
     val seeds = (0 until seedsPattern.size/2).map {
         Pair(seedsPattern[2*it], seedsPattern[2*it] + seedsPattern[2*it+1] - 1)
     }
-    //println(seeds)
     var idx = 2
     do {
         val mapName = lines[idx++].split(" map:")[0]
@@ -62,7 +55,6 @@ fun part2(lines: List<String>) {
         }
         idx++
     } while (idx < lines.size)
-    //println(maps)
     var stack = ArrayDeque(seeds)
     var stackNext = ArrayDeque<Pair<Long, Long>>()
     path.forEach { mapName ->
@@ -72,13 +64,8 @@ fun part2(lines: List<String>) {
         }
         stack = stackNext
         stackNext = ArrayDeque()
-        //println("$stack <-- $mapName")
     }
     println(stack.map { it.first }.sorted().minByOrNull { it })
-    // 40398634 too low
-    // 110055332 too high
-    // 75281325 not
-    // 50855035
 }
 
 data class Range(
@@ -102,8 +89,6 @@ fun Range.compute(value: Long): Long {
 fun Range.contains(value: Pair<Long, Long>) =
     contains(value.first) || contains(value.second) ||
             (value.first < from && value.second > from + length)
-
-var maps = mutableMapOf<String, MutableList<Range>>()
 
 fun addRange(mapName: String, map: List<Long>) {
     val ranges = maps.computeIfAbsent(mapName) { _ -> mutableListOf() }
@@ -136,7 +121,6 @@ fun findMap(mapName: String, value: Pair<Long, Long>): List<Pair<Long, Long>> {
         val to = findMap(mapName, it.second)
         Pair(from, to)
     }
-    //println(" $value -> $out")
     return out
 }
 

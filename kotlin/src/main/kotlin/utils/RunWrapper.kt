@@ -1,16 +1,21 @@
 package utils
 
-import kotlin.system.measureTimeMillis
+import java.math.RoundingMode
+import kotlin.system.measureNanoTime
 
 fun <R> runWrapper(expectedOutput: R? = null, fce: (Unit) -> R): R {
     val out: R
-    val timeInMillis = measureTimeMillis {
+    val timeInMillis = measureNanoTime {
         out = fce(Unit)
+    }.let {
+        (it / 1000000.0).toBigDecimal().setScale(2, RoundingMode.HALF_DOWN)
     }
-    if (out != expectedOutput) {
-        println("$out BUT expected $expectedOutput")
-    } else {
-        println(out)
+    if (out != Unit) {
+        if (out != expectedOutput) {
+            println("$out BUT expected $expectedOutput")
+        } else {
+            println(out)
+        }
     }
     println("Duration $timeInMillis ms")
     println()

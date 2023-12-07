@@ -1,14 +1,15 @@
 package y2023.day03
 
 import utils.FileReader.Companion.readResourceFile
+import utils.runWrapper
 
 fun main() {
     val testLines = readResourceFile("/day03/test_data.txt")
     val lines = readResourceFile("/day03/data.txt")
-    part1(testLines)
-    part1(lines)
-    part2(testLines)
-    part2(lines)
+    runWrapper(4361) { part1(testLines) }
+    runWrapper(535078) { part1(lines) }
+    runWrapper(467835) { part2(testLines) }
+    runWrapper(75312571) { part2(lines) }
 }
 
 private fun parseEngine(lines: List<String>): Map<String, String> {
