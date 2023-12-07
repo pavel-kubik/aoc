@@ -1,7 +1,6 @@
-package y2023
+package y2023.day03
 
 import utils.FileReader.Companion.readResourceFile
-
 
 fun main() {
     val testLines = readResourceFile("/day03/test_data.txt")
@@ -12,7 +11,7 @@ fun main() {
     part2(lines)
 }
 
-fun parseEngine(lines: List<String>): Map<String, String> {
+private fun parseEngine(lines: List<String>): Map<String, String> {
     val map = mutableMapOf<String, String>()
     lines.forEachIndexed { rowIdx, line ->
         var idx = -1
