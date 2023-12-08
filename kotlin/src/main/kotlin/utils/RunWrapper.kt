@@ -11,7 +11,7 @@ fun <R> runWrapper(expectedOutput: R? = null, fce: (Unit) -> R): R {
         (it / 1000000.0).toBigDecimal().setScale(2, RoundingMode.HALF_DOWN)
     }
     if (out != Unit) {
-        if (out != expectedOutput) {
+        if (out != expectedOutput && expectedOutput != null) {
             println("$out BUT expected $expectedOutput")
         } else {
             println(out)
