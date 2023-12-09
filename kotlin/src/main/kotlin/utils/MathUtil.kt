@@ -1,5 +1,6 @@
 package utils
 
+import java.math.BigDecimal
 import kotlin.math.floor
 import kotlin.math.sqrt
 
@@ -76,6 +77,45 @@ fun lcm(a: Int, b: Int): Int {
  * Least common multiple
  */
 fun lcm(input: List<Int>): Int {
+    var result = input[0]
+    for (i in 1 until input.size) result = lcm(result, input[i])
+    return result
+}
+
+/**
+ * Greatest common divisor
+ */
+fun gcd(a: BigDecimal, b: BigDecimal): BigDecimal {
+    var a = a
+    var b = b
+    while (b > BigDecimal.ZERO) {
+        val temp = b
+        b = a % b
+        a = temp
+    }
+    return a
+}
+
+/**
+ * Greatest common divisor
+ */
+fun gcd(input: List<BigDecimal>): BigDecimal {
+    var result = input[0]
+    for (i in 1 until input.size) result = gcd(result, input[i])
+    return result
+}
+
+/**
+ * Least common multiple
+ */
+fun lcm(a: BigDecimal, b: BigDecimal): BigDecimal {
+    return a * (b / gcd(a, b))
+}
+
+/**
+ * Least common multiple
+ */
+fun lcm(input: List<BigDecimal>): BigDecimal {
     var result = input[0]
     for (i in 1 until input.size) result = lcm(result, input[i])
     return result
