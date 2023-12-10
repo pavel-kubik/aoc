@@ -25,7 +25,7 @@ fun move(node: String, direction: Char, nodesMap: Map<String, Pair<String, Strin
 fun parse(lines: List<String>): Map<String, Pair<String, String>> {
     return (2 until lines.size).map {
         val (start, dest) = lines[it].split(" = ")
-        val (left, right) = dest.substring(1, dest.length - 1).split(", ")
+        val (left, right) = dest.removeSurrounding("(", ")").split(", ")
         start to Pair(left, right)
     }.toMap()
 }
