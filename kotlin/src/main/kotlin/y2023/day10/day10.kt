@@ -6,11 +6,16 @@ import java.util.*
 
 fun main() {
     val testLines = FileReader.readResourceFile("/day10/test_data.txt")
+    val testLines_2_1 = FileReader.readResourceFile("/day10/test_data_2_1.txt")
+    val testLines_2_2 = FileReader.readResourceFile("/day10/test_data_2_2.txt")
+    val testLines_2_3 = FileReader.readResourceFile("/day10/test_data_2_3.txt")
     val lines = FileReader.readResourceFile("/day10/data.txt")
-    //runWrapper { part1(testLines) }
-    //runWrapper { part1(lines) }
-    runWrapper(8) { part2(testLines) }
-    //runWrapper { part2(lines) }
+    runWrapper(4) { part1(testLines) }
+    runWrapper(6820) { part1(lines) }
+    runWrapper(4) { part2(testLines_2_1) }
+    runWrapper(8) { part2(testLines_2_2) }
+    runWrapper(10) { part2(testLines_2_3) }
+    runWrapper { part2(lines) }
 }
 
 val UP = Pair(0, -1)
@@ -25,7 +30,7 @@ val direction = mapOf(
     'J' to listOf(UP, LEFT),
     '7' to listOf(DOWN, LEFT),
     'F' to listOf(DOWN, RIGHT),
-    'S' to listOf(UP, DOWN /*, LEFT, RIGHT*/),
+    //'S' to listOf(UP, DOWN, LEFT, RIGHT),
 )
 
 fun findAnimal(lines: List<String>): Pair<Int, Int> {
@@ -75,11 +80,25 @@ fun part1(lines: List<String>): Int {
 }
 
 fun part2(lines: List<String>): Int {
-    val dim = lines[0].length + 2
-    val map = listOf(".".repeat(dim)) + lines.map { ".$it." } + listOf(".".repeat(dim))
-    //println(map.reduce { acc, s -> "$acc\n$s" })
+    val dimOriginal = lines[0].length + 2
+    val mapOriginal = listOf(".".repeat(dimOriginal)) + lines.map { ".$it." } + listOf(".".repeat(dimOriginal))
+    // upscale map
+    val map = mapOriginal.map {
+        it.map {
+            when(it) {
+                '-' -> "--"
+                'L' -> "L-"
+                'J' -> "J."
+                'F' -> "F-"
+                '7' -> "7."
+                'S' -> "SS"
+                else -> "$it."
+            }
+        }.reduce { acc, s -> acc + s }
+    }
+    println(map.reduce { acc, s -> "$acc\n$s" })
     val start = findAnimal(map)
-    val dist = Array(map.size) { Array(dim) {-1} }
+    val dist = Array(map.size) { Array(map[0].length) {-1} }
     val queue = LinkedList<Pair<Pair<Int, Int>, Int>>()
     queue.add(Pair(start, 0))
     while (queue.isNotEmpty()) {
@@ -115,48 +134,21 @@ fun part2(lines: List<String>): Int {
             }
         }
     }
-    val max = dist.map { it.maxOf { it } }.maxOf { it }
-    println(max)
-    val neigbours = listOf(Pair(-1, -1), Pair(0, -1), Pair(1, -1),
-                            Pair(-1, 0), Pair(1, 0),
-                            Pair(-1, 1), Pair(0, 1), Pair(1, 1))
-    for (i in 0 until dist.size) {
-        for (j in 0 until dist[0].size) {
-            if (dist[i][j] == -1) {
-                if (neigbours.any {
-                        val newX = j + it.first
-                        val newY = i + it.second
-                        if (newX >= 0 && newY >= 0 && newY < dist.size && newX < dist[0].size) {
-                            dist[newY][newX] == -2
-                        } else false
-                }) {
-                    dist[i][j] = -3
-                }
-            }
-        }
-    }
-    // one more removal of fake points inside
-    for (i in 0 until dist.size) {
-        var inside = false
-        for (j in 0 until dist[0].size) {
-            if (listOf('|', 'S', 'L', 'J', 'F', '7').contains(map[i][j])) {
-                inside = !inside
-            }
-            if (dist[i][j] == -1 && !inside) {
-                //dist[i][j] = -4
-            }
-        }
-    }
 
     dist.map {
-        it.map { print(" ${if (it == -1) "   ." else it.toString().padStart(4, '0')} ") }
+        it.map { print(" ${if (it == -1) "    ." else it.toString().padStart(5, '0')} ") }
         println()
     }
-    return dist.map { it.map { if (it == -1) 1 else 0 }.sum() }.sum()// - 2*max
+    return dist.map {
+        it.mapIndexed { idx, it ->
+            if (idx % 2 == 0 && it == -1) 1 else 0
+        }.sum()
+    }.sum()// - 2*max
     // 6524 too high
     // 630
     // 586 - 4
     // 346
     // 574
     // 14214 -
+    // 556 still not
 }
