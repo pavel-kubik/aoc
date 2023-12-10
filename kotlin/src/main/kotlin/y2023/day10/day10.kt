@@ -10,7 +10,7 @@ fun main() {
     //runWrapper { part1(testLines) }
     //runWrapper { part1(lines) }
     runWrapper(8) { part2(testLines) }
-    //runWrapper { part2(lines) }
+    runWrapper { part2(lines) }
 }
 
 val UP = Pair(0, -1)
@@ -98,6 +98,7 @@ fun part2(lines: List<String>): Int {
             queue.add(Pair(Pair(newX, newY), node.second + 1))
         }
     }
+    // flood fill
     val queue2 = LinkedList<Pair<Int, Int>>()
     queue2.add(Pair(1, 1))
     var iters = 0
@@ -115,35 +116,15 @@ fun part2(lines: List<String>): Int {
             }
         }
     }
-    val max = dist.map { it.maxOf { it } }.maxOf { it }
-    println(max)
-    val neigbours = listOf(Pair(-1, -1), Pair(0, -1), Pair(1, -1),
-                            Pair(-1, 0), Pair(1, 0),
-                            Pair(-1, 1), Pair(0, 1), Pair(1, 1))
-    for (i in 0 until dist.size) {
-        for (j in 0 until dist[0].size) {
-            if (dist[i][j] == -1) {
-                if (neigbours.any {
-                        val newX = j + it.first
-                        val newY = i + it.second
-                        if (newX >= 0 && newY >= 0 && newY < dist.size && newX < dist[0].size) {
-                            dist[newY][newX] == -2
-                        } else false
-                }) {
-                    dist[i][j] = -3
-                }
-            }
-        }
-    }
     // one more removal of fake points inside
-    for (i in 0 until dist.size) {
+    for (i in dist.indices) {
         var inside = false
-        for (j in 0 until dist[0].size) {
-            if (listOf('|', 'S', 'L', 'J', 'F', '7').contains(map[i][j])) {
+        for (j in dist[i].indices) {
+            if (dist[i][j] >= 0 && listOf('|', 'L', 'J', 'S').contains(map[i][j])) {
                 inside = !inside
             }
             if (dist[i][j] == -1 && !inside) {
-                //dist[i][j] = -4
+                dist[i][j] = -2
             }
         }
     }
@@ -159,4 +140,6 @@ fun part2(lines: List<String>): Int {
     // 346
     // 574
     // 14214 -
+    // 277
+    // 337
 }
