@@ -15,7 +15,7 @@ fun main() {
     runWrapper(4) { part2(testLines_2_1) }
     runWrapper(8) { part2(testLines_2_2) }
     runWrapper(10) { part2(testLines_2_3) }
-    runWrapper { part2(lines) }
+    runWrapper(337) { part2(lines) }
 }
 
 val UP = Pair(0, -1)
@@ -30,7 +30,7 @@ val direction = mapOf(
     'J' to listOf(UP, LEFT),
     '7' to listOf(DOWN, LEFT),
     'F' to listOf(DOWN, RIGHT),
-    //'S' to listOf(UP, DOWN, LEFT, RIGHT),
+    'S' to listOf(UP, DOWN, LEFT, RIGHT),
 )
 
 fun findAnimal(lines: List<String>): Pair<Int, Int> {
@@ -83,18 +83,36 @@ fun part2(lines: List<String>): Int {
     val dimOriginal = lines[0].length + 2
     val mapOriginal = listOf(".".repeat(dimOriginal)) + lines.map { ".$it." } + listOf(".".repeat(dimOriginal))
     // upscale map
-    val map = mapOriginal.map {
-        it.map {
+    val mapPairs = mapOriginal.map {
+        var firstLine = ""
+        var secondLine = ""
+        val newItem = it.map {
             when(it) {
-                '-' -> "--"
-                'L' -> "L-"
-                'J' -> "J."
-                'F' -> "F-"
-                '7' -> "7."
-                'S' -> "SS"
-                else -> "$it."
+                '-' -> "--\n.."
+                'L' -> "L-\n.."
+                'J' -> "J.\n.."
+                'F' -> "F-\n|."
+                '7' -> "7.\n|."
+                'S' -> "SS\nSS"
+                '.' -> "..\n.."
+                '|' -> "|.\n|."
+                else -> error("Unknown character $it")
             }
-        }.reduce { acc, s -> acc + s }
+        }
+        var first = ""
+        var second = ""
+        newItem.forEach {
+            val (firstI, secondI) = it.split("\n")
+            first += firstI
+            second += secondI
+
+        }
+        Pair(first, second)
+    }
+    val map = mutableListOf<String>()
+    mapPairs.forEach {
+        map.add(it.first)
+        map.add(it.second)
     }
     println(map.reduce { acc, s -> "$acc\n$s" })
     val start = findAnimal(map)
@@ -139,10 +157,12 @@ fun part2(lines: List<String>): Int {
         it.map { print(" ${if (it == -1) "    ." else it.toString().padStart(5, '0')} ") }
         println()
     }
-    return dist.map {
-        it.mapIndexed { idx, it ->
-            if (idx % 2 == 0 && it == -1) 1 else 0
-        }.sum()
+    return dist.mapIndexed { idx, it ->
+        if (idx % 2 == 0) {
+            it.mapIndexed { idx, it ->
+                if (idx % 2 == 0 && it == -1) 1 else 0
+            }.sum()
+        } else 0
     }.sum()// - 2*max
     // 6524 too high
     // 630
