@@ -9,13 +9,14 @@ import kotlin.math.abs
 fun main() {
     val testLines = FileReader.readResourceFile("/day11/test_data.txt")
     val lines = FileReader.readResourceFile("/day11/data.txt")
-    //runWrapper(374) { part1(testLines) }
-    //runWrapper { part1(lines) }
-    runWrapper { part2(testLines) }
-    runWrapper { part2(lines) }
+    runWrapper(374) { part1(testLines) }
+    runWrapper(9627977) { part1(lines) }
+    runWrapper(1030) { part2(testLines, 10) }
+    runWrapper(8410) { part2(testLines, 100) }
+    runWrapper(644248339497) { part2(lines, 1000000L) }
 }
 
-fun expand(lines: List<String>): List<String> {
+fun findExpansionDimensions(lines: List<String>): Pair<List<Int>, List<Int>> {
     val rowToExpand = mutableListOf<Int>()
     for (i in lines.indices) {
         if (lines[i].all { it == '.' }) {
@@ -30,7 +31,11 @@ fun expand(lines: List<String>): List<String> {
             columnToExpand.add(j)
         }
     }
-    println(lines)
+    return Pair(rowToExpand, columnToExpand)
+}
+
+fun expand(lines: List<String>): List<String> {
+    val (rowToExpand, columnToExpand) = findExpansionDimensions(lines)
     var map = lines.toMutableList()
     val rowTemplate = map[0].map { "." }.reduce { acc, c -> "$acc$c" }
     rowToExpand.reversed().forEach {
@@ -40,9 +45,7 @@ fun expand(lines: List<String>): List<String> {
         map = map.map { line ->
             line.substring(0, col) + '.' + line.substring(col)
         }.toMutableList()
-
     }
-    println(map)
     return map
 }
 
@@ -63,56 +66,36 @@ fun dist(a: Pair<Int, Int>, b: Pair<Int, Int>): Int {
     return abs(a.first - b.first) + abs(a.second - b.second)
 }
 
-fun part1(lines: List<String>): Int {
-    val map = expand(lines)
-    val stars = getPoints(map, '#')
-    var sum = 0
-    for (i in stars.indices) {
-        for (j in i+1 until stars.size) {
-            val dist = dist(stars[i], stars[j])
-            println("$i to $j = $dist")
-            sum += dist
+/**
+ * Iterate over all combinations without repetition. It doesn't matter on order.
+ * Function [f] is apply on each permutation and all results are return in List.
+ */
+fun <T, O> List<T>.combinations(f: (a: T, b: T) -> O): List<O> {
+    var out = mutableListOf<O>()
+    for (i in indices) {
+        for (j in i+1 until size) {
+            out.add(f(this[i], this[j]))
         }
     }
-    return sum
+    return out
+}
+
+fun part1(lines: List<String>): Int {
+    val map = expand(lines)
+    val galaxies = getPoints(map, '#')
+    return galaxies.combinations { a, b -> dist(a, b) }.sum()
 }
 
 fun distFar(a: Pair<Int, Int>, b: Pair<Int, Int>, rowsSpace: List<Int>, colsSpace: List<Int>, dist: Long): Long {
     var dx = abs(a.first - b.first)
     var dy = abs(a.second - b.second)
-    val rowSpaces = rowsSpace.filter {
-        min(a.second, b.second) < it && it < max(a.second, b.second)
-    }.map { 1 }.sum()
-
-    val colSpaces = colsSpace.filter {
-        min(a.first, b.first) < it && it < max(a.first, b.first)
-    }.map { 1 }.sum()
+    val rowSpaces = rowsSpace.filter { min(a.second, b.second) < it && it < max(a.second, b.second) }.map { 1 }.sum()
+    val colSpaces = colsSpace.filter { min(a.first, b.first) < it && it < max(a.first, b.first)  }.map { 1 }.sum()
     return dx + dy + rowSpaces*(dist-1) + colSpaces*(dist-1)
 }
 
-fun part2(lines: List<String>): Long {
-    val stars = getPoints(lines, '#')
-    val rowToExpand = mutableListOf<Int>()
-    for (i in lines.indices) {
-        if (lines[i].all { it == '.' }) {
-            // expand row
-            rowToExpand.add(i)
-        }
-    }
-    val columnToExpand = mutableListOf<Int>()
-    for (j in lines[0].indices) {
-        if (lines.all { it[j] == '.' }) {
-            // expand column
-            columnToExpand.add(j)
-        }
-    }
-    var sum = 0L
-    for (i in stars.indices) {
-        for (j in i+1 until stars.size) {
-            val dist = distFar(stars[i], stars[j], rowToExpand, columnToExpand, 1000000L)
-            //println("$i to $j = $dist")
-            sum += dist
-        }
-    }
-    return sum
+fun part2(lines: List<String>, expansion: Long): Long {
+    val galaxies = getPoints(lines, '#')
+    val (rowToExpand, columnToExpand) = findExpansionDimensions(lines)
+    return galaxies.combinations { a, b -> distFar(a, b, rowToExpand, columnToExpand, expansion) }.sum()
 }
