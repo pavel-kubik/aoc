@@ -8,12 +8,15 @@ plugins {
 group = "com.example"
 version = "1.0-SNAPSHOT"
 
+val coroutinesVersion = "1.3.2"
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 }
 
 tasks.test {
