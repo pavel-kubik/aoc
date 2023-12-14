@@ -1,7 +1,6 @@
 package y2023.day12
 
 import utils.FileReader
-import utils.runWrapper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import utils.runWrapperS
@@ -21,9 +20,21 @@ fun main() {
     }
 }
 
-suspend fun possibleMatch(hotSprings: String, groups: List<Int>, solutions: Long): Long {
+data class Key(
+    val springs: String,
+    val groups: List<Int>,
+)
+
+val matchCache = mutableMapOf<Key, Long>()
+
+suspend fun possibleMatch(hotSprings: String, groups: List<Int>, solutions: Long, traceId: String? = null): Long {
+    val key = Key(hotSprings, groups)
+    if (matchCache.containsKey(key)) {
+        println("Cache used")
+        return matchCache[key]!!
+    }
     val idx = hotSprings.indexOfFirst { it == '?' }
-    return if (idx == -1) {
+    val out = if (idx == -1) {
         val g = hotSprings.split(".").filter { it.isNotEmpty() }.map { it.length }
         //println("$g ? $groups (${g == groups})")
         solutions + if (g == groups) 1L else 0L
@@ -38,9 +49,12 @@ suspend fun possibleMatch(hotSprings: String, groups: List<Int>, solutions: Long
 
         val broken =  hotSprings.replaceFirst('?', '#')
         val functional = hotSprings.replaceFirst('?', '.')
-        delay(1)
+        if (traceId != null) println("Iteration $traceId")
         solutions + possibleMatch(broken, groups, solutions) + possibleMatch(functional, groups, solutions)
     }
+    matchCache[key] = out
+    //println("Cache size: ${matchCache.size}")
+    return out
 }
 
 suspend fun part1(lines: List<String>): Long {
@@ -52,46 +66,52 @@ suspend fun part1(lines: List<String>): Long {
     return out.sum()
 }
 
-suspend fun diff(hotSprings: String, damagedGroups: String): Long {
-    val tuple = possibleMatch("$hotSprings?$hotSprings", "$damagedGroups,$damagedGroups".split(",").map { it.toInt() }, 0)
-    val simple = possibleMatch(hotSprings, damagedGroups.split(",").map { it.toInt() }, 0)
+suspend fun diff(hotSprings: String, damagedGroups: String, traceId: String): Long {
+    println("Compute diff $traceId")
+    val tuple = possibleMatch("$hotSprings?$hotSprings", "$damagedGroups,$damagedGroups".split(",").map { it.toInt() }, 0, traceId)
+    val simple = possibleMatch(hotSprings, damagedGroups.split(",").map { it.toInt() }, 0, traceId)
     val out = tuple.toDouble() / (simple*simple)
-    println("$tuple : $simple = $out")
     return (simple*out).toLong()
 }
 
-suspend fun compute(it: String) {
+suspend fun compute(it: String, traceId: String) {
+    println("Computing for $traceId")
     val (hotSprings, damagedGroups) = it.split(" ")
-    val first = possibleMatch(hotSprings, damagedGroups.split(",").map { it.toInt() }, 0)
+    val first = possibleMatch(hotSprings, damagedGroups.split(",").map { it.toInt() }, 0, traceId)
     val next = if (hotSprings.last() == '#' || hotSprings.first() == '#')
-        possibleMatch(".$hotSprings", damagedGroups.split(",").map { it.toInt() }, 0)
+        possibleMatch(".$hotSprings", damagedGroups.split(",").map { it.toInt() }, 0, traceId)
     else if (hotSprings.last() == '.' || hotSprings.first() == '.')
-        possibleMatch("?$hotSprings", damagedGroups.split(",").map { it.toInt() }, 0)
-    else diff(hotSprings, damagedGroups)
+        possibleMatch("?$hotSprings", damagedGroups.split(",").map { it.toInt() }, 0, traceId)
+    else diff(hotSprings, damagedGroups, traceId)
+    println("Sending for $traceId")
     channel.send(first * next * next * next * next)
+    println("DONE for $traceId")
 }
 
 val channel = Channel<Long>()
 
 suspend fun part2(lines: List<String>): Long {
     var out = 0L
-    var count = 0
+    var sendCount = 0
+    var receivedCount = 0
+    val backgroundDispatcher = newFixedThreadPoolContext(4, "App Background")
     coroutineScope {
         launch {
             lines.forEach {
-                launch {
-                    compute(it)
+                launch(backgroundDispatcher) {
+                    sendCount++
+                    compute(it, sendCount.toString())
                 }
             }
         }
+        println("All threads started")
         launch {
             repeat(lines.size) {
                 val result = channel.receive()
-                println("Received $result ${count++}/${lines.size}")
+                println("Received $result ${++receivedCount}/${lines.size}")
                 out += result
             }
         }
     }
-    println(out)
     return out
 }
