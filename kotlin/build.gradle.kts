@@ -15,8 +15,10 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    // https://mvnrepository.com/artifact/com.squareup/gifencoder
+    implementation("com.squareup:gifencoder:0.10.1")
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {

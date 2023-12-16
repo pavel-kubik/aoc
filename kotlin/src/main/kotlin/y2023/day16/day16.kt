@@ -1,12 +1,18 @@
 package y2023.day16
 
 import utils.*
+import com.squareup.gifencoder.GifEncoder
+import com.squareup.gifencoder.ImageOptions
+import java.util.concurrent.TimeUnit
+import kotlin.io.path.Path
+import kotlin.io.path.outputStream
+
 
 fun main() {
     val testLines = FileReader.readResourceFile("/day16/test_data.txt")
     val lines = FileReader.readResourceFile("/day16/data.txt")
     runWrapper { part1(testLines) }
-    runWrapper { part1(lines) }
+    runWrapper { part1(lines, true) }
     runWrapper { part2(testLines) }
     runWrapper { part2(lines) }
 }
@@ -42,7 +48,10 @@ fun getNewDirections(mirrorType: Char, direction: Pair<Int, Int>): List<Pair<Int
 data class Beam(
     var position: Pair<Int, Int>,
     var direction: Pair<Int, Int>,
+    val color: Int = colorPlatte[(0..255).random()],
 )
+
+val colorPlatte = Array(256) { (0..255*255*255).random() }
 
 fun Matrix<Char>.beamStep(beam: Beam): List<Beam> {
     beam.position += beam.direction // move
@@ -50,38 +59,62 @@ fun Matrix<Char>.beamStep(beam: Beam): List<Beam> {
     if (item != null) { // still in mirror maze
         val directions = getNewDirections(item, beam.direction)
         return directions.map {
-            beam.copy(direction = it)
-        }
+                if (directions.size > 1) {
+                    beam.copy(
+                        direction = it,
+                        color = colorPlatte[(0..255).random()]
+                    )
+                } else {
+                    beam.copy(direction = it)
+                }
+            }
     }
     return emptyList()
 }
 
-fun countEnergizes(lines: List<String>, initialBeam: Beam): Int {
+fun countEnergizes(lines: List<String>, initialBeam: Beam, animate: Boolean = false): Int {
+    var gif: GifEncoder? = null
+    if (animate) {
+        // https://genuinecoder.com/how-to-create-gif-from-multiple-images-in-java/
+        val outputStream = Path("my_animated_image.gif").outputStream()
+
+        gif = GifEncoder(outputStream, lines.first().length, lines.size, 0)
+    }
+    val options = ImageOptions().also { it.setDelay(10, TimeUnit.MILLISECONDS) }
+
     val matrix = createMatrix(lines, '.')
     var beams = listOf(initialBeam)
     val visited = createMatrix(matrix.width, matrix.height, 0)
+    var image: Array<IntArray>? = null
+    if (animate) {
+        image = Array(matrix.height) { IntArray(matrix.width) { 0 } }
+    }
     //visited[firstBeam.position] = visited[firstBeam.position]!! + bitMask[firstBeam.direction]!!
     var iterations = 0
     while (beams.isNotEmpty()) {
         beams = beams.map {
-            if (visited[it.position + it.direction]?.and(bitMask[it.direction]!!) != 0) {
+            val nextPosition = it.position + it.direction
+            if (visited[nextPosition]?.and(bitMask[it.direction]!!) != 0) {
                 //println("Beam repeat itself $it")
                 return@map null
             }
-            visited[it.position + it.direction] = visited[it.position + it.direction]!! or bitMask[it.direction]!!
+            visited[nextPosition] = visited[nextPosition]!! or bitMask[it.direction]!!
+            if (animate) image!![nextPosition.second][nextPosition.first] = it.color
             it
         }.filterNotNull()
         beams = beams.map { beam ->
             matrix.beamStep(beam)
         }.flatten()
+        if (animate) gif?.addImage(image, options)
         if (++iterations > 10000) error("Too much iterations")
     }
     //println("Iterations: $iterations") //\n${visited.toStringHEX()}")
+    if (animate) gif?.finishEncoding() //Start the encoding
     return visited.map { if (it > 0) 1 else 0 }.sum()
 }
 
-fun part1(lines: List<String>): Int {
-    return countEnergizes(lines, Beam(Pair(-1, 0), RIGHT))
+fun part1(lines: List<String>, animate: Boolean = false): Int {
+    return countEnergizes(lines, Beam(Pair(-1, 0), RIGHT), animate)
 }
 
 fun part2(lines: List<String>): Int {
