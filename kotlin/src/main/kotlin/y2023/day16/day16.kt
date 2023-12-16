@@ -12,7 +12,7 @@ fun main() {
     val testLines = FileReader.readResourceFile("/day16/test_data.txt")
     val lines = FileReader.readResourceFile("/day16/data.txt")
     runWrapper { part1(testLines) }
-    runWrapper { part1(lines, true) }
+    runWrapper { part1(lines, false) }
     runWrapper { part2(testLines) }
     runWrapper { part2(lines) }
 }
@@ -53,6 +53,8 @@ data class Beam(
 
 val colorPlatte = Array(256) { (0..255*255*255).random() }
 
+const val ratio = 4
+
 fun Matrix<Char>.beamStep(beam: Beam): List<Beam> {
     beam.position += beam.direction // move
     val item = this[beam.position]
@@ -76,18 +78,18 @@ fun countEnergizes(lines: List<String>, initialBeam: Beam, animate: Boolean = fa
     var gif: GifEncoder? = null
     if (animate) {
         // https://genuinecoder.com/how-to-create-gif-from-multiple-images-in-java/
-        val outputStream = Path("my_animated_image.gif").outputStream()
+        val outputStream = Path("day16.gif").outputStream()
 
-        gif = GifEncoder(outputStream, lines.first().length, lines.size, 0)
+        gif = GifEncoder(outputStream, ratio*lines.first().length, ratio*lines.size, 0)
     }
-    val options = ImageOptions().also { it.setDelay(10, TimeUnit.MILLISECONDS) }
+    val options = ImageOptions() //.also { it.setDelay(10, TimeUnit.MILLISECONDS) }
 
     val matrix = createMatrix(lines, '.')
     var beams = listOf(initialBeam)
     val visited = createMatrix(matrix.width, matrix.height, 0)
     var image: Array<IntArray>? = null
     if (animate) {
-        image = Array(matrix.height) { IntArray(matrix.width) { 0 } }
+        image = Array(ratio*matrix.height) { IntArray(ratio*matrix.width) { 0 } }
     }
     //visited[firstBeam.position] = visited[firstBeam.position]!! + bitMask[firstBeam.direction]!!
     var iterations = 0
@@ -99,7 +101,13 @@ fun countEnergizes(lines: List<String>, initialBeam: Beam, animate: Boolean = fa
                 return@map null
             }
             visited[nextPosition] = visited[nextPosition]!! or bitMask[it.direction]!!
-            if (animate) image!![nextPosition.second][nextPosition.first] = it.color
+            if (animate) {
+                (1 until ratio).map { i ->
+                    (1 until ratio).map { j ->
+                        image!![ratio*nextPosition.second + i][ratio*nextPosition.first + j] = it.color
+                    }
+                }
+            }
             it
         }.filterNotNull()
         beams = beams.map { beam ->
