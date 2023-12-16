@@ -56,10 +56,9 @@ fun Matrix<Char>.beamStep(beam: Beam): List<Beam> {
     return emptyList()
 }
 
-fun part1(lines: List<String>): Int {
+fun countEnergizes(lines: List<String>, initialBeam: Beam): Int {
     val matrix = createMatrix(lines, '.')
-    val firstBeam = Beam(Pair(-1,0), RIGHT)
-    var beams = listOf(firstBeam)
+    var beams = listOf(initialBeam)
     val visited = createMatrix(matrix.width, matrix.height, 0)
     //visited[firstBeam.position] = visited[firstBeam.position]!! + bitMask[firstBeam.direction]!!
     var iterations = 0
@@ -75,12 +74,21 @@ fun part1(lines: List<String>): Int {
         beams = beams.map { beam ->
             matrix.beamStep(beam)
         }.flatten()
-        if (++iterations > 1000) error("Too much iterations")
+        if (++iterations > 10000) error("Too much iterations")
     }
-    println("Iterations: $iterations\n${visited.toStringHEX()}")
+    //println("Iterations: $iterations") //\n${visited.toStringHEX()}")
     return visited.map { if (it > 0) 1 else 0 }.sum()
 }
 
-fun part2(lines: List<String>) {
+fun part1(lines: List<String>): Int {
+    return countEnergizes(lines, Beam(Pair(-1, 0), RIGHT))
+}
 
+fun part2(lines: List<String>): Int {
+    val allEnergies =
+        lines.indices.map { countEnergizes(lines, Beam(Pair(-1, it), RIGHT)) } +
+        lines.indices.map { countEnergizes(lines, Beam(Pair(lines.first().length, it), LEFT)) } +
+        lines.first().indices.map { countEnergizes(lines, Beam(Pair(it, -1), DOWN)) } +
+        lines.first().indices.map { countEnergizes(lines, Beam(Pair(it, lines.size), UP)) }
+    return  allEnergies.maxOf { it }
 }
