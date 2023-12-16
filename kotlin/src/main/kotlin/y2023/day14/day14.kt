@@ -10,8 +10,8 @@ fun main() {
     val lines = FileReader.readResourceFile("/day14/data.txt")
     runWrapper(136) { part1(testLines) }
     runWrapper(110128) { part1(lines) }
-    runWrapper { part2(testLines) }
-    runWrapper { part2(lines) }
+    runWrapper(64) { part2(testLines) }
+    runWrapper(103861) { part2(lines) }
 }
 
 private operator fun Pair<Int, Int>.plus(point : Pair<Int, Int>): Pair<Int, Int> {
