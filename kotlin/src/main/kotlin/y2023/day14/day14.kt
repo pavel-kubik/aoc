@@ -26,7 +26,7 @@ fun Matrix<Char>.move(movable: Char, empty: Char, direction: Pair<Int, Int>) {
                 val item = this[row, column]
                 if (item == movable) {
                     // rolling rock
-                    val from = Pair(row, column)
+                    val from = Pair(column, row)
                     var nextPosition = from
                     while (this[nextPosition + direction] == empty) {
                         nextPosition += direction
@@ -45,7 +45,7 @@ fun Matrix<Char>.move(movable: Char, empty: Char, direction: Pair<Int, Int>) {
                 val item = this[row, column]
                 if (item == movable) {
                     // rolling rock
-                    val from = Pair(row, column)
+                    val from = Pair(column, row)
                     var nextPosition = from
                     while (this[nextPosition + direction] == empty) {
                         nextPosition += direction
@@ -63,7 +63,7 @@ fun Matrix<Char>.move(movable: Char, empty: Char, direction: Pair<Int, Int>) {
 
 fun part1(lines: List<String>): Any {
     val matrix = createMatrix(lines, '.')
-    matrix.move('O', '.', Pair(-1, 0))
+    matrix.move('O', '.', Pair(0, -1))
     return matrix.toString().split("\n").reversed().mapIndexed { index, line ->
         (index+1)*line.count { it == 'O' }
     }.sum()
@@ -74,10 +74,10 @@ fun part2(lines: List<String>): Int {
     val series = mutableListOf<Int>()
     val samples = 1000
     repeat(samples) {
-        matrix.move('O', '.', Pair(-1, 0))
         matrix.move('O', '.', Pair(0, -1))
-        matrix.move('O', '.', Pair(1, 0))
+        matrix.move('O', '.', Pair(-1, 0))
         matrix.move('O', '.', Pair(0, 1))
+        matrix.move('O', '.', Pair(1, 0))
         series.add(matrix.toString().split("\n").reversed().mapIndexed { index, line ->
             (index+1)*line.count { it == 'O' }
         }.sum())

@@ -1,7 +1,5 @@
 package utils
 
-import y2023.day14.move
-
 interface Matrix<T> {
 
     val width: Int
@@ -15,7 +13,7 @@ interface Matrix<T> {
     /**
      * Get value for Pair<column, row>.
      */
-    operator fun get(coords: Pair<Int, Int>): T? = get(coords.first, coords.second)
+    operator fun get(coords: Pair<Int, Int>): T? = get(coords.second, coords.first)
 
     /**
      * Set value for [column] and [row]
@@ -25,11 +23,18 @@ interface Matrix<T> {
     /**
      * Set value for Pair<column, row>.
      */
-    operator fun set(coords: Pair<Int, Int>, value: T) = set(coords.first, coords.second, value)
+    operator fun set(coords: Pair<Int, Int>, value: T) = set(coords.second, coords.first, value)
 
     fun rotateRight()
 
     fun rotateLeft()
+
+    fun <R> map(transform: (T) -> R): List<R> =
+        (0 until height).map { row ->
+            (0 until width).map { column ->
+                transform(get(row, column)!!)
+            }
+        }.flatten()
 }
 
 enum class MatrixType {
@@ -143,4 +148,16 @@ class SparseMatrix<T>(override val width: Int, override val height: Int, val ini
         }
         return out.toString().trim()
     }
+}
+
+fun Matrix<Int>.toStringHEX(): String {
+    var out = StringBuilder()
+    (0 until this.height).forEach { row ->
+        (0 until this.width).forEach { column ->
+            //out.append(this[column, row])
+            out.append(this[row, column]?.toString(16)?.uppercase() ?: 0)
+        }
+        out.append('\n')
+    }
+    return out.toString().trim()
 }
