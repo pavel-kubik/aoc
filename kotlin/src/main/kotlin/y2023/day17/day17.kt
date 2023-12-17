@@ -37,19 +37,17 @@ data class Step(
     val direction: Pair<Int, Int>,
     val sameDirection: Int,
     var loss: Int,
-    val history: List<Pair<Int, Int>>
+    var history: List<Pair<Int, Int>>
 )
 
-fun solve(lines: List<String>, maxStepsStraight: Int, minStepsTurn: Int): Int {
+fun solve(lines: List<String>, maxStepsStraight: Int, minStepsTurn: Int, buildHistory: Boolean = false): Int {
     val matrix = createMatrix(lines, 0, MatrixType.ARRAY_MATRIX) {
         it.digitToInt()
     }
     val visited = createMatrix(matrix.width, matrix.height, Array(4*maxStepsStraight) { Int.MAX_VALUE }, MatrixType.ARRAY_MATRIX)
     //println(matrix.toStringHEX())
     val queue = PriorityQueue<Step>() { s1, s2 ->
-        s1.loss - s2.loss // comparator - 842 steps
-        //s2.history.size - s1.history.size // comparator - 38137 steps with cut higher than best,  66591 steps
-        //s2.xy.first + s2.xy.second - s1.xy.first + s1.xy.second // comparator - 5321 steps
+        s1.loss - s2.loss
     }.also {
         it.add(Step(Pair(1, 0), RIGHT, 0, 0, mutableListOf(Pair(0, 0))))
     }
@@ -63,10 +61,8 @@ fun solve(lines: List<String>, maxStepsStraight: Int, minStepsTurn: Int): Int {
         val step = queue.poll()
         if (matrix[step.xy] != null) { // inside matrix
             step.loss += matrix[step.xy]!!
-            // cut wrong solutions
-            if (step.loss > best) {
-                continue
-            }
+            // cut too big solutions - don't need to, once it found solution, it is optimal
+            //if (step.loss > best) continue
 
             //println("Steps for $step")
             if (step.sameDirection >= minStepsTurn - 1 && step.xy.first == matrix.width - 1 && step.xy.second == matrix.height - 1) {
@@ -74,7 +70,9 @@ fun solve(lines: List<String>, maxStepsStraight: Int, minStepsTurn: Int): Int {
                 if (step.loss < best) {
                     best = step.loss
                 }
-                continue
+                println("Found in $steps")
+                return best
+                //continue // it is not A* anymore
             }
 
             // don't visit point two times
@@ -83,15 +81,17 @@ fun solve(lines: List<String>, maxStepsStraight: Int, minStepsTurn: Int): Int {
             if (visitedArray[maxStepsStraight*directionOrder+step.sameDirection] <= step.loss) {
                 continue
             }
-            visited[step.xy] = visitedArray.clone().also { it[maxStepsStraight*directionOrder+step.sameDirection] = step.loss }
+            visited[step.xy] = visitedArray.clone().also { it[maxStepsStraight*directionOrder+step.sameDirection] = step.loss } // TODO add clone to initialization of matrix
 
             if (step.sameDirection < maxStepsStraight - 1) {
                 // same direction
                 val newStep = step.copy(
                     xy = step.xy + step.direction,
                     sameDirection = step.sameDirection + 1,
-                    history = step.history + step.xy
-                )
+                ).also {
+                    if (buildHistory) it.history = step.history + step.xy
+                }
+
                 //println(" - new $newStep")
                 queue.add(newStep)
             }
@@ -102,8 +102,9 @@ fun solve(lines: List<String>, maxStepsStraight: Int, minStepsTurn: Int): Int {
                         xy = step.xy + it,
                         sameDirection = 0,
                         direction = it,
-                        history = step.history + step.xy
-                    )
+                    ).also {
+                        if (buildHistory) it.history = step.history + step.xy
+                    }
                     //println(" - new $newStep")
                     queue.add(newStep)
                 }
