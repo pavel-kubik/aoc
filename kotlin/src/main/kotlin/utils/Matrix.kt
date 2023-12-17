@@ -54,11 +54,12 @@ fun <T> createMatrix(
     }
 }
 
-fun createMatrix(
+fun <R> createMatrix(
     lines: List<String>,
-    emptyValue: Char,
-    matrixType: MatrixType = MatrixType.SPARSE_MATRIX
-): Matrix<Char> {
+    emptyValue: R,
+    matrixType: MatrixType = MatrixType.SPARSE_MATRIX,
+    mapping: (Char) -> R = { a -> a as R }
+): Matrix<R> {
     val width = lines.first().length
     val height = lines.size
     val matrix = when(matrixType) {
@@ -67,24 +68,28 @@ fun createMatrix(
     }
     lines.forEachIndexed { row, line ->
         line.forEachIndexed { column, c ->
-            matrix[row, column] = c
+            matrix[row, column] = mapping(c)
         }
     }
     return matrix
 }
 
 
-class ArrayMatrix<T>(override val width: Int, override val height: Int, initValue: T) : Matrix<T> {
+class ArrayMatrix<T>(override val width: Int, override val height: Int, private val initValue: T) : Matrix<T> {
     val data = MutableList(height) {
         MutableList(width) { initValue }
     }
 
     override fun get(row: Int, column: Int): T? {
-        TODO("Not yet implemented")
+        return if (column in (0 until width) && row in (0 until height)) {
+            data[row][column] ?: initValue
+        } else {
+            null
+        }
     }
 
     override fun set(row: Int, column: Int, value: T) {
-        TODO("Not yet implemented")
+        data[row][column] = value
     }
 
     override fun rotateRight() {
@@ -96,7 +101,7 @@ class ArrayMatrix<T>(override val width: Int, override val height: Int, initValu
     }
 }
 
-class SparseMatrix<T>(override val width: Int, override val height: Int, val initValue: T) : Matrix<T> {
+class SparseMatrix<T>(override val width: Int, override val height: Int, private val initValue: T) : Matrix<T> {
     var data = mutableMapOf<Pair<Int, Int>, T>()
 
     override fun get(row: Int, column: Int): T? {
