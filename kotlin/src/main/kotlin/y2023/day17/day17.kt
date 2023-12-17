@@ -5,11 +5,13 @@ import java.util.*
 
 fun main() {
     val testLines = FileReader.readResourceFile("/day17/test_data.txt")
+    val testLines2= FileReader.readResourceFile("/day17/test_data2.txt")
     val lines = FileReader.readResourceFile("/day17/data.txt")
-    runWrapper { part1(testLines) }
-    runWrapper { part1(lines) }
-    runWrapper { part2(testLines) }
-    runWrapper { part2(lines) }
+    runWrapper(102) { part1(testLines) }
+    runWrapper(742) { part1(lines) }
+    runWrapper(94) { part2(testLines) }
+    runWrapper(71) { part2(testLines2) }
+    runWrapper(918) { part2(lines) }
 }
 
 val UP = Pair(0, -1)
@@ -38,8 +40,6 @@ data class Step(
     val history: List<Pair<Int, Int>>
 )
 
-const val magicConstat = 100
-
 fun part1(lines: List<String>): Int {
     val matrix = createMatrix(lines, 0, MatrixType.ARRAY_MATRIX) {
         it.digitToInt()
@@ -51,7 +51,7 @@ fun part1(lines: List<String>): Int {
         //s2.history.size - s1.history.size // comparator - 38137 steps with cut higher than best,  66591 steps
         //s2.xy.first + s2.xy.second - s1.xy.first + s1.xy.second // comparator - 5321 steps
     }.also {
-        it.add(Step(Pair(1, 0), RIGHT, 1, 0, mutableListOf(Pair(0, 0))))
+        it.add(Step(Pair(1, 0), RIGHT, 0, 0, mutableListOf(Pair(0, 0))))
     }
     var steps = 0
     var best = 1419//Int.MAX_VALUE
@@ -110,11 +110,80 @@ fun part1(lines: List<String>): Int {
     }
     println("Found in $steps")
     return best
-    // 1419 too high
-    // 780 too high
-    // 757 too high
 }
 
-fun part2(lines: List<String>) {
+fun part2(lines: List<String>): Int {
+    val matrix = createMatrix(lines, 0, MatrixType.ARRAY_MATRIX) {
+        it.digitToInt()
+    }
+    val visited = createMatrix(matrix.width, matrix.height, Array(40) { Int.MAX_VALUE }, MatrixType.ARRAY_MATRIX)
+    //println(matrix.toStringHEX())
+    val queue = PriorityQueue<Step>() { s1, s2 ->
+        s1.loss - s2.loss // comparator - 842 steps
+        //s2.history.size - s1.history.size // comparator - 38137 steps with cut higher than best,  66591 steps
+        //s2.xy.first + s2.xy.second - s1.xy.first + s1.xy.second // comparator - 5321 steps
+    }.also {
+        it.add(Step(Pair(1, 0), RIGHT, 0, 0, mutableListOf(Pair(0, 0))))
+    }
+    var steps = 0
+    var best = Int.MAX_VALUE
+    while (queue.isNotEmpty()) {
+        if (++steps > 100000000) {
+            println("Stop cycling")
+            break
+        }
+        val step = queue.poll()
+        if (matrix[step.xy] != null) { // inside matrix
+            step.loss += matrix[step.xy]!!
+            // cut wrong solutions
+            if (step.loss > best) {
+                continue
+            }
 
+            //println("Steps for $step")
+            if (step.sameDirection >= 3 && step.xy.first == matrix.width - 1 && step.xy.second == matrix.height - 1) {
+                println("Solution: ${step.loss} with path ${step}")
+                if (step.loss < best) {
+                    best = step.loss
+                }
+                continue
+            }
+
+            // don't visit point two times
+            val directionOrder = order.indexOf(step.direction)
+            val visitedArray = visited[step.xy]!!
+            if (visitedArray[10*directionOrder+step.sameDirection] <= step.loss) {
+                continue
+            }
+            visited[step.xy] = visitedArray.clone().also { it[10*directionOrder+step.sameDirection] = step.loss }
+
+            if (step.sameDirection < 9) {
+                // same direction
+                val newStep = step.copy(
+                    xy = step.xy + step.direction,
+                    sameDirection = step.sameDirection + 1,
+                    history = step.history + step.xy
+                )
+                //println(" - new $newStep")
+                queue.add(newStep)
+            }
+            if (step.sameDirection >= 3) {
+                turn[step.direction]!!.forEach {
+                    // change direction
+                    val newStep = step.copy(
+                        xy = step.xy + it,
+                        sameDirection = 0,
+                        direction = it,
+                        history = step.history + step.xy
+                    )
+                    //println(" - new $newStep")
+                    queue.add(newStep)
+                }
+            }
+        }
+    }
+    println("Found in $steps")
+    return best
+    // 990 too high
+    // 920 too high
 }
