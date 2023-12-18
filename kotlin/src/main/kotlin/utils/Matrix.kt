@@ -35,6 +35,19 @@ interface Matrix<T> {
                 transform(get(row, column)!!)
             }
         }.flatten()
+
+    fun toString(mapping: (T?) -> String): String {
+        var out = StringBuilder()
+        (0 until this.height).forEach { row ->
+            (0 until this.width).forEach { column ->
+                //out.append(this[column, row])
+                out.append(mapping(this[row, column]))
+            }
+            out.append('\n')
+        }
+        return out.toString().trim()
+    }
+
 }
 
 enum class MatrixType {
