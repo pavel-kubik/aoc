@@ -1,31 +1,23 @@
 package y2023.day18
 
 import utils.FileReader
-import utils.Matrix
 import utils.runWrapper
 
 fun main() {
     val testLines = FileReader.readResourceFile("/day18/test_data.txt")
+    val testLines2 = FileReader.readResourceFile("/day18/test_data2.txt")
+    val testLines3 = FileReader.readResourceFile("/day18/test_data3.txt")
+    val testLines4 = FileReader.readResourceFile("/day18/test_data4.txt")
+    val testLines5 = FileReader.readResourceFile("/day18/test_data5.txt")
     val lines = FileReader.readResourceFile("/day18/data.txt")
+    runWrapper(23) { part1(testLines3) }
+    runWrapper(25) { part1(testLines2) }
+    runWrapper(23) { part1(testLines4) }
+    runWrapper(37) { part1(testLines5) }
     runWrapper(62) { part1(testLines) }
-//    runWrapper(47675) { part1(lines) }
-//    runWrapper(47675) { part2(lines) }
-//    runWrapper { part2(testLines) }
-//    runWrapper { part2(lines) }
-}
-
-fun Pair<Int, Int>.add(direction: String, length: Int): Pair<Int, Int> {
-    return if (direction in listOf("R", "L")) {
-        Pair(
-            this.first + if (direction == "R") length else -length,
-            this.second
-        )
-    } else {
-        Pair(
-            this.first,
-            this.second + if (direction == "D") length else -length
-        )
-    }
+    runWrapper(47675) { part1(lines) }
+    runWrapper(952408144115) { part2(testLines) }
+    runWrapper(122103860427465) { part2(lines) }
 }
 
 fun Pair<Long, Long>.add(direction: String, length: Long): Pair<Long, Long> {
@@ -42,61 +34,60 @@ fun Pair<Long, Long>.add(direction: String, length: Long): Pair<Long, Long> {
     }
 }
 
-private operator fun Pair<Int, Int>.plus(point : Pair<Int, Int>): Pair<Int, Int> {
-    return Pair(first + point.first, second + point.second)
-}
 
-fun sign(a: Int, b: Int): Int = if (a - b > 0) 1 else if (a == b) 0 else -1
-
-fun Matrix<Int>.addLine(from: Pair<Int, Int>, to: Pair<Int, Int>, color: Int) {
-    val diff = Pair(sign(to.first, from.first), sign(to.second, from.second))
-    var current = from.copy()
-    while (current != to) {
-        this[current] = color
-        current += diff
+/**
+ * test_data3 - R 4, D 1, R 4, D 1, L 8, U 2
+ *
+ *           |
+ *    - R 4 - - - - -
+ *    - - - - - R 4 -
+ *  S # # # # - - - -
+ *  # . . . # # # # #
+ *  # # # # # # # # #
+ *  + + + + + + + +
+ *  + + + + + + + +
+ *  + + + L 8 + + +
+ *  + + + + + + + +
+ *  + + + + + + + +
+ */
+fun solve(input: List<Pair<String, Long>>): Long {
+    var start = Pair(0L, 0L)
+    var area = 0L
+    input.forEach {
+        val (direction, length) = it
+        // only horizontal lines affect area
+        if (direction == "L") {
+            val d = length * (start.second + 1) // area with line included
+            area += d
+        } else if (direction == "R") {
+            val d = - length * start.second // area under line
+            area += d
+        } else {
+            if (direction == "U") { // missing side area
+                area += length
+            }
+        }
+        start = start.add(direction, length)
     }
+    return 1 + area // +1 for starting point
 }
 
 fun part1(lines: List<String>): Long {
-    val size = 10L
-    var start = Pair(0L, 0L)
-    var area = 0L
-    lines.forEach {
+    val input = lines.map {
         val (direction, length, _) = it.split(' ')
-        // only horizontal lines affect area
-        if (direction == "R") {
-            val l = length.toLong() - 1
-            val h = size - start.second
-            area += l*h
-            println("$l @ $h = ${l*h}")
-        } else if (direction == "L") {
-            val l = length.toLong()
-            val h = size - start.second - 1
-            area -= l*h
-            println("$l @ $h = -${l*h}")
-        } else {
-            area += start.second - 1
-        }
-        start = start.add(direction, length.toLong())
+        Pair(direction, length.toLong())
     }
-    return area
+    return solve(input)
 }
 
 fun part2(lines: List<String>): Long {
-    var start = Pair(100L, 100L)
-    var area = 0L
-    lines.forEach {
+    val input = lines.map {
         val (_, _, colorRGBHex) = it.split(' ')
         val input = colorRGBHex.removeSurrounding("(#", ")")
         val direction = listOf('R', 'D', 'L', 'U')[input[5].digitToInt()].toString()
         val length = input.substring(0, 5).toLong(radix = 16)
-        start = start.add(direction, length)
-        // only horizontal lines affect area
-        if (direction == "R") {
-            area += length*start.second
-        } else if (direction == "L") {
-            area -= length*start.second
-        }
+        Pair(direction, length)
     }
-    return area
+    return solve(input)
 }
+
