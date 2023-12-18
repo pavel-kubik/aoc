@@ -2,19 +2,33 @@ package y2023.day18
 
 import utils.FileReader
 import utils.Matrix
-import utils.createMatrix
 import utils.runWrapper
 
 fun main() {
     val testLines = FileReader.readResourceFile("/day18/test_data.txt")
     val lines = FileReader.readResourceFile("/day18/data.txt")
-    //runWrapper(62) { part1(testLines) }
-    runWrapper { part1(lines) }
-    runWrapper { part2(testLines) }
-    runWrapper { part2(lines) }
+    runWrapper(62) { part1(testLines) }
+//    runWrapper(47675) { part1(lines) }
+//    runWrapper(47675) { part2(lines) }
+//    runWrapper { part2(testLines) }
+//    runWrapper { part2(lines) }
 }
 
 fun Pair<Int, Int>.add(direction: String, length: Int): Pair<Int, Int> {
+    return if (direction in listOf("R", "L")) {
+        Pair(
+            this.first + if (direction == "R") length else -length,
+            this.second
+        )
+    } else {
+        Pair(
+            this.first,
+            this.second + if (direction == "D") length else -length
+        )
+    }
+}
+
+fun Pair<Long, Long>.add(direction: String, length: Long): Pair<Long, Long> {
     return if (direction in listOf("R", "L")) {
         Pair(
             this.first + if (direction == "R") length else -length,
@@ -43,61 +57,46 @@ fun Matrix<Int>.addLine(from: Pair<Int, Int>, to: Pair<Int, Int>, color: Int) {
     }
 }
 
-const val SIZE = 1000 // TODO parse data to count it
-
-fun part1(lines: List<String>): Int {
-    var start = Pair(SIZE/2, SIZE/2)
-    val matrix = createMatrix(SIZE, SIZE, 0)
+fun part1(lines: List<String>): Long {
+    val size = 10L
+    var start = Pair(0L, 0L)
+    var area = 0L
     lines.forEach {
-        val (direction, length, colorRGBHex) = it.split(' ')
-        val destination = start.add(direction, length.toInt())
-        val color = colorRGBHex.removeSurrounding("(#", ")").toInt(radix = 16)
-        matrix.addLine(start, destination, color)
-        start = destination
-    }
-//    println(matrix.toString() {
-//        if (it?.let {it > 0} == true) "#" else "."
-//    })
-//    println()
-
-    (0 until matrix.height).forEach { row ->
-        var inside = false
-        var edge = false
-        var up = false
-        var down = false
-        (0 until matrix.width).forEach { col ->
-            val item = matrix[row, col]
-            if (item == 0) { // '.'
-                if (edge) {
-                    edge = false
-                    if (down && (matrix[row - 1, col - 1]!! <= 1 && matrix[row + 1, col - 1]!! > 1) ||
-                            up && (matrix[row + 1, col - 1]!! <= 1 && matrix[row - 1, col - 1]!! > 1)) {
-                        // don't change inside
-                    } else {
-                        inside = !inside
-                    }
-                }
-                if (inside) {
-                    matrix[row, col] = 1
-                }
-            } else { // '#'
-                if (!edge) {
-                    edge = true
-                    up = false
-                    down = false
-                    if (matrix[row - 1, col]!! <= 1 && matrix[row + 1, col]!! > 1) down = true
-                    if (matrix[row + 1, col]!! <= 1 && matrix[row - 1, col]!! > 1) up = true
-                }
-            }
+        val (direction, length, _) = it.split(' ')
+        // only horizontal lines affect area
+        if (direction == "R") {
+            val l = length.toLong() - 1
+            val h = size - start.second
+            area += l*h
+            println("$l @ $h = ${l*h}")
+        } else if (direction == "L") {
+            val l = length.toLong()
+            val h = size - start.second - 1
+            area -= l*h
+            println("$l @ $h = -${l*h}")
+        } else {
+            area += start.second - 1
         }
+        start = start.add(direction, length.toLong())
     }
-    println(matrix.toString() {
-        if (it?.let {it > 0} == true) "#" else "."
-    })
-    return matrix.map { it }.filter { it > 0 }.count()
-    // 56165 too high
+    return area
 }
 
-fun part2(lines: List<String>) {
-
+fun part2(lines: List<String>): Long {
+    var start = Pair(100L, 100L)
+    var area = 0L
+    lines.forEach {
+        val (_, _, colorRGBHex) = it.split(' ')
+        val input = colorRGBHex.removeSurrounding("(#", ")")
+        val direction = listOf('R', 'D', 'L', 'U')[input[5].digitToInt()].toString()
+        val length = input.substring(0, 5).toLong(radix = 16)
+        start = start.add(direction, length)
+        // only horizontal lines affect area
+        if (direction == "R") {
+            area += length*start.second
+        } else if (direction == "L") {
+            area -= length*start.second
+        }
+    }
+    return area
 }
